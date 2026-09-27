@@ -411,63 +411,67 @@ button {
   padding: clamp(120px, 20vh, 200px) clamp(20px, 6vw, 96px) 80px;
   overflow: hidden;
 }
-.night-road {
+/* ThreeUI hero backdrop (replaces the old flat .night-road CSS block) —
+   see src/components/HeroBackground.tsx for the gating logic (reduced
+   motion / mobile / tab-visibility). This wrapper only owns layout:
+   fills the hero at the same z-index:0 layer .night-road used to hold,
+   never intercepts pointer events, and never covers .hero-grid (z:1). */
+.hero-threeui {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 46%;
+  inset: 0;
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  perspective: 420px;
-  mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 35%, rgba(0, 0, 0, 0.12) 65%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 35%, rgba(0, 0, 0, 0.12) 65%, transparent 100%);
 }
-.night-road::after {
-  content: "";
+/* Base sizing the EmeraldHorizonBackground component expects from its
+   root (normally supplied by the package's own style.css, which we don't
+   import wholesale — importing it would pull in unrelated demo-color CSS
+   for the other ~50 components in the library for zero benefit here). */
+.hero-threeui-canvas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  isolation: isolate;
+}
+/* Brand recolor: the shader is already green-on-near-black by default
+   (no red/blue/violet to strip), but nudged toward the exact brand green
+   and muted for "sparse, not busy" via saturate/brightness. !important
+   because the component sets its own hue-rotate inline via style — this
+   is the single source of truth for the final look rather than fighting
+   between the component's `hue` prop and this rule. */
+.hero-threeui-canvas canvas {
+  filter: hue-rotate(-28deg) saturate(0.6) brightness(0.85) !important;
+}
+/* Mobile/coarse-pointer fallback — no WebGL context at all, not just a
+   lighter one. A soft static glow standing in for the shader's rising
+   horizon-glow silhouette. */
+.hero-threeui-static {
   position: absolute;
   inset: 0;
-  z-index: 2;
-  background:
-    linear-gradient(to top, transparent 0%, rgba(13, 13, 13, 0.35) 40%, var(--color-black) 100%),
-    linear-gradient(90deg, var(--color-black) 0%, transparent 18%, transparent 82%, var(--color-black) 100%);
+  background: radial-gradient(ellipse 70% 45% at 50% 100%, rgba(108, 192, 74, 0.16), transparent 70%);
 }
-.night-road-plane {
-  position: absolute;
-  left: -20%;
-  right: -20%;
-  bottom: -8%;
-  height: 160%;
-  transform-origin: 50% 100%;
-  transform: rotateX(68deg);
-  background:
-    linear-gradient(90deg, transparent 0 46%, rgba(255, 255, 255, 0.04) 46% 47%, transparent 47% 53%, rgba(255, 255, 255, 0.04) 53% 54%, transparent 54%),
-    linear-gradient(180deg, var(--color-black) 0%, #101010 45%, #121212 100%);
-  box-shadow: inset 0 60px 90px rgba(13, 13, 13, 0.75);
-}
-.night-road-lanes {
+/* Readability scrim — darkens the effect specifically behind the text
+   column (left, where hero-grid's 1.2fr column sits) more than behind the
+   rider image (right), so the headline/sub/CTAs stay fully legible without
+   flattening the effect everywhere. */
+.hero-threeui-scrim {
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(180deg, transparent 0 38px, rgba(108, 192, 74, 0.08) 38px 42px, transparent 42px 88px);
-  animation: laneDrift 2.8s linear infinite;
-  opacity: 0.4;
+  background: linear-gradient(
+    90deg,
+    rgba(13, 13, 13, 0.82) 0%,
+    rgba(13, 13, 13, 0.55) 40%,
+    rgba(13, 13, 13, 0.18) 70%,
+    rgba(13, 13, 13, 0.35) 100%
+  );
 }
-@keyframes laneDrift {
-  to {
-    transform: translateY(88px);
+@media (max-width: 900px) {
+  /* .hero-grid stacks to one column on mobile (see below) — scrim goes
+     top-to-bottom instead of left-to-right so it still sits behind the
+     text block specifically, not the whole frame evenly. */
+  .hero-threeui-scrim {
+    background: linear-gradient(180deg, rgba(13, 13, 13, 0.82) 0%, rgba(13, 13, 13, 0.5) 55%, rgba(13, 13, 13, 0.3) 100%);
   }
-}
-.night-road-glow {
-  position: absolute;
-  left: 50%;
-  bottom: 4%;
-  width: min(480px, 65vw);
-  height: 70px;
-  transform: translateX(-50%);
-  background: radial-gradient(ellipse, rgba(108, 192, 74, 0.08), transparent 72%);
-  filter: blur(14px);
-  opacity: 0.7;
 }
 .hero-grid {
   position: relative;
@@ -1107,8 +1111,13 @@ footer .footer-copyright {
     display: none !important;
   }
   /* Ambient/decorative continuous motion — off entirely, not just sped up. */
-  .night-road-lanes,
   .scroll-hint::after {
+    display: none !important;
+  }
+  /* Safety net for HeroBackground.tsx's own JS-level reduced-motion check
+     (which has the same first-render-defaults-false race every hook here
+     has) — belt-and-braces so the effect never paints even for one frame. */
+  .hero-threeui {
     display: none !important;
   }
 }

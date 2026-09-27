@@ -13,7 +13,9 @@ const compat = new FlatCompat({ baseDirectory: __dirname });
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+  // .claude/** is a vendored, gitignored Claude Code skills tree, not
+  // project source — see the note in .gitignore.
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", ".claude/**"]),
 ];
 
 export default eslintConfig;

@@ -6,6 +6,7 @@ import { ensureGsapRegistered, gsap } from "@/motion/gsap";
 import { useReducedMotion } from "@/motion/useReducedMotion";
 import { SplitWords } from "@/components/SplitWords";
 import { Button } from "@/components/Button";
+import { HeroBackground } from "@/components/HeroBackground";
 
 export interface HeroProps {
   chip?: string;
@@ -71,12 +72,7 @@ export function Hero({ chip, title, accentWord, subtitle, primaryCta, secondaryC
 
   return (
     <section id="home" className="hero" aria-label="Introduction">
-      <div className="night-road" aria-hidden="true">
-        <div className="night-road-plane">
-          <div className="night-road-lanes" />
-        </div>
-        <div className="night-road-glow" />
-      </div>
+      <HeroBackground />
       <div className="hero-grid">
         <div>
           {chip && (
