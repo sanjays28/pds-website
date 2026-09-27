@@ -11,6 +11,7 @@ import { Button } from "@/components/Button";
 import { ScrollStory, type StoryBeat } from "@/components/ScrollStory";
 import { CursorTrail } from "@/components/CursorTrail";
 import { ScrollRail } from "@/components/ScrollRail";
+import { DotGridBackground } from "@/components/DotGridBackground";
 
 /**
  * The full single-page build (Prompt 2) — content sourced verbatim from
@@ -269,7 +270,13 @@ export default function Home() {
           ))}
         </Section>
 
-        <Section id="process" eyebrow="How It Works" title="Our Process" staggerChildren={false}>
+        <Section
+          id="process"
+          eyebrow="How It Works"
+          title="Our Process"
+          staggerChildren={false}
+          background={<DotGridBackground />}
+        >
           <RouteTimeline stops={PROCESS_STEPS} />
         </Section>
 

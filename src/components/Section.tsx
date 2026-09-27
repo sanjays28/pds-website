@@ -28,6 +28,12 @@ export interface SectionProps {
    * that's secondary to the section's main content and doesn't need its
    * own scroll-triggered entrance. */
   extra?: ReactNode;
+  /** Full-bleed decorative layer behind the section's content — e.g. a
+   * ThreeUI background effect. Rendered first (so it paints behind
+   * `.wrap` by DOM order) inside this `<section>`, which is already
+   * `position:relative` (see globals.css), so a child using
+   * `position:absolute;inset:0` fills it correctly. */
+  background?: ReactNode;
 }
 
 /**
@@ -55,6 +61,7 @@ export function Section({
   contentClassName,
   wipe = true,
   extra,
+  background,
 }: SectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const eyebrowRef = useRef<HTMLParagraphElement>(null);
@@ -156,6 +163,7 @@ export function Section({
 
   return (
     <section id={id} ref={sectionRef} className={cn("section", className)}>
+      {background}
       <div className="wrap">
         {eyebrow && (
           <p ref={eyebrowRef} className="eyebrow" data-reveal={reduced || undefined}>

@@ -221,6 +221,40 @@ button {
 }
 
 /* ============================================================
+   DotGridBackground — ThreeUI dot-matrix, behind the Process section
+   ============================================================ */
+.dot-grid-bg {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-bg);
+  pointer-events: none;
+  overflow: hidden;
+}
+/* Base sizing the component's canvas expects from its root (see the
+   equivalent note on .hero-threeui-canvas — not importing ThreeUI's full
+   style.css for one rule). */
+.dot-grid-canvas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.dot-grid-canvas > canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.dot-grid-static {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(108, 192, 74, 0.16) 1px, transparent 1.5px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 40%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 40%, transparent 85%);
+}
+
+/* ============================================================
    Nav — fixed, glass-on-scroll (WMS §12.4 sole sanctioned glass use;
    §11.3 "Nav appear"; underline sweep is M16)
    ============================================================ */
@@ -1399,6 +1433,10 @@ footer .footer-copyright {
      (which has the same first-render-defaults-false race every hook here
      has) — belt-and-braces so the effect never paints even for one frame. */
   .hero-threeui {
+    display: none !important;
+  }
+  /* Same belt-and-braces reasoning, for DotGridBackground.tsx. */
+  .dot-grid-bg {
     display: none !important;
   }
 }
