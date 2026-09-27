@@ -14,9 +14,15 @@ import { useReducedMotion } from "@/motion/useReducedMotion";
  * A grid of dots whose radius pulses via a sine wave offset by grid
  * position (so the pulse ripples across the grid rather than blinking in
  * unison), with a radial depth-fade vignette and a faint pointer-driven
- * parallax drift. Genuinely sparse by its own authored defaults (opacity
- * 0.35) — unlike the laser blade or the warp-field tunnel, this one
- * doesn't fight the "background, not a focal point" rule.
+ * parallax drift.
+ *
+ * Retuned down from the authored defaults after a visual pass: at
+ * gridScale 60 / radius 0.15 / opacity 0.35 it read as a dense, high-
+ * contrast grid competing directly with the route timeline's text, not
+ * atmosphere behind it. Fewer, smaller, dimmer dots (below), plus a flat
+ * scrim wash (`.dot-grid-scrim`) since the timeline's stops zigzag across
+ * the full width — unlike the hero, there's no single side to protect
+ * with a directional gradient.
  *
  * Color: the shader hardcodes cyan; recolored to the brand green via the
  * component's own `hue` prop (a CSS hue-rotate under the hood). -89° is
@@ -55,17 +61,18 @@ export function DotGridBackground() {
       {mode === "full" ? (
         <DotMatrixBackground
           className="dot-grid-canvas"
-          speed={1}
-          gridScale={60}
+          speed={0.6}
+          gridScale={34}
           mouseAmount={0.04}
           pulseSpeed={0.4}
           hue={-89}
-          radius={0.15}
-          opacity={0.35}
+          radius={0.08}
+          opacity={0.14}
         />
       ) : (
         <div className="dot-grid-static" />
       )}
+      <div className="dot-grid-scrim" />
     </div>
   );
 }

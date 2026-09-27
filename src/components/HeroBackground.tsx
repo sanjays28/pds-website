@@ -33,11 +33,13 @@ import { useReducedMotion } from "@/motion/useReducedMotion";
  *   via an internal IntersectionObserver when the hero scrolls out of
  *   view (all confirmed by reading the actual shipped source).
  *
- * No custom CSS filter/recolor is layered on top this time (previously
- * there was a `!important` hue-rotate/saturate/brightness override) —
- * the exact configured props already control the canvas's own filter, and
- * the brief for this pass is to use that configuration as authored rather
- * than approximate/retune it.
+ * Retuned from the exact-defaults pass: at full brightness (1) this read
+ * as a dominant, busy wash rather than atmosphere — actively competing
+ * with the headline instead of sitting behind it (confirmed visually,
+ * not just in theory). `brightness={0.45}` plus a stronger scrim (see
+ * `.hero-threeui-scrim` in globals.css) brings it down to roughly the
+ * same restraint the mobile static fallback already had — that one never
+ * needed a retune because it was hand-tuned low-alpha from the start.
  */
 export function HeroBackground() {
   const reduced = useReducedMotion();
@@ -64,7 +66,7 @@ export function HeroBackground() {
           speed={1}
           hue={0}
           saturation={1}
-          brightness={1}
+          brightness={0.45}
         />
       ) : (
         <div className="hero-threeui-static" />

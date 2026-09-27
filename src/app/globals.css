@@ -253,6 +253,15 @@ button {
   mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 40%, transparent 85%);
   -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 40%, transparent 85%);
 }
+/* Flat wash (not directional — the route timeline's stops zigzag across
+   the full width, so there's no one side to protect) keeping the dot
+   grid receded under the timeline's text regardless of where a stop
+   lands. */
+.dot-grid-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(13, 13, 13, 0.55);
+}
 
 /* ============================================================
    Nav — fixed, glass-on-scroll (WMS §12.4 sole sanctioned glass use;
@@ -541,22 +550,22 @@ button {
   background: radial-gradient(ellipse 70% 45% at 50% 45%, rgba(108, 192, 74, 0.14), transparent 70%);
 }
 /* Readability scrim — darkens the effect specifically behind the text
-   column (left, where hero-grid's 1.2fr column sits) more than behind the
-   rider image (right), so the headline/sub/CTAs stay fully legible without
-   flattening the effect everywhere. Lighter than a first pass at this
-   (which, paired with an overly dim effect tuning, read as "no visible
-   effect at all") — this variant is a denser, more graphic pixel pattern
-   by design, so it can afford — and needs — less scrim to stay atmosphere
-   rather than noise behind the text. */
+   column (left) more than behind the rider image (right). Re-tightened
+   after a visual pass showed the effect reading as a dominant, busy wash
+   rather than atmosphere at full strength — the previous version's
+   right-side minimum (0.1) let it go almost fully bare there, which is
+   what made it feel like a focal point instead of a backdrop. Paired
+   with the component's own brightness={0.45} (see HeroBackground.tsx)
+   rather than doing all the dimming in one place. */
 .hero-threeui-scrim {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     90deg,
-    rgba(13, 13, 13, 0.72) 0%,
-    rgba(13, 13, 13, 0.42) 40%,
-    rgba(13, 13, 13, 0.1) 70%,
-    rgba(13, 13, 13, 0.22) 100%
+    rgba(13, 13, 13, 0.8) 0%,
+    rgba(13, 13, 13, 0.6) 40%,
+    rgba(13, 13, 13, 0.4) 70%,
+    rgba(13, 13, 13, 0.48) 100%
   );
 }
 @media (max-width: 900px) {
@@ -712,12 +721,26 @@ button {
    ============================================================ */
 section.section {
   position: relative;
-  padding: clamp(96px, 14vh, 220px) clamp(20px, 6vw, 96px);
+  /* Was clamp(96px,14vh,220px) — at typical desktop viewport heights that
+     put ~126-220px of padding on *both* top and bottom of every section,
+     compounding to 250-440px of dead space between any two sections with
+     short content (About, Safety). Tightened so the rhythm still breathes
+     without reading as unfinished/empty. */
+  padding: clamp(72px, 9vh, 140px) clamp(20px, 6vw, 96px);
 }
 .wrap {
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+}
+/* FAQ and Contact: content (accordion 760px, form 720px) was left-aligned
+   inside the full 1200px wrap, leaving a large bare column on the right
+   at desktop widths. Narrowing the wrap itself (rather than centering
+   just the accordion/form under a still-left-aligned heading, which
+   would look mismatched) keeps everything — eyebrow, title, content — in
+   one consistent column with no dead gutter. */
+.section-narrow .wrap {
+  max-width: 860px;
 }
 .eyebrow {
   font-size: 11px;
@@ -1055,14 +1078,18 @@ section.section {
 }
 .story-panel h3 {
   font-family: var(--font-display);
-  font-size: clamp(34px, 6.4vw, 84px);
+  /* Capped lower than Hero's h1 (84px) — a single long word here
+     ("Professionalism.") has no space to wrap at, so it needs real
+     headroom before overflow-wrap has to break it mid-word. */
+  font-size: clamp(30px, 5.6vw, 68px);
   font-weight: 900;
   font-style: italic;
   font-variation-settings: "wdth" 125;
   text-transform: uppercase;
-  line-height: 1.02;
+  line-height: 1.05;
   letter-spacing: -0.015em;
-  max-width: 14ch;
+  max-width: 20ch;
+  overflow-wrap: break-word;
 }
 .story-panel .s-accent {
   color: var(--color-green);

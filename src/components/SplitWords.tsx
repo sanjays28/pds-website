@@ -9,8 +9,15 @@ export function SplitWords({ text, className }: { text: string; className?: stri
   return (
     <>
       {words.map((word, i) => (
-        <span key={i} className="split-word-wrap">
-          <span className={className ? `split-word ${className}` : "split-word"}>{word}</span>
+        // The inter-word space is a SIBLING of split-word-wrap, not a child
+        // of it — split-word-wrap is overflow:hidden + inline-block (for
+        // the word-mask reveal), and a trailing space *inside* that box
+        // gets trimmed to zero width by shrink-to-fit sizing, silently
+        // collapsing every multi-word heading into one run-on word.
+        <span key={i}>
+          <span className="split-word-wrap">
+            <span className={className ? `split-word ${className}` : "split-word"}>{word}</span>
+          </span>
           {i < words.length - 1 ? " " : ""}
         </span>
       ))}

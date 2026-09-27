@@ -324,11 +324,17 @@ export default function Home() {
           </div>
         </Section>
 
-        <Section id="faq" eyebrow="Questions" title="FAQ">
+        <Section id="faq" eyebrow="Questions" title="FAQ" className="section-narrow">
           <Accordion items={FAQS} />
         </Section>
 
-        <Section id="contact" eyebrow="Get Started" title="Let's Move Your Business Forward" wipe={false}>
+        <Section
+          id="contact"
+          eyebrow="Get Started"
+          title="Let's Move Your Business Forward"
+          wipe={false}
+          className="section-narrow"
+        >
           <p className="text-w70" style={{ maxWidth: "62ch" }}>
             Looking for a reliable delivery partner in the UAE? Whether you
             need trained delivery riders, dependable last-mile delivery
