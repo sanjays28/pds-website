@@ -423,46 +423,46 @@ button {
   pointer-events: none;
   overflow: hidden;
 }
-/* Base sizing the EmeraldHorizonBackground component expects from its
-   root (normally supplied by the package's own style.css, which we don't
-   import wholesale — importing it would pull in unrelated demo-color CSS
-   for the other ~50 components in the library for zero benefit here). */
+/* Base sizing the PredictiveArcCanvas (data-pixel variant) component
+   expects from its root (normally supplied by the package's own
+   style.css, which we don't import wholesale — importing it would pull
+   in unrelated demo-color CSS for the other ~50 components in the
+   library for zero benefit here; the one rule this variant actually
+   needs is reproduced below). No canvas filter override — the component
+   is mounted with its exact configured props (mode="dark", hue={0},
+   saturation={1}, brightness={1}), so its own authored output is the
+   final look, not something we re-tint on top. */
 .hero-threeui-canvas {
   position: relative;
   width: 100%;
   height: 100%;
   isolation: isolate;
 }
-/* Brand recolor: the shader is already green-on-near-black by default
-   (no red/blue/violet to strip), but nudged toward the exact brand green
-   and muted for "sparse, not busy" via saturate/brightness. !important
-   because the component sets its own hue-rotate inline via style — this
-   is the single source of truth for the final look rather than fighting
-   between the component's `hue` prop and this rule. */
-.hero-threeui-canvas canvas {
-  filter: hue-rotate(-28deg) saturate(0.6) brightness(0.85) !important;
-}
-/* Mobile/coarse-pointer fallback — no WebGL context at all, not just a
-   lighter one. A soft static glow standing in for the shader's rising
-   horizon-glow silhouette. */
+/* Mobile/coarse-pointer fallback — no canvas context at all, not just a
+   lighter one. A soft static glow standing in for the effect's pixel-arc
+   silhouette. */
 .hero-threeui-static {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 70% 45% at 50% 100%, rgba(108, 192, 74, 0.16), transparent 70%);
+  background: radial-gradient(ellipse 70% 45% at 50% 45%, rgba(108, 192, 74, 0.14), transparent 70%);
 }
 /* Readability scrim — darkens the effect specifically behind the text
    column (left, where hero-grid's 1.2fr column sits) more than behind the
    rider image (right), so the headline/sub/CTAs stay fully legible without
-   flattening the effect everywhere. */
+   flattening the effect everywhere. Lighter than a first pass at this
+   (which, paired with an overly dim effect tuning, read as "no visible
+   effect at all") — this variant is a denser, more graphic pixel pattern
+   by design, so it can afford — and needs — less scrim to stay atmosphere
+   rather than noise behind the text. */
 .hero-threeui-scrim {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     90deg,
-    rgba(13, 13, 13, 0.82) 0%,
-    rgba(13, 13, 13, 0.55) 40%,
-    rgba(13, 13, 13, 0.18) 70%,
-    rgba(13, 13, 13, 0.35) 100%
+    rgba(13, 13, 13, 0.72) 0%,
+    rgba(13, 13, 13, 0.42) 40%,
+    rgba(13, 13, 13, 0.1) 70%,
+    rgba(13, 13, 13, 0.22) 100%
   );
 }
 @media (max-width: 900px) {
@@ -470,7 +470,7 @@ button {
      top-to-bottom instead of left-to-right so it still sits behind the
      text block specifically, not the whole frame evenly. */
   .hero-threeui-scrim {
-    background: linear-gradient(180deg, rgba(13, 13, 13, 0.82) 0%, rgba(13, 13, 13, 0.5) 55%, rgba(13, 13, 13, 0.3) 100%);
+    background: linear-gradient(180deg, rgba(13, 13, 13, 0.72) 0%, rgba(13, 13, 13, 0.4) 55%, rgba(13, 13, 13, 0.22) 100%);
   }
 }
 .hero-grid {

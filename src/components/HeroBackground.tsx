@@ -1,33 +1,43 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { EmeraldHorizonBackground } from "@designcodeio/threeui/components/EmeraldHorizonBackground";
+import { PredictiveArcCanvas } from "@designcodeio/threeui/components/PredictiveArcCanvas";
 import { useReducedMotion } from "@/motion/useReducedMotion";
 
 /**
- * HeroBackground — the hero's atmospheric backdrop, replacing the old flat
- * CSS `.night-road` block with a real Three.js shader (ThreeUI's
- * "EmeraldHorizonBackground"): a glowing horizon line rising from the
- * bottom of the frame. It's already green-on-near-black out of the box —
- * no red/blue/violet demo palette to strip — and reads as atmosphere
- * (a distant glow, like a road's light pollution at night) rather than a
- * literal 3D object, matching the brief.
+ * HeroBackground — the hero's atmospheric backdrop.
  *
- * Sits at the same z-index:0 layer the old night-road occupied, behind
- * `.hero-grid` (headline/rider/CTAs, z-index:1) — nothing about that
- * content changes.
+ * Replaced EmeraldHorizonBackground with ThreeUI's PredictiveArcCanvas,
+ * "data-pixel" variant ("Data Pixel Arc" — an emerald pixel horizon with
+ * an organic breathing band), mounted with the exact configured usage:
+ * `variant="data-pixel" mode="dark" speed={1} hue={0} saturation={1}
+ * brightness={1}` — i.e. the component's own authored defaults, not a
+ * custom retune. It's Canvas 2D underneath (confirmed by reading
+ * node_modules/@designcodeio/threeui's actual renderer source — no
+ * WebGL/Three.js in this variant at all, unlike EmeraldHorizonBackground),
+ * so this is also lighter on the bundle than the previous effect.
  *
- * Gating (all per the brief):
+ * Sits at the same z-index:0 layer behind `.hero-grid` (headline/rider/
+ * CTAs, z-index:1) — nothing about that content changes.
+ *
+ * Gating (unchanged from the EmeraldHorizonBackground integration; these
+ * are integration-level decisions around the authored component, not a
+ * modification of it):
  * - `prefers-reduced-motion`: renders nothing at all (JS-level, backed by
- *   a `display:none` CSS fallback in globals.css for the render before
- *   this hook's first effect flush — see useReducedMotion's own comment).
- * - Coarse pointer / narrow viewport ("mobile GPUs"): renders a static
- *   CSS gradient instead of mounting a WebGL context at all — zero GPU
- *   cost, not just a "lighter" shader.
- * - Tab visibility + off-screen pausing: NOT handled here — the shader
- *   component itself already checks `document.hidden` inside its RAF loop
- *   and pauses via an internal IntersectionObserver when the hero scrolls
- *   out of view. Re-implementing that here would be a redundant one-off.
+ *   the existing `.hero-threeui{display:none!important}` CSS fallback).
+ * - Coarse pointer / narrow viewport: renders a static CSS gradient
+ *   instead of mounting a canvas at all.
+ * - Tab visibility + off-screen pausing: not reimplemented here — the
+ *   component already checks `document.hidden` inside its RAF loop, adds
+ *   its own `visibilitychange` listener as a second safety net, and pauses
+ *   via an internal IntersectionObserver when the hero scrolls out of
+ *   view (all confirmed by reading the actual shipped source).
+ *
+ * No custom CSS filter/recolor is layered on top this time (previously
+ * there was a `!important` hue-rotate/saturate/brightness override) —
+ * the exact configured props already control the canvas's own filter, and
+ * the brief for this pass is to use that configuration as authored rather
+ * than approximate/retune it.
  */
 export function HeroBackground() {
   const reduced = useReducedMotion();
@@ -47,14 +57,14 @@ export function HeroBackground() {
   return (
     <div className="hero-threeui" aria-hidden="true">
       {mode === "full" ? (
-        <EmeraldHorizonBackground
+        <PredictiveArcCanvas
           className="hero-threeui-canvas"
-          speed={0.55}
-          waveScale={0.8}
-          variation={0.6}
-          glow={0.5}
-          vignette={1.15}
+          variant="data-pixel"
+          mode="dark"
+          speed={1}
           hue={0}
+          saturation={1}
+          brightness={1}
         />
       ) : (
         <div className="hero-threeui-static" />
