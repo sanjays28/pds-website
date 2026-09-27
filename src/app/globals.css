@@ -597,6 +597,29 @@ button {
   color: var(--color-w70);
   margin-bottom: 26px;
 }
+/* Status/live indicator — ported from proven-coming-soon.html, which had
+   this and never made it into this build's own globals.css (a real gap:
+   every .pulse-dot usage since Prompt 2, including the hero chip, has
+   been rendering as an invisible 0x0 span). */
+.pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-green);
+  animation: pulse 1.8s infinite;
+  flex-shrink: 0;
+}
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 var(--color-green-glow);
+  }
+  70% {
+    box-shadow: 0 0 0 9px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
 .hero h1 {
   font-size: clamp(40px, 7.5vw, 96px);
   line-height: 0.98;
@@ -1258,31 +1281,64 @@ section.section {
   overflow: hidden;
 }
 .ops-status-bar {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 16px 24px;
+  padding: 16px 24px 16px 28px;
   border-bottom: 1px solid var(--color-line);
+  background: var(--color-green-dim);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.35em;
   text-transform: uppercase;
   color: var(--color-green);
 }
+/* Always-on (not hover-gated, unlike the rows) — this bar represents the
+   whole console's live status, not a selectable entry. */
+.ops-status-bar::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--color-green);
+  box-shadow: 0 0 10px var(--color-green-glow);
+}
 .ops-row {
+  position: relative;
   display: flex;
   align-items: flex-start;
   gap: 18px;
-  padding: 20px 24px;
+  padding: 20px 24px 20px 28px;
   border-bottom: 1px solid var(--color-line);
   transition: background-color 0.3s var(--ease-brake);
 }
 .ops-row:last-child {
   border-bottom: none;
 }
+/* Left channel-select bar — dim by default, brightens + glows on
+   hover/focus so each row reads as a selectable "channel," not just a
+   list item. */
+.ops-row::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--color-line-2);
+  transition: background-color 0.3s var(--ease-brake), box-shadow 0.3s var(--ease-brake);
+}
 .ops-row:hover,
 .ops-row:focus-within {
   background: var(--color-panel-2);
+}
+.ops-row:hover::before,
+.ops-row:focus-within::before {
+  background: var(--color-green);
+  box-shadow: 0 0 10px var(--color-green-glow);
 }
 .ops-row-dot {
   margin-top: 7px;
@@ -1290,20 +1346,25 @@ section.section {
 }
 .ops-code {
   flex-shrink: 0;
-  min-width: 76px;
-  padding-top: 1px;
+  min-width: 72px;
+  text-align: center;
+  padding: 4px 8px;
+  border: 1px solid var(--color-line-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-black);
   font-family: var(--font-body);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.05em;
   font-variant-numeric: tabular-nums;
   color: var(--color-green);
   opacity: 0.75;
-  transition: opacity 0.3s var(--ease-brake);
+  transition: opacity 0.3s var(--ease-brake), border-color 0.3s var(--ease-brake);
 }
 .ops-row:hover .ops-code,
 .ops-row:focus-within .ops-code {
   opacity: 1;
+  border-color: var(--color-green);
 }
 .ops-row-body {
   flex: 1;
@@ -1340,11 +1401,15 @@ section.section {
 @media (max-width: 560px) {
   .ops-row {
     gap: 12px;
-    padding: 18px 16px;
+    padding: 18px 16px 18px 20px;
+  }
+  .ops-status-bar {
+    padding: 14px 16px 14px 20px;
   }
   .ops-code {
-    min-width: 62px;
-    font-size: 11px;
+    min-width: 56px;
+    font-size: 10px;
+    padding: 3px 6px;
   }
 }
 
