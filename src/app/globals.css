@@ -1242,10 +1242,110 @@ section.section {
   border-color: var(--color-green);
   color: var(--color-white);
 }
-.services-tags {
-  margin-top: 36px;
-  padding-top: 28px;
-  border-top: 1px solid var(--color-line);
+
+/* ============================================================
+   OpsManifest — "Services" as a dispatch console, not a card grid.
+   See src/components/OpsManifest.tsx for the reasoning. `.ops-rows` is
+   Section's stagger wrapper (contentClassName) — it's the panel chrome;
+   OpsStatusBar and each OpsRow are its direct (staggered) children.
+   ============================================================ */
+.ops-rows {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: var(--color-panel);
+  overflow: hidden;
+}
+.ops-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--color-line);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--color-green);
+}
+.ops-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--color-line);
+  transition: background-color 0.3s var(--ease-brake);
+}
+.ops-row:last-child {
+  border-bottom: none;
+}
+.ops-row:hover,
+.ops-row:focus-within {
+  background: var(--color-panel-2);
+}
+.ops-row-dot {
+  margin-top: 7px;
+  flex-shrink: 0;
+}
+.ops-code {
+  flex-shrink: 0;
+  min-width: 76px;
+  padding-top: 1px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-green);
+  opacity: 0.75;
+  transition: opacity 0.3s var(--ease-brake);
+}
+.ops-row:hover .ops-code,
+.ops-row:focus-within .ops-code {
+  opacity: 1;
+}
+.ops-row-body {
+  flex: 1;
+  min-width: 0;
+}
+.ops-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: italic;
+  font-variation-settings: "wdth" 125;
+  text-transform: uppercase;
+  font-size: 17px;
+  letter-spacing: 0.02em;
+  margin-bottom: 6px;
+}
+.ops-desc {
+  font-size: 14px;
+  color: var(--color-w70);
+  line-height: 1.65;
+  max-width: 62ch;
+}
+.ops-coverage {
+  margin-top: 32px;
+}
+.ops-coverage-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--color-w40);
+  margin-bottom: 4px;
+}
+@media (max-width: 560px) {
+  .ops-row {
+    gap: 12px;
+    padding: 18px 16px;
+  }
+  .ops-code {
+    min-width: 62px;
+    font-size: 11px;
+  }
 }
 
 /* ============================================================

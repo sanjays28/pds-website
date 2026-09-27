@@ -1,8 +1,8 @@
 import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/Hero";
 import { Section } from "@/components/Section";
-import { Card } from "@/components/Card";
 import { TagList } from "@/components/TagList";
+import { OpsStatusBar, OpsRow, OpsCoverage } from "@/components/OpsManifest";
 import { RouteTimeline } from "@/components/RouteTimeline";
 import { Accordion } from "@/components/Accordion";
 import { ContactForm } from "@/components/ContactForm";
@@ -80,40 +80,52 @@ const NAV_LINKS = [
 
 const PRIMARY_TAGLINE = "Proven Reliability. Delivered.";
 
+// "code" is a stylistic callsign abbreviation of the service's own real
+// title (for the Live Ops Manifest treatment — see OpsManifest.tsx) — not
+// a fabricated stat or claim, purely a label.
 const SERVICES = [
   {
+    code: "B2B–01",
     title: "B2B Delivery",
     body: "Business-to-business movement of documents, products, supplies, and commercial shipments between offices, stores, warehouses, and branches.",
   },
   {
+    code: "ECOM–02",
     title: "E-Commerce Delivery",
     body: "Scalable last-mile support for online stores and marketplaces managing growing order volumes.",
   },
   {
+    code: "FOOD–03",
     title: "Food & Restaurant Delivery",
     body: "Dependable rider support for restaurants, cafes, and cloud kitchens, with disciplined delivery procedures.",
   },
   {
+    code: "QCOM–04",
     title: "Q-Commerce Delivery",
     body: "Responsive support for dark stores and quick-commerce, where speed and accuracy are essential.",
   },
   {
+    code: "PHRM–05",
     title: "Pharmacy Delivery",
     body: "Responsible handling, customer care, and dependable service for pharmacies and healthcare retailers.",
   },
   {
+    code: "RTL–06",
     title: "Retail Delivery",
     body: "Flexible support for retail stores and brands, direct-to-customer or inter-branch.",
   },
   {
+    code: "CORP–07",
     title: "Corporate Delivery",
     body: "Secure, dependable movement of documents and packages for offices.",
   },
   {
+    code: "RIDR–08",
     title: "Professional Rider Solutions",
     body: "Trained, disciplined, customer-focused riders — without the complexity of independently recruiting a delivery workforce, adaptable to volume.",
   },
   {
+    code: "FLT–09",
     title: "Fleet Management",
     body: "Structured fleet support: motorcycle readiness, rider coordination, and operational continuity.",
   },
@@ -264,9 +276,16 @@ export default function Home() {
 
         <ScrollStory id="our-story" label="Our Story" beats={STORY_BEATS} />
 
-        <Section id="services" eyebrow="What We Do" title="Services" contentClassName="card-grid" extra={<TagList items={INDUSTRIES} className="services-tags" />}>
+        <Section
+          id="services"
+          eyebrow="What We Do"
+          title="Services"
+          contentClassName="ops-rows"
+          extra={<OpsCoverage items={INDUSTRIES} />}
+        >
+          <OpsStatusBar />
           {SERVICES.map((service) => (
-            <Card key={service.title} title={service.title} body={service.body} />
+            <OpsRow key={service.code} {...service} />
           ))}
         </Section>
 
