@@ -1,0 +1,746 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Design tokens — mirrors src/lib/tokens.ts (WMS §12.1).
+   Tailwind's theme extends from these CSS custom properties so
+   `bg-panel`, `text-w70`, `rounded-md`, etc. all resolve to the
+   one source of truth. Never hand-write a hex/space value in a
+   component — add a token here (and in tokens.ts) instead.
+   ============================================================ */
+:root {
+  color-scheme: dark; /* WMS §12.5 — dark only, always, even in OS light mode */
+
+  --color-black: #0d0d0d;
+  --color-panel: #141414;
+  --color-panel-2: #181818;
+  --color-line: #1f1f1f;
+  --color-line-2: #2a2a2a;
+  --color-green: #6cc04a;
+  --color-green-120: #7dd65b;
+  --color-green-80: #57a03c;
+  --color-green-dim: rgba(108, 192, 74, 0.14);
+  --color-green-glow: rgba(108, 192, 74, 0.35);
+  --color-white: #ffffff;
+  --color-w70: rgba(255, 255, 255, 0.7);
+  --color-w40: rgba(255, 255, 255, 0.4);
+  --color-w20: rgba(255, 255, 255, 0.18);
+  --color-danger: #e8ede6;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  /* Motion grammar (WMS §9.1) */
+  --ease-brake: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-exit: cubic-bezier(0.7, 0, 0.84, 0);
+
+  /* z-index scale (WMS §12.1) */
+  --z-bg: 0;
+  --z-skyline: 1;
+  --z-vignette: 2;
+  --z-grain: 3;
+  --z-content: 5;
+  --z-rail: 90;
+  --z-cta: 140;
+  --z-nav: 150;
+  --z-overlay: 200;
+}
+
+@theme inline {
+  --color-black: var(--color-black);
+  --color-panel: var(--color-panel);
+  --color-panel-2: var(--color-panel-2);
+  --color-line: var(--color-line);
+  --color-line-2: var(--color-line-2);
+  --color-green: var(--color-green);
+  --color-green-120: var(--color-green-120);
+  --color-green-80: var(--color-green-80);
+  --color-green-dim: var(--color-green-dim);
+  --color-green-glow: var(--color-green-glow);
+  --color-white: var(--color-white);
+  --color-w70: var(--color-w70);
+  --color-w40: var(--color-w40);
+  --color-w20: var(--color-w20);
+  --color-danger: var(--color-danger);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-pill: var(--radius-pill);
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-black);
+  color: var(--color-white);
+  font-family: var(--font-body), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-green);
+  color: var(--color-black);
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-white);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Display face — Archivo (variable), italic, expanded width + black weight.
+   See src/lib/fonts.ts for the license note on why this is the closest
+   available stand-in for "Archivo Expanded Black Italic". Apply this class
+   to every H1–H3 per WMS §12.3; never mix Montserrat into that role. */
+.font-display {
+  font-family: var(--font-display), "Arial Narrow", sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  font-variation-settings: "wdth" 125;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+/* Glass treatment — WMS §12.4: "navbar only, single sanctioned use".
+   Do not reuse this utility on cards/modals/sections. */
+.glass-nav {
+  background: rgba(13, 13, 13, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* ============================================================
+   Skip link
+   ============================================================ */
+.skip-link {
+  position: fixed;
+  top: -60px;
+  left: 16px;
+  z-index: var(--z-overlay);
+  background: var(--color-green);
+  color: var(--color-black);
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  font-weight: 800;
+  text-decoration: none;
+  transition: top 0.2s var(--ease-brake);
+}
+.skip-link:focus {
+  top: 16px;
+}
+
+/* ============================================================
+   Nav — fixed, glass-on-scroll (WMS §12.4 sole sanctioned glass use;
+   §11.3 "Nav appear"; underline sweep is M16)
+   ============================================================ */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-nav);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 28px;
+  transform: translateY(-100%);
+  transition: transform 0.45s var(--ease-brake);
+  border-bottom: 1px solid var(--color-line);
+}
+.topbar-show {
+  transform: translateY(0);
+}
+/* Glass applies whenever the bar is shown — the WMS's single sanctioned use. */
+.topbar-show {
+  background: rgba(13, 13, 13, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.topbar-mark img {
+  height: 40px;
+  width: auto;
+}
+.topbar-links {
+  display: none;
+  align-items: center;
+  gap: 28px;
+}
+@media (min-width: 900px) {
+  .topbar-links {
+    display: flex;
+  }
+}
+.nav-link {
+  position: relative;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-w70);
+  padding-bottom: 4px;
+  transition: color 0.25s var(--ease-brake);
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  width: 0%;
+  background: var(--color-green);
+  transition: width 0.25s var(--ease-brake);
+}
+.nav-link:hover,
+.nav-link:focus-visible {
+  color: var(--color-white);
+}
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  width: 100%;
+}
+.topbar-cta {
+  display: none;
+}
+@media (min-width: 900px) {
+  .topbar-cta {
+    display: block;
+  }
+}
+.topbar-burger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  background: none;
+  border: none;
+}
+@media (min-width: 900px) {
+  .topbar-burger {
+    display: none;
+  }
+}
+.topbar-burger span {
+  display: block;
+  height: 2px;
+  width: 22px;
+  margin: 0 auto;
+  background: var(--color-white);
+  transition: transform 0.25s var(--ease-brake), opacity 0.25s;
+}
+
+.mobile-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  background: var(--color-black);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  transform: translateY(-8px);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-brake), transform 0.3s var(--ease-brake);
+}
+.mobile-sheet[hidden] {
+  display: none;
+}
+.mobile-sheet-open {
+  opacity: 1;
+  transform: none;
+}
+.mobile-nav-link {
+  display: block;
+  text-align: center;
+  padding: 12px 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-style: italic;
+  font-variation-settings: "wdth" 125;
+  text-transform: uppercase;
+  font-size: 28px;
+  text-decoration: none;
+  color: var(--color-white);
+}
+
+/* ============================================================
+   Button (WMS §8: primary/ghost/compact/text) — motion M17 press/glow
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px; /* §8 a11y: min 44px hit target */
+  border-radius: var(--radius-pill);
+  padding: 16px 30px;
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-style: italic;
+  font-size: 15px;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  transition:
+    transform 0.15s var(--ease-brake),
+    box-shadow 0.35s,
+    background 0.3s,
+    color 0.3s;
+}
+.btn:active {
+  transform: scale(0.96);
+}
+.btn-primary {
+  background: var(--color-green);
+  color: var(--color-black);
+  border-color: var(--color-green);
+}
+.btn-primary:hover {
+  background: var(--color-green-120);
+  box-shadow: 0 0 34px var(--color-green-glow);
+}
+.btn-primary:active {
+  background: var(--color-green-80);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--color-green);
+  border-color: var(--color-green);
+}
+.btn-ghost:hover {
+  background: var(--color-green-dim);
+}
+.btn-compact {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  background: var(--color-green);
+  color: var(--color-black);
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 10px 20px;
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: transform 0.15s var(--ease-brake), box-shadow 0.3s;
+}
+.btn-compact:hover {
+  box-shadow: 0 0 22px var(--color-green-glow);
+}
+.btn-compact:active {
+  transform: scale(0.96);
+}
+.btn-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  background: none;
+  border: none;
+  color: var(--color-white);
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.btn .arrow,
+.btn-compact .arrow {
+  display: inline-block;
+  transition: transform 0.25s var(--ease-brake);
+}
+.btn:hover .arrow {
+  transform: translateX(6px);
+}
+.btn[aria-busy="true"],
+.btn-compact[aria-busy="true"] {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* ============================================================
+   Section wrapper (WMS §11.2 "Standard Section Timeline" contract)
+   ============================================================ */
+section.section {
+  position: relative;
+  padding: clamp(96px, 14vh, 220px) clamp(20px, 6vw, 96px);
+}
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: var(--color-green);
+  margin-bottom: 22px;
+}
+/* Word-split wrapper clips the per-word slide-up so it reads as a mask
+   reveal rather than text jumping in from below the fold. */
+.split-word-wrap {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+.split-word {
+  display: inline-block;
+  will-change: transform, opacity, filter;
+}
+/* Streak wipe (M13) — a thin bar that sweeps once as the section crosses
+   50% viewport. Purely decorative chapter marker; never blocks content. */
+.streak-wipe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, var(--color-green), transparent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+/* ============================================================
+   Card — WMS §8 PillarCard/ServiceCard — hover motion is M08
+   (entrance stagger is the parent Section's M07, not owned here)
+   ============================================================ */
+.card {
+  position: relative;
+  display: block;
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  padding: 34px 26px 30px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.3s, transform 0.25s var(--ease-brake);
+}
+.card-linked:focus-visible {
+  outline: 2px solid var(--color-white);
+  outline-offset: -2px;
+}
+.card-tape {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 0;
+  background: var(--color-green);
+  transition: width 0.5s var(--ease-brake);
+}
+.card:hover .card-tape,
+.card:focus-visible .card-tape {
+  width: 100%;
+}
+.card::after {
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: -30px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--color-green);
+  filter: blur(34px);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+.card:hover::after,
+.card:focus-visible::after {
+  opacity: 0.22;
+}
+.card:hover,
+.card:focus-visible {
+  border-color: var(--color-line-2);
+}
+.card-icon {
+  display: block;
+  width: 46px;
+  height: 46px;
+  color: var(--color-green);
+  margin-bottom: 22px;
+}
+.card-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: italic;
+  font-variation-settings: "wdth" 125;
+  text-transform: uppercase;
+  font-size: 17px;
+  letter-spacing: 0.03em;
+  margin-bottom: 10px;
+}
+.card-body {
+  font-size: 14px;
+  color: var(--color-w70);
+  line-height: 1.65;
+}
+.card-num {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: var(--color-w20);
+}
+
+/* ============================================================
+   Accordion — WMS §8 FAQAccordion, one open at a time
+   ============================================================ */
+.accordion {
+  max-width: 760px;
+}
+.accordion-item {
+  border-bottom: 1px solid var(--color-line);
+}
+.accordion-heading {
+  font-size: inherit;
+  font-weight: inherit;
+}
+.accordion-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 22px 4px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--color-white);
+}
+.accordion-chevron {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid var(--color-green);
+  border-bottom: 2px solid var(--color-green);
+  transform: rotate(45deg);
+  transition: transform 0.3s var(--ease-brake);
+}
+.accordion-trigger[aria-expanded="true"] .accordion-chevron {
+  transform: rotate(-135deg);
+}
+.accordion-panel {
+  overflow: hidden;
+  padding: 0 4px 22px;
+}
+.accordion-panel p {
+  color: var(--color-w70);
+  font-size: 15px;
+  line-height: 1.7;
+  max-width: 60ch;
+}
+
+/* ============================================================
+   RouteTimeline — WMS §8, scrub fill is M09
+   ============================================================ */
+.route-wrap {
+  position: relative;
+  max-width: 840px;
+  margin: 64px auto 0;
+  list-style: none;
+}
+.route-line {
+  position: absolute;
+  left: 24px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: repeating-linear-gradient(var(--color-line-2) 0 14px, transparent 14px 26px);
+}
+@media (min-width: 768px) {
+  .route-line {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+.route-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  background: var(--color-green);
+  box-shadow: 0 0 10px var(--color-green-glow);
+}
+.stop {
+  position: relative;
+  display: flex;
+  gap: 26px;
+  padding: 34px 0 34px 64px;
+}
+@media (min-width: 768px) {
+  .stop {
+    width: 50%;
+    padding: 38px 56px 38px 0;
+    flex-direction: row-reverse;
+    text-align: right;
+  }
+  .stop:nth-child(even) {
+    margin-left: 50%;
+    padding: 38px 0 38px 56px;
+    flex-direction: row;
+    text-align: left;
+  }
+}
+.pin {
+  position: absolute;
+  left: 24px;
+  top: 44px;
+  transform: translate(-50%, 0);
+  width: 22px;
+  height: 22px;
+  border-radius: 50% 50% 50% 0;
+  border: 2px solid var(--color-w40);
+  background: var(--color-black);
+  rotate: -45deg;
+  transition: all 0.4s var(--ease-brake);
+  z-index: 1;
+}
+@media (min-width: 768px) {
+  .stop .pin {
+    left: calc(100% - 0.4%);
+    transform: translate(-50%, 0);
+  }
+  .stop:nth-child(even) .pin {
+    left: calc(0% - 0.5%);
+    transform: translate(-50%, 0);
+  }
+}
+.stop-done .pin {
+  background: var(--color-green);
+  border-color: var(--color-green);
+  box-shadow: 0 0 14px var(--color-green-glow);
+}
+.stop-now .pin {
+  border-color: var(--color-green);
+}
+.stop h5 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: italic;
+  font-variation-settings: "wdth" 125;
+  text-transform: uppercase;
+  font-size: 19px;
+  letter-spacing: 0.02em;
+}
+.stop p {
+  font-size: 14px;
+  color: var(--color-w70);
+  margin-top: 6px;
+  max-width: 34ch;
+}
+.stop .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 12px;
+  border: 1px solid var(--color-line-2);
+  border-radius: var(--radius-pill);
+  padding: 5px 13px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-w40);
+}
+.stop-done .chip,
+.stop-now .chip {
+  color: var(--color-green);
+  border-color: rgba(108, 192, 74, 0.4);
+}
+.stop-body {
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 768px) {
+  .stop-body {
+    align-items: flex-end;
+  }
+  .stop:nth-child(even) .stop-body {
+    align-items: flex-start;
+  }
+}
+
+/* ============================================================
+   Reduced motion — global fallback (WMS §9.3), loaded from day one.
+   Any component-level [data-reveal] / [data-motion] element must have
+   a static, fully-visible end state; this is the safety net that
+   guarantees it even if a component forgets to check the media query
+   itself. See src/motion/registry.ts for the JS-side mirror of this.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  .split-word {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  .streak-wipe {
+    display: none !important;
+  }
+}
