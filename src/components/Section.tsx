@@ -17,9 +17,17 @@ export interface SectionProps {
   /** Direct children of this wrapper get the M07 stagger. Set false for
    * sections that manage their own internal reveal (e.g. RouteTimeline). */
   staggerChildren?: boolean;
+  /** Class on the stagger wrapper itself — e.g. "card-grid" so a row of
+   * <Card> passed as `children` staggers per-card (true M07) instead of
+   * as one fading blob. Layout, not motion, so it's a separate prop. */
+  contentClassName?: string;
   /** M13 streak wipe on 50% cross. Off for sections that already have a
    * dominant motion of their own (e.g. a pinned story). */
   wipe?: boolean;
+  /** Static content rendered after the staggered block — e.g. a TagList
+   * that's secondary to the section's main content and doesn't need its
+   * own scroll-triggered entrance. */
+  extra?: ReactNode;
 }
 
 /**
@@ -44,7 +52,9 @@ export function Section({
   children,
   className,
   staggerChildren = true,
+  contentClassName,
   wipe = true,
+  extra,
 }: SectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const eyebrowRef = useRef<HTMLParagraphElement>(null);
@@ -167,9 +177,10 @@ export function Section({
             {subtitle}
           </p>
         )}
-        <div ref={staggerRef} data-reveal={reduced || undefined}>
+        <div ref={staggerRef} className={contentClassName} data-reveal={reduced || undefined}>
           {children}
         </div>
+        {extra}
       </div>
       {wipe && <span ref={wipeRef} className="streak-wipe" aria-hidden="true" />}
     </section>
