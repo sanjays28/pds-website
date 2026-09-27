@@ -11,7 +11,6 @@ import { Button } from "@/components/Button";
 import { ScrollStory, type StoryBeat } from "@/components/ScrollStory";
 import { CursorTrail } from "@/components/CursorTrail";
 import { ScrollRail } from "@/components/ScrollRail";
-import { LaserRail } from "@/components/LaserRail";
 
 /**
  * The full single-page build (Prompt 2) — content sourced verbatim from
@@ -299,36 +298,29 @@ export default function Home() {
           </div>
         </Section>
 
-        {/* LaserRail spans both sections, full height, in the empty right
-            gutter neither the accordion nor the contact form reaches at
-            wide viewports — see globals.css's .laser-rail-wrap. */}
-        <div className="laser-rail-wrap">
-          <LaserRail />
+        <Section id="faq" eyebrow="Questions" title="FAQ">
+          <Accordion items={FAQS} />
+        </Section>
 
-          <Section id="faq" eyebrow="Questions" title="FAQ">
-            <Accordion items={FAQS} />
-          </Section>
-
-          <Section id="contact" eyebrow="Get Started" title="Let's Move Your Business Forward" wipe={false}>
-            <p className="text-w70" style={{ maxWidth: "62ch" }}>
-              Looking for a reliable delivery partner in the UAE? Whether you
-              need trained delivery riders, dependable last-mile delivery
-              support, or professionally managed fleet operations, Proven
-              Delivery Services is ready to support your business.
-            </p>
-            <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 28 }}>
-              <Button href="#contact-form" variant="primary">
-                Contact PDS Today
-              </Button>
-              <Button href="#contact-form" variant="ghost">
-                Request a Business Proposal
-              </Button>
-            </div>
-            <div id="contact-form" style={{ scrollMarginTop: 120 }}>
-              <ContactForm />
-            </div>
-          </Section>
-        </div>
+        <Section id="contact" eyebrow="Get Started" title="Let's Move Your Business Forward" wipe={false}>
+          <p className="text-w70" style={{ maxWidth: "62ch" }}>
+            Looking for a reliable delivery partner in the UAE? Whether you
+            need trained delivery riders, dependable last-mile delivery
+            support, or professionally managed fleet operations, Proven
+            Delivery Services is ready to support your business.
+          </p>
+          <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 28 }}>
+            <Button href="#contact-form" variant="primary">
+              Contact PDS Today
+            </Button>
+            <Button href="#contact-form" variant="ghost">
+              Request a Business Proposal
+            </Button>
+          </div>
+          <div id="contact-form" style={{ scrollMarginTop: 120 }}>
+            <ContactForm />
+          </div>
+        </Section>
       </main>
 
       <Footer
