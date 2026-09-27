@@ -171,9 +171,9 @@ export default function Home() {
 
       <main id="main">
         <Hero
-          chip={PRIMARY_TAGLINE}
-          title="Reliable Last-Mile Delivery Solutions Across the UAE"
-          accentWord="UAE"
+          chip="Delivering Trust at Every Mile"
+          title="Safe. Reliable. Proven."
+          accentWord="Proven."
           subtitle="Safe, efficient, and professional B2B delivery services designed to keep your business moving."
           primaryCta={{ label: "Request a Delivery Solution", href: "#contact" }}
           secondaryCta={{ label: "Contact Our Team", href: "#contact" }}
