@@ -9,6 +9,8 @@ import { ContactForm } from "@/components/ContactForm";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/Button";
 import { ScrollStory, type StoryBeat } from "@/components/ScrollStory";
+import { CursorTrail } from "@/components/CursorTrail";
+import { ScrollRail } from "@/components/ScrollRail";
 
 /**
  * The full single-page build (Prompt 2) — content sourced verbatim from
@@ -198,6 +200,9 @@ const FAQS = [
 export default function Home() {
   return (
     <>
+      <CursorTrail />
+      <ScrollRail />
+
       <Nav
         logoSrc="/pds-logo-white.png"
         logoAlt="Proven Delivery Services"

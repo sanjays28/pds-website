@@ -15,11 +15,14 @@
  *   - RouteTimeline→ M09 (scrub fill)
  *   - Accordion    → M16-style underline/chevron only (micro, not separately registered)
  *   - ScrollStory  → M06 (pinned horizontal story, scroll = riding)
+ *   - ScrollRail   → M03 (route rail + rider marker, page-wide scroll progress)
+ *   - CursorTrail  → M14 (cursor comet, desktop fine-pointer only)
  *
- * IDs not yet implemented (M01, M03–M05, M10–M12, M14–M15, M18–M20) belong to
- * sections/components not built in this foundation pass (hero loader, gauge,
- * forms, page transitions, stats). They're listed here so the next build
- * phase wires them to this same registry instead of one-offs.
+ * IDs not yet implemented (M01, M04–M05, M10–M12, M15, M18–M20) belong to
+ * sections/components not built in this pass (hero loader, gauge, forms,
+ * page transitions, stats, idle-rider ambient loop). They're listed here
+ * so the next build phase wires them to this same registry instead of
+ * one-offs.
  */
 
 export type MotionId =

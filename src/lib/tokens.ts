@@ -42,6 +42,7 @@ export const tokens = {
     grain: 3,
     content: 5,
     rail: 90,
+    cursor: 120, // M14 cursor comet trail — above content/rail, below the persistent CTA
     cta: 140,
     nav: 150,
     overlay: 200,

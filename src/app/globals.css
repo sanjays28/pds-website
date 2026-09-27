@@ -42,6 +42,7 @@
   --z-grain: 3;
   --z-content: 5;
   --z-rail: 90;
+  --z-cursor: 120;
   --z-cta: 140;
   --z-nav: 150;
   --z-overlay: 200;
@@ -158,6 +159,65 @@ button {
 }
 .skip-link:focus {
   top: 16px;
+}
+
+/* ============================================================
+   CursorTrail — WMS motion M14, "cursor comet"
+   ============================================================ */
+.cursor-trail {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-cursor);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ============================================================
+   ScrollRail — WMS motion M03, "route rail + rider marker"
+   ============================================================ */
+.rail {
+  position: fixed;
+  left: 26px;
+  top: 0;
+  bottom: 0;
+  z-index: var(--z-rail);
+  width: 2px;
+  display: none;
+  pointer-events: none;
+}
+@media (min-width: 1024px) {
+  .rail {
+    display: block;
+  }
+}
+.rail::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-line);
+}
+.rail-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  background: var(--color-green);
+  box-shadow: 0 0 8px var(--color-green-glow);
+}
+.rail-rider {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -50%);
+  width: 34px;
+}
+.rail-rider img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 6px var(--color-green-glow));
 }
 
 /* ============================================================
