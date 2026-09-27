@@ -8,6 +8,7 @@ import { Accordion } from "@/components/Accordion";
 import { ContactForm } from "@/components/ContactForm";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/Button";
+import { ScrollStory, type StoryBeat } from "@/components/ScrollStory";
 
 /**
  * The full single-page build (Prompt 2) — content sourced verbatim from
@@ -15,11 +16,13 @@ import { Button } from "@/components/Button";
  * uses the shared Section wrapper (§11.2 timeline) or RouteTimeline/
  * Accordion from Prompt 1; nothing here hand-rolls its own motion.
  *
- * FLAG (scope, not a gap): content.md's About block also includes "Our
- * Story" and "Core Values" — the build guide's Page Structure table scopes
- * the About section to "Who We Are + Mission + Vision" only, so those two
- * are left unused here rather than bolted on unasked. Say if they should
- * get a slot.
+ * FLAG (scope): content.md's About block also includes "Core Values" —
+ * the build guide's Page Structure table scopes the About section to
+ * "Who We Are + Mission + Vision" only, so Core Values stays unused here.
+ * "Our Story" (previously also unused for the same reason) now drives the
+ * #our-story ScrollStory section below, split into 3 short beats — its
+ * own closing sentence ("professionalism, accountability, and care")
+ * conveniently already reads as a 3-word closing beat verbatim.
  *
  * FLAG (merge): the guide allows merging the "Proof strip" (4 of 8 Why-
  * Choose-PDS points) into the full "Why Choose PDS" section "if that reads
@@ -28,6 +31,40 @@ import { Button } from "@/components/Button";
  * with all 8, positioned where the full version sits in the nav order,
  * rather than showing the same eight labels twice.
  */
+
+/** Minimal stroke icons, matching proven-coming-soon.html's story-icon style. */
+function PackageIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden="true">
+      <path d="M21 8l-9-5-9 5v8l9 5 9-5z" />
+      <path d="M3 8l9 5 9-5M12 13v9" />
+    </svg>
+  );
+}
+function ShieldCheckIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden="true">
+      <path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z" />
+      <path d="M8.5 12l2.5 2.5 4.5-5" />
+    </svg>
+  );
+}
+function HeartIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden="true">
+      <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z" />
+    </svg>
+  );
+}
+
+// content.md's "About — Our Story" paragraph, split into 3 beats for the
+// #our-story ScrollStory (WMS motion M06). Beat 3 is that paragraph's own
+// closing sentence, verbatim.
+const STORY_BEATS: StoryBeat[] = [
+  { icon: <PackageIcon />, text: "A delivery is more than a package." },
+  { icon: <ShieldCheckIcon />, text: "It's a promise,", accent: "delivered." },
+  { icon: <HeartIcon />, text: "Professionalism. Accountability.", accent: "Care." },
+];
 
 const NAV_LINKS = [
   { label: "Home", href: "#home" },
@@ -218,6 +255,8 @@ export default function Home() {
             </div>
           </div>
         </Section>
+
+        <ScrollStory id="our-story" label="Our Story" beats={STORY_BEATS} />
 
         <Section id="services" eyebrow="What We Do" title="Services" contentClassName="card-grid" extra={<TagList items={INDUSTRIES} className="services-tags" />}>
           {SERVICES.map((service) => (

@@ -14,11 +14,12 @@
  *   - Card         → M08 (hover tilt/tape/glow) — stagger-in handled by parent Section (M07)
  *   - RouteTimeline→ M09 (scrub fill)
  *   - Accordion    → M16-style underline/chevron only (micro, not separately registered)
+ *   - ScrollStory  → M06 (pinned horizontal story, scroll = riding)
  *
- * IDs not yet implemented (M01, M03–M06, M10–M12, M14–M15, M18–M20) belong to
+ * IDs not yet implemented (M01, M03–M05, M10–M12, M14–M15, M18–M20) belong to
  * sections/components not built in this foundation pass (hero loader, gauge,
- * pinned story, forms, page transitions, stats). They're listed here so the
- * next build phase wires them to this same registry instead of one-offs.
+ * forms, page transitions, stats). They're listed here so the next build
+ * phase wires them to this same registry instead of one-offs.
  */
 
 export type MotionId =
