@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proven Delivery Service — Coming Soon</title>
+<meta name="description" content="Fast. Reliable. Proven. Proven Delivery Service by ServHub supplies trained riders to businesses that deliver. Launching soon — partner with us or become a rider.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   VELOCITY ZERO — Proven Delivery Service
+   World: Deep Black #0D0D0D · Voice: White · Energy: #6CC04A
+   ============================================================ */
+:root{
+  --black:#0D0D0D;
+  --panel:#141414;
+  --panel-2:#181818;
+  --line:#1F1F1F;
+  --line-2:#2A2A2A;
+  --green:#6CC04A;
+  --green-dim:rgba(108,192,74,.14);
+  --green-glow:rgba(108,192,74,.35);
+  --white:#FFFFFF;
+  --w70:rgba(255,255,255,.7);
+  --w40:rgba(255,255,255,.4);
+  --w20:rgba(255,255,255,.18);
+  --font:'Montserrat',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --ease-brake:cubic-bezier(.16,1,.3,1);
+  --radius:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+html:focus-within{scroll-behavior:smooth}
+html{scrollbar-width:none;-ms-overflow-style:none}
+html::-webkit-scrollbar{display:none;width:0;height:0}
+body{
+  background:var(--black);
+  color:var(--white);
+  font-family:var(--font);
+  font-size:16px;
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  scrollbar-width:none;-ms-overflow-style:none}
+body::-webkit-scrollbar{display:none;width:0;height:0}
+@media (hover:hover) and (pointer:fine){
+  body.has-cursor,body.has-cursor *{cursor:none!important}
+}
+::selection{background:var(--green);color:var(--black)}
+img,svg{display:block}
+a{color:inherit}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--white);outline-offset:3px;border-radius:4px}
+
+/* ---------- Skip link ---------- */
+.skip-link{position:fixed;top:-60px;left:16px;z-index:200;background:var(--green);color:var(--black);
+  padding:10px 18px;border-radius:999px;font-weight:800;text-decoration:none;transition:top .2s var(--ease-brake)}
+.skip-link:focus{top:16px}
+
+/* ---------- Grain + vignette ---------- */
+.grain{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E")}
+.vignette{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:1;
+  background:radial-gradient(ellipse 120% 90% at 50% 40%,transparent 55%,rgba(0,0,0,.5) 100%)}
+
+/* ---------- Background canvases ---------- */
+#beams{position:fixed;inset:0;z-index:0;width:100%;height:100%}
+#trail{position:fixed;inset:0;z-index:120;width:100%;height:100%;pointer-events:none;display:none}
+@media (hover:hover) and (pointer:fine){ #trail{display:block} }
+.skyline{position:fixed;left:0;right:0;bottom:0;z-index:1;pointer-events:none;opacity:.5}
+.skyline svg{width:100%;height:22vh}
+
+/* ---------- Loader ---------- */
+#loader{position:fixed;inset:0;z-index:1000;background:var(--black);display:flex;
+  align-items:center;justify-content:center;transition:opacity .5s ease,visibility .5s}
+#loader.done{opacity:0;visibility:hidden}
+.load-streak{position:absolute;height:2px;width:26vw;border-radius:2px;left:-30vw;
+  background:linear-gradient(90deg,transparent,var(--green));filter:drop-shadow(0 0 6px var(--green-glow))}
+.ls1{top:38%}.ls2{top:50%;background:linear-gradient(90deg,transparent,#fff)}.ls3{top:62%}
+.loader-logo{opacity:0;text-align:center}
+.loader-word{font-size:clamp(44px,9vw,96px);font-weight:900;font-style:italic;letter-spacing:-.02em;line-height:1;display:flex;justify-content:center}
+.loader-word .lt{display:inline-block;opacity:0;transform:translateX(-60px);filter:blur(8px)}
+.loader-word .lo{color:var(--white);position:relative}
+.loader-tag{margin-top:14px;font-size:12px;font-weight:600;letter-spacing:.5em;color:var(--green);opacity:0}
+.loader-skip{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+  background:none;border:none;color:var(--w40);font-size:11px;letter-spacing:.3em;text-transform:uppercase}
+.loader-skip:hover{color:var(--w70)}
+
+/* ---------- Top bar ---------- */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:150;display:flex;align-items:center;justify-content:space-between;
+  padding:10px 28px;transform:translateY(-100%);transition:transform .45s var(--ease-brake);
+  background:rgba(13,13,13,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line)}
+.topbar.show{transform:translateY(0)}
+.topbar .mark{display:flex;align-items:center;gap:10px}
+.topbar .mark img{height:72px;width:auto;opacity:.72;filter:grayscale(.35) brightness(.92);
+  transition:opacity .4s var(--ease-brake),filter .4s var(--ease-brake)}
+.topbar .mark:hover img,.topbar.scrolled .mark img{opacity:1;filter:none}
+.btn-compact{background:var(--green);color:var(--black);border:none;border-radius:999px;
+  padding:10px 20px;font-weight:800;font-style:italic;font-size:13px;letter-spacing:.04em;text-decoration:none;
+  transition:transform .15s var(--ease-brake),box-shadow .3s}
+.btn-compact:hover{box-shadow:0 0 22px var(--green-glow)}
+.btn-compact:active{transform:scale(.96)}
+
+/* ---------- Scroll route rail ---------- */
+.rail{position:fixed;left:26px;top:0;bottom:0;z-index:90;width:2px;display:none}
+@media(min-width:1024px){.rail{display:block}}
+.rail::before{content:'';position:absolute;inset:0;background:var(--line)}
+.rail-fill{position:absolute;top:0;left:0;width:100%;height:0%;background:var(--green);box-shadow:0 0 8px var(--green-glow)}
+.rail-rider{position:absolute;left:50%;top:0;transform:translate(-50%,-50%);width:34px;height:auto;
+  filter:drop-shadow(0 0 6px var(--green-glow))}
+
+/* ---------- Generic section ---------- */
+main{position:relative;z-index:5}
+section{position:relative;padding:clamp(96px,14vh,220px) clamp(20px,6vw,96px)}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.45em;text-transform:uppercase;color:var(--green);margin-bottom:22px}
+.wrap{max-width:1200px;margin:0 auto;width:100%}
+.reveal{opacity:0;transform:translateY(42px)}
+.reveal.in{opacity:1;transform:none;transition:opacity .7s var(--ease-brake),transform .7s var(--ease-brake)}
+
+/* ---------- HERO ---------- */
+.hero{min-height:100svh;display:flex;align-items:center;padding-top:120px;position:relative;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:center;max-width:1280px;margin:0 auto;width:100%}
+.hero h1{font-size:clamp(52px,9vw,128px);font-weight:900;font-style:italic;text-transform:uppercase;
+  line-height:.98;letter-spacing:-.02em}
+.hero h1 .word{display:block;overflow:hidden}
+.hero h1 .word span{display:inline-block;transform:translateY(110%);filter:blur(6px)}
+.hero h1 .accent{color:var(--green);text-shadow:0 0 40px var(--green-dim)}
+.hero-sub{margin-top:28px;max-width:520px;color:var(--w70);font-size:clamp(15px,1.4vw,18px);opacity:0;transform:translateY(20px)}
+.hero-ctas{margin-top:40px;display:flex;gap:16px;flex-wrap:wrap;opacity:0;transform:translateY(20px)}
+.hero-sub.in,.hero-ctas.in{opacity:1;transform:none;transition:all .7s var(--ease-brake)}
+.btn{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:16px 30px;
+  font-weight:800;font-style:italic;font-size:15px;letter-spacing:.03em;text-decoration:none;text-transform:uppercase;
+  transition:transform .15s var(--ease-brake),box-shadow .35s,background .3s,color .3s}
+.btn:active{transform:scale(.96)}
+.btn-primary{background:var(--green);color:var(--black);border:1px solid var(--green)}
+.btn-primary:hover{box-shadow:0 0 34px var(--green-glow)}
+.btn-ghost{background:transparent;color:var(--green);border:1px solid var(--green)}
+.btn-ghost:hover{background:var(--green-dim)}
+.btn .arrow{display:inline-block;transition:transform .25s var(--ease-brake),letter-spacing .25s}
+.btn:hover .arrow{transform:translateX(6px)}
+.sec-h,.grid-sec h2{perspective:600px}
+.split-word{display:inline-block;will-change:transform,opacity}
+.hero-rider{width:min(420px,80%);height:auto;margin:0 auto;
+  filter:drop-shadow(0 0 26px var(--green-dim));opacity:0;transform:translateX(40px)}
+.hero-rider.in{opacity:1;transform:none;transition:all .9s var(--ease-brake)}
+
+/* ---------- Night road (hero plane) ---------- */
+.night-road{position:absolute;left:0;right:0;bottom:0;height:46%;z-index:0;pointer-events:none;overflow:hidden;
+  perspective:420px;
+  mask-image:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.4) 35%,rgba(0,0,0,.12) 65%,transparent 100%);
+  -webkit-mask-image:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.4) 35%,rgba(0,0,0,.12) 65%,transparent 100%)}
+.night-road::after{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(to top,transparent 0%,rgba(13,13,13,.35) 40%,var(--black) 100%),
+    linear-gradient(90deg,var(--black) 0%,transparent 18%,transparent 82%,var(--black) 100%)}
+.night-road-plane{position:absolute;left:-20%;right:-20%;bottom:-8%;height:160%;transform-origin:50% 100%;
+  transform:rotateX(68deg);background:
+    linear-gradient(90deg,transparent 0 46%,rgba(255,255,255,.04) 46% 47%,transparent 47% 53%,rgba(255,255,255,.04) 53% 54%,transparent 54%),
+    linear-gradient(180deg,var(--black) 0%,#101010 45%,#121212 100%);
+  box-shadow:inset 0 60px 90px rgba(13,13,13,.75)}
+.night-road-lanes{position:absolute;inset:0;background:repeating-linear-gradient(
+  180deg,transparent 0 38px,rgba(108,192,74,.08) 38px 42px,transparent 42px 88px);
+  animation:laneDrift 2.8s linear infinite;opacity:.4}
+@keyframes laneDrift{to{transform:translateY(88px)}}
+.night-road-glow{position:absolute;left:50%;bottom:4%;width:min(480px,65vw);height:70px;transform:translateX(-50%);
+  background:radial-gradient(ellipse,rgba(108,192,74,.08),transparent 72%);filter:blur(14px);opacity:.7}
+.hero-grid,.scroll-hint{position:relative;z-index:1}
+
+/* ---------- Ghost watermarks ---------- */
+.ghost-mark{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.ghost-mark span{position:absolute;font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:-.04em;
+  color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.045);user-select:none;white-space:nowrap;
+  line-height:.85}
+.gauge-sec{position:relative}
+.gauge-sec .ghost-mark span{left:50%;top:42%;transform:translate(-50%,-50%);font-size:clamp(120px,22vw,280px)}
+#route{position:relative}
+#route .ghost-mark span{right:-2%;top:18%;font-size:clamp(90px,18vw,220px);opacity:.9}
+.gauge-sec .wrap,.gauge-wrap,#route .wrap,.route-wrap{position:relative;z-index:1}
+
+/* ---------- Custom cursor ---------- */
+.cursor{position:fixed;top:0;left:0;width:10px;height:10px;border-radius:50%;background:var(--green);
+  pointer-events:none;z-index:300;transform:translate(-50%,-50%);mix-blend-mode:screen;
+  box-shadow:0 0 12px var(--green-glow);transition:width .2s,height .2s,background .2s,border-radius .2s;display:none}
+.cursor-ring{position:fixed;top:0;left:0;width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(108,192,74,.45);pointer-events:none;z-index:299;transform:translate(-50%,-50%);
+  transition:width .25s var(--ease-brake),height .25s var(--ease-brake),border-color .25s,opacity .25s;display:none;opacity:.7}
+.cursor.go{width:0;height:0;border-left:12px solid var(--green);border-top:7px solid transparent;border-bottom:7px solid transparent;
+  border-radius:0;background:transparent;box-shadow:none;mix-blend-mode:normal}
+.cursor.go + .cursor-ring,.cursor-ring.go{width:44px;height:44px;border-color:rgba(108,192,74,.7)}
+@media (hover:hover) and (pointer:fine){
+  body.has-cursor .cursor,body.has-cursor .cursor-ring{display:block}
+}
+.scroll-hint-rider{width:30px;height:auto;opacity:.75;animation:hintBob 2.2s ease-in-out infinite}
+@keyframes hintBob{0%,100%{transform:translateY(0)}50%{transform:translateY(9px)}}
+.story-panel{transition:opacity .45s var(--ease-brake),transform .45s var(--ease-brake);transform-origin:left center}
+.story-rider-box{position:absolute;bottom:calc(18% + 8px);left:6%;width:110px;z-index:2}
+.story-trail{position:absolute;right:82%;top:50%;height:4px;width:50px;transform:translateY(-50%);
+  background:linear-gradient(90deg,transparent,var(--green));opacity:.45;transform-origin:right center;border-radius:2px;
+  will-change:transform,opacity}
+.story-rider{position:relative;width:100%;height:auto;filter:drop-shadow(0 0 14px var(--green-glow));will-change:transform}
+.pin{will-change:transform}
+.odo-col.rolling{filter:blur(3px)}
+.field.fuse-active .fuse{animation:fuseRace .7s var(--ease-brake) forwards}
+@keyframes fuseRace{0%{transform:scaleX(0);transform-origin:left}100%{transform:scaleX(1);transform-origin:left}}
+footer .f-mark{width:180px;height:auto;margin:0 auto 18px;opacity:0}
+.hero-chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line-2);border-radius:999px;
+  padding:8px 16px;font-size:11px;font-weight:600;letter-spacing:.35em;text-transform:uppercase;color:var(--w70);margin-bottom:26px;
+  opacity:0;transform:translateY(14px);min-height:34px}
+.hero-chip.in{opacity:1;transform:none;transition:all .6s var(--ease-brake) .1s}
+.hero-chip.locked{border-color:rgba(108,192,74,.45);color:var(--white);
+  box-shadow:0 0 0 1px rgba(108,192,74,.15);animation:chipLock .45s var(--ease-brake)}
+@keyframes chipLock{0%{transform:scale(1)}40%{transform:scale(1.035)}100%{transform:scale(1)}}
+.chip-text{display:inline-block;min-width:22ch}
+.chip-text .caret{display:inline-block;width:7px;height:1.1em;margin-left:2px;background:var(--green);vertical-align:text-bottom;
+  animation:caretBlink .7s steps(1) infinite}
+.hero-chip.locked .caret{display:none}
+@keyframes caretBlink{0%,50%{opacity:1}51%,100%{opacity:0}}
+.btn-primary.ignite-dim{opacity:.42;filter:saturate(.4) brightness(.85);box-shadow:none}
+.btn-primary.ignite{opacity:1;filter:none;animation:ctaIgnite 1.15s var(--ease-brake) forwards}
+@keyframes ctaIgnite{
+  0%{box-shadow:0 0 0 0 transparent;filter:brightness(.9)}
+  35%{box-shadow:0 0 42px rgba(108,192,74,.55),0 0 80px rgba(108,192,74,.2);filter:brightness(1.08)}
+  100%{box-shadow:0 0 34px var(--green-glow);filter:none}
+}
+.pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.8s infinite;flex-shrink:0}
+@keyframes pulse{0%{box-shadow:0 0 0 0 var(--green-glow)}70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);font-size:10px;letter-spacing:.4em;
+  color:var(--w40);text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:10px}
+.scroll-hint::after{content:'';width:1px;height:38px;background:linear-gradient(var(--green),transparent);animation:drop 1.8s var(--ease-brake) infinite}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}55%{transform:scaleY(1);transform-origin:top}56%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ---------- GAUGE ---------- */
+.gauge-sec{text-align:center}
+.gauge-wrap{position:relative;width:min(560px,92vw);margin:0 auto}
+.gauge-wrap svg{width:100%;height:auto;overflow:visible}
+.g-track{stroke:var(--w20);stroke-width:2;fill:none}
+.g-fill{stroke:var(--green);stroke-width:5;fill:none;stroke-linecap:round;filter:drop-shadow(0 0 8px var(--green-glow))}
+.g-redline{stroke:var(--green);stroke-width:10;fill:none;stroke-linecap:round;opacity:.28;animation:redpulse 2.4s ease-in-out infinite}
+@keyframes redpulse{0%,100%{opacity:.18}50%{opacity:.42}}
+.g-tick{stroke:var(--w40);stroke-width:2}
+.g-tick.on{stroke:var(--green)}
+.g-label{fill:var(--w40);font-size:10.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase}
+.g-label.on{fill:var(--green)}
+.g-needle{stroke:var(--green);stroke-width:4;stroke-linecap:round;filter:drop-shadow(0 0 6px var(--green-glow))}
+.g-hub{fill:var(--black);stroke:var(--green);stroke-width:3}
+.g-launch{fill:var(--white);font-weight:900;font-style:italic;font-size:22px;letter-spacing:.06em}
+.g-status{fill:var(--green);font-size:11px;font-weight:700;letter-spacing:.4em}
+.telemetry{margin-top:36px;display:flex;justify-content:center;gap:clamp(14px,4vw,42px);flex-wrap:wrap}
+.tele-cell{text-align:center}
+.tele-digits{display:flex;gap:3px;justify-content:center}
+.odo{height:1em;overflow:hidden;font-size:clamp(30px,5vw,52px);font-weight:800;line-height:1;
+  font-variant-numeric:tabular-nums;width:.62em;text-align:center}
+.odo-col{display:flex;flex-direction:column;transition:transform .5s var(--ease-brake)}
+.odo-col span{height:1em;line-height:1}
+.tele-label{margin-top:10px;font-size:10px;font-weight:700;letter-spacing:.4em;color:var(--w40);text-transform:uppercase}
+.tele-sep{font-size:clamp(30px,5vw,52px);font-weight:300;color:var(--w20);line-height:1}
+
+/* ---------- STORY (the road) ---------- */
+.story{padding:0;overflow:hidden}
+.story-pin{height:100svh;display:flex;align-items:center;position:relative;overflow:hidden}
+.story-track{display:flex;width:300vw;will-change:transform}
+.story-panel{width:100vw;height:100svh;flex-shrink:0;display:flex;flex-direction:column;justify-content:center;
+  padding:0 clamp(24px,10vw,140px)}
+.story-panel h3{font-size:clamp(34px,6.4vw,84px);font-weight:900;font-style:italic;text-transform:uppercase;
+  line-height:1.02;letter-spacing:-.015em;max-width:14ch}
+.story-panel .s-accent{color:var(--green)}
+.story-icon{width:64px;height:64px;margin-bottom:30px;color:var(--green);opacity:.9}
+.story-road{position:absolute;left:0;right:0;bottom:18%;height:2px;background:var(--line-2)}
+.story-road::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,var(--w20) 0 40px,transparent 40px 80px)}
+.story-num{position:absolute;top:10%;right:8%;font-size:12px;letter-spacing:.5em;color:var(--w40);font-weight:700}
+/* mobile: swipe-through */
+@media(max-width:767px){
+  .story-pin{height:auto;padding:90px 0 70px;overflow:visible}
+  .story-track{width:auto;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+    gap:0;scrollbar-width:none;-ms-overflow-style:none;padding:0 6vw}
+  .story-track::-webkit-scrollbar{display:none}
+  .story-panel{width:88vw;height:auto;min-height:52svh;scroll-snap-align:center;padding:0 6vw;
+    opacity:.4;transform:scale(.94);transition:opacity .4s var(--ease-brake),transform .4s var(--ease-brake)}
+  .story-panel.is-active{opacity:1;transform:scale(1)}
+  .story-rider-box,.story-road{display:none}
+  .story-flash{display:block}
+  .story-dots{display:flex}
+}
+.story-flash{display:none;position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+.story-flash::before{content:'';position:absolute;top:8%;bottom:8%;left:-40%;width:40%;
+  background:linear-gradient(90deg,transparent,rgba(108,192,74,.0),rgba(108,192,74,.35),rgba(108,192,74,.0));
+  opacity:0;filter:blur(2px)}
+.story-flash.fire::before{animation:storyPullFlash .55s var(--ease-brake) forwards}
+@keyframes storyPullFlash{
+  0%{opacity:0;transform:translateX(0)}
+  25%{opacity:1}
+  100%{opacity:0;transform:translateX(320%)}
+}
+.story-dots{display:none;position:absolute;left:0;right:0;bottom:28px;justify-content:center;gap:8px;z-index:5}
+.story-dots button{width:7px;height:7px;border-radius:50%;border:none;padding:0;background:var(--w20);
+  transition:transform .3s var(--ease-brake),background .3s,width .3s}
+.story-dots button[aria-current="true"]{background:var(--green);width:22px;border-radius:999px;
+  box-shadow:0 0 10px var(--green-glow)}
+
+/* ---------- PILLARS ---------- */
+.pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:54px}
+@media(max-width:1023px){.pillars{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.pillars{grid-template-columns:1fr}}
+.card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:34px 26px 30px;overflow:hidden;transform-style:preserve-3d;transition:transform .25s var(--ease-brake),border-color .3s;
+  opacity:0;transform:translateX(-44px)}
+.card.in{opacity:1;transform:none;transition:opacity .6s var(--ease-brake),transform .6s var(--ease-brake)}
+.card::before{content:'';position:absolute;top:0;left:0;height:4px;width:0;background:var(--green);transition:width .5s var(--ease-brake)}
+.card::after{content:'';position:absolute;left:10%;right:10%;bottom:-30px;height:50px;border-radius:50%;
+  background:var(--green);filter:blur(34px);opacity:0;transition:opacity .4s}
+.card:hover{border-color:var(--line-2)}
+.card:hover::before{width:100%}
+.card:hover::after{opacity:.22}
+.card .icon{width:46px;height:46px;color:var(--green);margin-bottom:22px}
+.card .icon svg{width:100%;height:100%}
+.card h4{font-size:17px;font-weight:800;font-style:italic;text-transform:uppercase;letter-spacing:.03em;margin-bottom:10px}
+.card p{font-size:14px;color:var(--w70);line-height:1.65}
+.card .cnum{position:absolute;top:22px;right:22px;font-size:11px;font-weight:700;letter-spacing:.25em;color:var(--w20)}
+/* icon idle animations on hover */
+.card:hover .ping circle:last-child{animation:ping 1.4s ease-out infinite}
+@keyframes ping{0%{transform:scale(.4);opacity:1}100%{transform:scale(1.25);opacity:0}}
+.card:hover .shield{animation:lock .5s var(--ease-brake)}
+@keyframes lock{0%{transform:scale(1)}40%{transform:scale(.9)}100%{transform:scale(1)}}
+.card:hover .headset{animation:nod 1.2s ease-in-out infinite}
+@keyframes nod{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.card:hover .map path{stroke-dashoffset:0}
+.card .map path{stroke-dasharray:120;stroke-dashoffset:120;transition:stroke-dashoffset 1.1s var(--ease-brake)}
+
+/* ---------- ROUTE / TIMELINE ---------- */
+.route-wrap{position:relative;max-width:840px;margin:64px auto 0}
+.route-line{position:absolute;left:24px;top:0;bottom:0;width:2px}
+@media(min-width:768px){.route-line{left:50%;transform:translateX(-50%)}}
+.route-line::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(var(--line-2) 0 14px,transparent 14px 26px)}
+.route-fill{position:absolute;top:0;left:0;width:100%;height:0%;background:var(--green);box-shadow:0 0 10px var(--green-glow)}
+.stop{position:relative;display:flex;gap:26px;padding:34px 0 34px 64px;opacity:0;transform:translateY(30px)}
+.stop.in{opacity:1;transform:none;transition:all .6s var(--ease-brake)}
+@media(min-width:768px){
+  .stop{width:50%;padding:38px 56px 38px 0;flex-direction:row-reverse;text-align:right}
+  .stop:nth-child(even){margin-left:50%;padding:38px 0 38px 56px;flex-direction:row;text-align:left}
+}
+.pin{position:absolute;left:24px;top:44px;transform:translate(-50%,0);width:22px;height:22px;border-radius:50% 50% 50% 0;
+  border:2px solid var(--w40);background:var(--black);rotate:-45deg;transition:all .4s var(--ease-brake);z-index:1}
+@media(min-width:768px){
+  /* Center pin on the route line, nudged 1% left */
+  .stop .pin{left:calc(100% - 0.4%);right:auto;transform:translate(-50%,0)}
+  .stop:nth-child(even) .pin{left:calc(0% - 0.5%);right:auto;transform:translate(-50%,0)}
+}
+.stop.done .pin{background:var(--green);border-color:var(--green);box-shadow:0 0 14px var(--green-glow)}
+.stop.now .pin{border-color:var(--green);animation:nowpulse 2s infinite}
+@keyframes nowpulse{0%{box-shadow:0 0 0 0 var(--green-glow)}70%{box-shadow:0 0 0 12px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.stop h5{font-size:19px;font-weight:800;font-style:italic;text-transform:uppercase;letter-spacing:.02em}
+.stop p{font-size:14px;color:var(--w70);margin-top:6px;max-width:34ch}
+.stop .chip{display:inline-flex;align-items:center;gap:7px;margin-top:12px;border:1px solid var(--line-2);
+  border-radius:999px;padding:5px 13px;font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--w40)}
+.stop.done .chip{color:var(--green);border-color:rgba(108,192,74,.4)}
+.stop.now .chip{color:var(--green);border-color:var(--green)}
+@media(min-width:768px){.stop .chip{align-self:flex-end}.stop:nth-child(even) .chip{align-self:flex-start}}
+.stop-body{display:flex;flex-direction:column}
+@media(min-width:768px){.stop-body{align-items:flex-end}.stop:nth-child(even) .stop-body{align-items:flex-start}}
+
+/* ---------- SIGNUP ---------- */
+.grid-sec{text-align:center}
+.grid-sec h2,.sec-h{font-size:clamp(36px,5.6vw,72px);font-weight:900;font-style:italic;text-transform:uppercase;
+  line-height:1.02;letter-spacing:-.015em}
+.grid-sec .sub{margin-top:16px;color:var(--w70);font-size:15px}
+.mode-toggle{display:inline-flex;margin:36px auto 0;border:1px solid var(--line-2);border-radius:999px;padding:5px;gap:4px}
+.mode-toggle button{background:transparent;border:none;border-radius:999px;color:var(--w40);
+  padding:10px 26px;font-size:12px;font-weight:800;font-style:italic;letter-spacing:.12em;text-transform:uppercase;
+  transition:all .3s var(--ease-brake)}
+.mode-toggle button[aria-pressed="true"]{background:var(--green);color:var(--black)}
+.signup{max-width:620px;margin:34px auto 0;position:relative;min-height:190px}
+.signup form{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+#companyField{flex:1 1 100%}
+.field{position:relative;flex:1 1 320px}
+.field input{width:100%;height:58px;background:#111;border:1px solid var(--line-2);border-radius:12px;
+  color:var(--white);font-family:inherit;font-size:15px;padding:0 20px;letter-spacing:.02em;
+  transition:border-color .3s;caret-color:var(--green)}
+.field input::placeholder{color:var(--w40);letter-spacing:.18em;font-size:12px;text-transform:uppercase;font-weight:600}
+.field input:focus{outline:none;border-color:var(--line-2)}
+.field .fuse{position:absolute;left:12px;right:12px;bottom:0;height:2px;background:var(--green);
+  transform:scaleX(0);transform-origin:left;box-shadow:0 0 8px var(--green-glow)}
+.signup .btn-primary{height:58px;border-radius:12px}
+.form-err{margin-top:14px;font-size:13px;color:var(--w70);min-height:1.4em}
+.shake{animation:skid .3s}
+@keyframes skid{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.form-note{margin-top:18px;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--w40)}
+/* Grid pass — print sequence */
+.pass{display:none;max-width:460px;margin:0 auto;perspective:1000px}
+.pass.show{display:block}
+.pass-card{position:relative;background:var(--panel);border:1px solid var(--line-2);border-radius:18px;
+  padding:0 0 28px;overflow:hidden;text-align:left;transform:translateY(-28px) scale(.97);
+  opacity:0;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 50px var(--green-dim)}
+.pass-card.printed{opacity:1;transform:none}
+.pass-tape{height:8px;background:linear-gradient(90deg,#5aad3f,#6CC04A 40%,#8fd96a);
+  transform:scaleX(0);transform-origin:left center;position:relative}
+.pass-tape::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,
+  transparent 0 6px,rgba(0,0,0,.08) 6px 7px);opacity:.5}
+.pass-head{display:flex;justify-content:space-between;align-items:center;padding:22px 26px 0;opacity:0}
+.pass-head .mark{display:flex;align-items:center;gap:9px;font-weight:900;font-style:italic;font-size:14px}
+.pass-head .mark img{width:40px;height:auto}
+.pass-type{font-size:10px;font-weight:800;letter-spacing:.4em;color:var(--green)}
+.pass-body{padding:22px 26px 0;opacity:0}
+.pass-label{font-size:9.5px;font-weight:700;letter-spacing:.4em;text-transform:uppercase;color:var(--w40)}
+.pass-email{font-size:16px;font-weight:600;margin-top:5px;word-break:break-all}
+.pass-row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:24px;gap:16px}
+.pass-num{font-size:34px;font-weight:900;font-style:italic;color:var(--green);line-height:1;
+  display:inline-block;transform:scale(1.35);opacity:0;filter:blur(4px);transform-origin:left center}
+.pass-num.stamped{opacity:1;transform:scale(1);filter:none;
+  text-shadow:0 0 0 transparent;animation:stampHit .45s var(--ease-brake)}
+@keyframes stampHit{
+  0%{transform:scale(1.4);filter:blur(3px)}
+  55%{transform:scale(.92)}
+  100%{transform:scale(1);filter:none}
+}
+.pass-tagline{font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--w40);text-align:right;opacity:0}
+.pass-foot{margin:24px 26px 0;padding-top:18px;border-top:1px dashed var(--line-2);
+  font-size:12px;color:var(--w70);opacity:0}
+.pass-noise{position:absolute;inset:0;pointer-events:none;opacity:0;mix-blend-mode:overlay;z-index:2;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  background-size:140px}
+.pass-card.printing .pass-noise{animation:paperNoise .9s ease-out forwards}
+@keyframes paperNoise{
+  0%{opacity:0}
+  15%{opacity:.22}
+  40%{opacity:.12}
+  70%{opacity:.18}
+  100%{opacity:0}
+}
+.pass-feed{position:absolute;left:10%;right:10%;top:0;height:3px;border-radius:0 0 2px 2px;background:var(--green);
+  opacity:0;box-shadow:0 0 12px var(--green-glow);z-index:3;transform-origin:center top}
+@media (prefers-reduced-motion: reduce){
+  .pass-card,.pass-tape,.pass-head,.pass-body,.pass-num,.pass-tagline,.pass-foot{opacity:1!important;transform:none!important;filter:none!important}
+  .pass-noise,.pass-feed{display:none!important}
+}
+
+/* ---------- SOCIAL ---------- */
+.convoy{text-align:center}
+.signs{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin-top:56px}
+.sign{position:relative;display:flex;flex-direction:column;align-items:center;text-decoration:none;
+  opacity:0;transform:translateY(26px)}
+.sign.in{opacity:1;transform:none;transition:all .55s var(--ease-brake)}
+.sign-board{width:120px;height:96px;border:1px solid var(--line-2);border-radius:14px;background:var(--panel);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  transition:border-color .3s,box-shadow .3s,transform .25s var(--ease-brake)}
+.sign-board svg{width:30px;height:30px;color:var(--white);transition:color .3s}
+.sign-board span{font-size:9.5px;font-weight:700;letter-spacing:.3em;color:var(--w40);text-transform:uppercase}
+.sign-post{width:2px;height:44px;background:var(--line-2);position:relative;overflow:hidden}
+.sign-post::after{content:'';position:absolute;inset:0;background:var(--green);transform:scaleY(0);transform-origin:top;transition:transform .4s var(--ease-brake)}
+.sign:hover .sign-board,.sign:focus-visible .sign-board{border-color:var(--green);box-shadow:0 0 26px var(--green-dim);transform:translateY(-5px)}
+.sign:hover .sign-board svg{color:var(--green)}
+.sign:hover .sign-post::after{transform:scaleY(1)}
+.sign-km{position:absolute;top:-30px;font-size:9px;letter-spacing:.3em;color:var(--green);opacity:0;
+  transition:opacity .3s,transform .3s;transform:translateY(6px);white-space:nowrap;font-weight:700}
+.sign:hover .sign-km{opacity:1;transform:none}
+
+/* ---------- FOOTER ---------- */
+footer{position:relative;z-index:5;text-align:center;padding:70px 24px 46px;border-top:1px solid var(--line)}
+footer p{font-size:11.5px;letter-spacing:.25em;text-transform:uppercase;color:var(--w40)}
+footer .f-tag{margin-top:8px;color:var(--green);font-weight:700}
+
+/* ---------- Sticky mobile CTA ---------- */
+.sticky-cta{position:fixed;left:16px;right:16px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:140;display:none;
+  transform:translateY(140%);transition:transform .5s var(--ease-brake)}
+.sticky-cta.show{transform:none}
+.sticky-cta a{display:flex;justify-content:center;align-items:center;gap:10px;background:var(--green);color:var(--black);
+  border-radius:999px;padding:16px;font-weight:900;font-style:italic;font-size:15px;text-transform:uppercase;
+  letter-spacing:.04em;text-decoration:none;box-shadow:0 10px 34px rgba(108,192,74,.35)}
+@media(max-width:767px){.sticky-cta{display:block}}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  #loader{display:none}
+  .reveal,.card,.stop,.sign,.hero-sub,.hero-ctas,.hero-chip,.hero-rider,footer .f-mark{opacity:1!important;transform:none!important;filter:none!important}
+  .hero h1 .word span{transform:none!important;filter:none!important}
+  #beams,#trail,.cursor,.cursor-ring,.night-road{display:none!important}
+  .story-track{width:auto;flex-wrap:wrap}
+  .story-panel{width:100%;height:auto;min-height:0;padding:60px clamp(24px,8vw,120px)}
+  .story-pin{height:auto}
+  .story-rider-box,.story-road,.story-flash,.story-dots{display:none}
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#grid">Skip to signup</a>
+
+<!-- ============ LOADER ============ -->
+<div id="loader" role="presentation">
+  <div class="load-streak ls1"></div>
+  <div class="load-streak ls2"></div>
+  <div class="load-streak ls3"></div>
+  <div class="loader-logo">
+    <div class="loader-word" aria-hidden="true">
+      <span class="lt">P</span><span class="lt">R</span><span class="lt lo" id="loaderO">O</span><span class="lt">V</span><span class="lt">E</span><span class="lt">N</span>
+    </div>
+    <div class="loader-tag">DELIVERY&nbsp;SERVICE</div>
+  </div>
+  <button class="loader-skip" type="button" id="skipLoader">Skip intro</button>
+</div>
+
+<!-- ============ FIXED LAYERS ============ -->
+<canvas id="beams" aria-hidden="true"></canvas>
+<canvas id="trail" aria-hidden="true"></canvas>
+<div class="skyline" aria-hidden="true">
+  <svg viewBox="0 0 1440 220" preserveAspectRatio="none" fill="#111213">
+    <path d="M0 220V150h40v-30h30v40h50V90h35v25h25v-45h45v60h60v-40h30v-25h40v80h55V70h35v30h30v-20h50v60h70V95h40v-35h35v55h55v-30h45v45h60V85h40v30h35v-45h50v70h60v-40h45v25h40v-55h35v75h55v-35h50v50h45v-30h60v70z"/>
+  </svg>
+</div>
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+<div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+<!-- route rail -->
+<div class="rail" aria-hidden="true">
+  <div class="rail-fill" id="railFill"></div>
+  <img class="rail-rider" id="railRider" src="Rider.png" alt="" aria-hidden="true">
+</div>
+
+<!-- top bar -->
+<header class="topbar" id="topbar">
+  <a class="mark" href="#top" aria-label="Proven Delivery Service — back to top">
+    <img src="PDS%20Logo%20White.png" alt="Proven Delivery Service" width="160" height="120">
+  </a>
+  <a class="btn-compact" href="#grid">Partner with us</a>
+</header>
+
+<main id="top">
+
+<!-- ============ 01 · IGNITION ============ -->
+<section class="hero" aria-label="Introduction">
+  <div class="night-road" aria-hidden="true">
+    <div class="night-road-plane">
+      <div class="night-road-lanes"></div>
+    </div>
+    <div class="night-road-glow"></div>
+  </div>
+  <div class="hero-grid">
+    <div>
+      <span class="hero-chip" id="heroChip"><span class="pulse-dot"></span><span class="chip-text" id="chipText" aria-live="polite"></span></span>
+      <h1 id="heroH">
+        <span class="word"><span>FAST.</span></span>
+        <span class="word"><span>RELIABLE.</span></span>
+        <span class="word"><span class="accent">ALMOST&nbsp;HERE.</span></span>
+      </h1>
+      <p class="hero-sub" id="heroSub">Proven Delivery Service is warming up. We put trained, tracked, uniformed
+        riders on your delivery routes — every mile, on time, every time. Partner with us before launch.</p>
+      <div class="hero-ctas" id="heroCtas">
+        <a class="btn btn-primary ignite-dim" id="heroPrimary" href="#grid">Partner with us <span class="arrow">→</span></a>
+        <a class="btn btn-ghost" href="#grid" data-mode="rider">Become a rider</a>
+      </div>
+    </div>
+    <img class="hero-rider" id="heroRider" src="Rider.png" alt="Proven rider mark — a courier at speed" width="420" height="420">
+  </div>
+  <div class="scroll-hint" aria-hidden="true">
+    <img src="Rider.png" alt="" class="scroll-hint-rider" width="30" height="30">
+    Ride down
+  </div>
+</section>
+
+<!-- ============ 02 · THE GAUGE ============ -->
+<section class="gauge-sec" id="gauge" aria-label="Countdown to launch">
+  <div class="ghost-mark" aria-hidden="true"><span>00:00</span></div>
+  <div class="wrap">
+    <p class="eyebrow reveal">02 · The Gauge</p>
+    <h2 class="sec-h reveal">Needle&rsquo;s <span style="color:var(--green)">climbing.</span></h2>
+
+    <div class="gauge-wrap reveal" style="margin-top:56px">
+      <svg viewBox="0 0 400 360" role="img" aria-label="Launch progress speedometer">
+        <path class="g-track" d="M 93.93 306.07 A 150 150 0 1 1 306.07 306.07"/>
+        <path class="g-redline" id="gRedline" d=""/>
+        <path class="g-fill" id="gFill" d="M 93.93 306.07 A 150 150 0 1 1 306.07 306.07"/>
+        <g id="gTicks"></g>
+        <line class="g-needle" id="gNeedle" x1="200" y1="200" x2="119.4" y2="280.6"/>
+        <circle class="g-hub" cx="200" cy="200" r="12"/>
+        <text class="g-launch" x="200" y="262" text-anchor="middle">LAUNCH</text>
+        <text class="g-status" x="200" y="286" text-anchor="middle" id="gStatus">ENGINE IDLING</text>
+      </svg>
+    </div>
+
+    <div class="telemetry reveal" role="timer" aria-label="Time until launch" id="telemetry">
+      <div class="tele-cell"><div class="tele-digits" data-unit="d"></div><div class="tele-label">Days</div></div>
+      <div class="tele-sep" aria-hidden="true">:</div>
+      <div class="tele-cell"><div class="tele-digits" data-unit="h"></div><div class="tele-label">Hours</div></div>
+      <div class="tele-sep" aria-hidden="true">:</div>
+      <div class="tele-cell"><div class="tele-digits" data-unit="m"></div><div class="tele-label">Minutes</div></div>
+      <div class="tele-sep" aria-hidden="true">:</div>
+      <div class="tele-cell"><div class="tele-digits" data-unit="s"></div><div class="tele-label">Seconds</div></div>
+    </div>
+    <p class="form-note reveal" style="margin-top:26px">T-minus to first delivery · <span id="launchDateLabel" style="color:var(--green)"></span></p>
+    <span class="visually-hidden" id="timerLive" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></span>
+  </div>
+</section>
+
+<!-- ============ 03 · THE ROAD ============ -->
+<section class="story" id="story" aria-label="Our story">
+  <div class="story-pin" id="storyPin">
+    <div class="story-num" id="storyNum" aria-hidden="true">03 · THE ROAD</div>
+    <div class="story-flash" id="storyFlash" aria-hidden="true"></div>
+    <div class="story-track" id="storyTrack">
+      <div class="story-panel">
+        <svg class="story-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v9"/></svg>
+        <h3>We don&rsquo;t just deliver packages.</h3>
+      </div>
+      <div class="story-panel">
+        <svg class="story-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>
+        <h3>We deliver <span class="s-accent">peace of mind.</span></h3>
+      </div>
+      <div class="story-panel">
+        <svg class="story-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        <h3>Every mile. <span class="s-accent">On time. Every time.</span></h3>
+      </div>
+    </div>
+    <div class="story-dots" id="storyDots" aria-label="Story panels"></div>
+    <div class="story-road" aria-hidden="true"></div>
+    <div class="story-rider-box">
+      <div class="story-trail" id="storyTrail" aria-hidden="true"></div>
+      <img class="story-rider" id="storyRider" src="Rider.png" alt="" aria-hidden="true" width="110" height="110">
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 · THE MACHINE ============ -->
+<section id="machine" aria-label="Why we're different">
+  <div class="wrap">
+    <p class="eyebrow reveal">04 · The Machine</p>
+    <h2 class="sec-h reveal">Built to be <span style="color:var(--green)">proven.</span></h2>
+    <p class="reveal" style="margin-top:18px;max-width:56ch;color:var(--w70);font-size:15px">You bring the parcels — we bring the fleet.
+      Proven supplies trained, uniformed riders as a service, with dispatch, tracking and accountability built in.</p>
+    <div class="pillars">
+      <article class="card" style="transition-delay:.0s">
+        <span class="cnum">P—01</span>
+        <div class="icon"><svg class="ping" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="9.4" style="transform-origin:center"/></svg></div>
+        <h4>Real-time tracking</h4>
+        <p>Your ops team sees every parcel move, minute by minute. No black holes between pickup and doorstep.</p>
+      </article>
+      <article class="card" style="transition-delay:.08s">
+        <span class="cnum">P—02</span>
+        <div class="icon"><svg class="shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="transform-origin:center"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
+        <h4>Secure deliveries</h4>
+        <p>Every parcel handled like it matters — because it does. Sealed, verified, delivered intact.</p>
+      </article>
+      <article class="card" style="transition-delay:.16s">
+        <span class="cnum">P—03</span>
+        <div class="icon"><svg class="headset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 13a8 8 0 0 1 16 0"/><rect x="3" y="13" width="4" height="7" rx="2"/><rect x="17" y="13" width="4" height="7" rx="2"/><path d="M19 20a3 3 0 0 1-3 2h-3"/></svg></div>
+        <h4>24/7 support</h4>
+        <p>A real human on the line at 3 PM or 3 AM. If it moves with us, we answer for it.</p>
+      </article>
+      <article class="card" style="transition-delay:.24s">
+        <span class="cnum">P—04</span>
+        <div class="icon"><svg class="map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 20l-6-2V4l6 2 6-2 6 2v14l-6-2z"/><path d="M4 8c4 1 6 4 8 6s5 3 8 2" stroke="var(--green)"/></svg></div>
+        <h4>Nationwide coverage</h4>
+        <p>One network, every region. From metro cores to the last kilometre off the highway.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 · THE ROUTE ============ -->
+<section id="route" aria-label="Launch timeline">
+  <div class="ghost-mark" aria-hidden="true"><span>PROVEN</span></div>
+  <div class="wrap">
+    <p class="eyebrow reveal">05 · The Route</p>
+    <h2 class="sec-h reveal">The road to <span style="color:var(--green)">launch day.</span></h2>
+
+    <div class="route-wrap">
+      <div class="route-line" aria-hidden="true"><div class="route-fill" id="routeFill"></div></div>
+
+      <div class="stop done">
+        <span class="pin" aria-hidden="true"></span>
+        <div class="stop-body">
+          <h5>Brand locked</h5>
+          <p>Identity, fleet livery, packaging and rider gear — signed, sealed, Proven.</p>
+          <span class="chip">✓ &nbsp;Delivered</span>
+        </div>
+      </div>
+
+      <div class="stop done">
+        <span class="pin" aria-hidden="true"></span>
+        <div class="stop-body">
+          <h5>Fleet &amp; gear ready</h5>
+          <p>Bikes serviced, helmets fitted, jackets zipped. The garage is full.</p>
+          <span class="chip">✓ &nbsp;Delivered</span>
+        </div>
+      </div>
+
+      <div class="stop now">
+        <span class="pin" aria-hidden="true"></span>
+        <div class="stop-body">
+          <h5>Partner onboarding open</h5>
+          <p>First businesses are signing on. Dedicated riders, dispatch and reporting — scoped for day one.</p>
+          <span class="chip"><span class="pulse-dot" style="width:6px;height:6px"></span>&nbsp;You are here</span>
+        </div>
+      </div>
+
+      <div class="stop">
+        <span class="pin" aria-hidden="true"></span>
+        <div class="stop-body">
+          <h5>Rider training &amp; certification</h5>
+          <p>Safety courses, uniforms fitted and route drills for the first hundred riders on payroll.</p>
+          <span class="chip">Up next</span>
+        </div>
+      </div>
+
+      <div class="stop">
+        <span class="pin" aria-hidden="true"></span>
+        <div class="stop-body">
+          <h5>Launch day</h5>
+          <p>Engines on. The first client routes go live. The needle hits the redline.</p>
+          <span class="chip">Final stop</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 · THE GRID ============ -->
+<section class="grid-sec" id="grid" aria-label="Join the grid">
+  <div class="wrap">
+    <p class="eyebrow reveal">06 · The Grid</p>
+    <h2 class="reveal" id="gridH">Put Proven riders on <span style="color:var(--green)">your routes.</span></h2>
+    <p class="sub reveal" id="gridSub">Trained riders, dispatch and tracking — as a service. Founding partners get launch-week rates.</p>
+
+    <div class="mode-toggle reveal" role="group" aria-label="Choose signup type">
+      <button type="button" id="modeCustomer" aria-pressed="true">Business</button>
+      <button type="button" id="modeRider" aria-pressed="false">Rider</button>
+    </div>
+
+    <div class="signup reveal">
+      <form id="gridForm" novalidate>
+        <div class="field" id="companyField">
+          <label for="company" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Company name</label>
+          <input type="text" id="company" name="company" placeholder="Company name" autocomplete="organization">
+          <span class="fuse" aria-hidden="true"></span>
+        </div>
+        <div class="field">
+          <label for="email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
+          <input type="email" id="email" name="email" placeholder="Work email" autocomplete="email" required>
+          <span class="fuse" aria-hidden="true"></span>
+        </div>
+        <button class="btn btn-primary" type="submit" id="lockBtn">Lock in <span class="arrow">→</span></button>
+      </form>
+      <p class="form-err" id="formErr" role="alert"></p>
+
+      <div class="pass" id="pass" aria-live="polite">
+        <div class="pass-card" id="passCard">
+          <div class="pass-feed" id="passFeed" aria-hidden="true"></div>
+          <div class="pass-noise" aria-hidden="true"></div>
+          <div class="pass-tape" id="passTape"></div>
+          <div class="pass-head">
+            <span class="mark"><img src="Rider.png" alt="" width="40" height="40"> PROVEN</span>
+            <span class="pass-type" id="passType">GRID PASS</span>
+          </div>
+          <div class="pass-body">
+            <div class="pass-label">Registered to</div>
+            <div class="pass-email" id="passEmail">—</div>
+            <div class="pass-row">
+              <div>
+                <div class="pass-label">Grid position</div>
+                <div class="pass-num" id="passNum">Nº 0000</div>
+              </div>
+              <div class="pass-tagline">Fast.<br>Reliable.<br>Proven.</div>
+            </div>
+          </div>
+          <div class="pass-foot" id="passFoot">You're locked in. We'll ping you the moment engines start. See you at launch.</div>
+        </div>
+      </div>
+    </div>
+    <p class="form-note reveal">No spam. One launch email. Unsubscribe anytime.</p>
+  </div>
+</section>
+
+<!-- ============ 07 · THE CONVOY ============ -->
+<section class="convoy" id="convoy" aria-label="Follow us">
+  <div class="wrap">
+    <p class="eyebrow reveal">07 · The Convoy</p>
+    <h2 class="sec-h reveal">Follow the <span style="color:var(--green)">convoy.</span></h2>
+    <div class="signs">
+      <a class="sign" href="#" aria-label="Proven on Instagram" style="transition-delay:0s">
+        <span class="sign-km" data-km="2">INSTAGRAM · <span class="km-n">2</span> KM AHEAD</span>
+        <span class="sign-board">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg>
+          <span>Instagram</span>
+        </span>
+        <span class="sign-post" aria-hidden="true"></span>
+      </a>
+      <a class="sign" href="#" aria-label="Proven on X" style="transition-delay:.07s">
+        <span class="sign-km" data-km="5">X · <span class="km-n">5</span> KM AHEAD</span>
+        <span class="sign-board">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 4l16 16M20 4L4 20"/></svg>
+          <span>X</span>
+        </span>
+        <span class="sign-post" aria-hidden="true"></span>
+      </a>
+      <a class="sign" href="#" aria-label="Proven on LinkedIn" style="transition-delay:.14s">
+        <span class="sign-km" data-km="8">LINKEDIN · <span class="km-n">8</span> KM AHEAD</span>
+        <span class="sign-board">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v7M8 7v.1M12 17v-4a2.5 2.5 0 0 1 5 0v4M12 10v2"/></svg>
+          <span>LinkedIn</span>
+        </span>
+        <span class="sign-post" aria-hidden="true"></span>
+      </a>
+      <a class="sign" href="#" aria-label="Proven on TikTok" style="transition-delay:.21s">
+        <span class="sign-km" data-km="12">TIKTOK · <span class="km-n">12</span> KM AHEAD</span>
+        <span class="sign-board">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 4v9.5a3.75 3.75 0 1 1-3.2-3.7"/><path d="M14 6.5c1 1.9 2.6 3 4.8 3.2"/></svg>
+          <span>TikTok</span>
+        </span>
+        <span class="sign-post" aria-hidden="true"></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ 08 · PARC FERMÉ ============ -->
+<footer>
+  <img class="f-mark" src="PDS%20Logo%20White.png" alt="Proven Delivery Service" width="180" height="140">
+  <p>© 2026 Proven Delivery Service · by ServHub</p>
+  <p class="f-tag">Fast · Reliable · Proven</p>
+</footer>
+
+<!-- sticky mobile CTA -->
+<div class="sticky-cta" id="stickyCta"><a href="#grid">Partner with us →</a></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+"use strict";
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isMobile = () => window.innerWidth < 768;
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+/* ---------- Motion helpers ---------- */
+function splitHeading(el){
+  if(!el || el.dataset.split) return;
+  el.dataset.split='1';
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  while(walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(node=>{
+    const parts = node.textContent.split(/(\s+)/);
+    const frag = document.createDocumentFragment();
+    parts.forEach(part=>{
+      if(/^\s+$/.test(part)) frag.appendChild(document.createTextNode(part));
+      else if(part){
+        const w = document.createElement('span');
+        w.className = 'split-word';
+        w.textContent = part;
+        frag.appendChild(w);
+      }
+    });
+    node.parentNode.replaceChild(frag, node);
+  });
+  const words = el.querySelectorAll('.split-word');
+  if(reduced || !window.gsap){
+    words.forEach(w=>{ w.style.transform='none'; w.style.opacity='1'; });
+    el.classList.remove('reveal');
+    el.style.opacity='1';
+    el.style.transform='none';
+    return;
+  }
+  gsap.set(words,{y:'110%',opacity:0,rotateX:-28});
+  el.classList.remove('reveal');
+  el.style.opacity='1';
+  el.style.transform='none';
+  ScrollTrigger.create({
+    trigger:el, start:'top 84%', once:true,
+    onEnter:()=>gsap.to(words,{y:0,opacity:1,rotateX:0,duration:.72,stagger:.038,ease:'expo.out'})
+  });
+}
+
+function initMagneticButtons(){
+  if(reduced || !matchMedia('(hover:hover)').matches) return;
+  $$('.btn-primary, .btn-compact, .sticky-cta a').forEach(btn=>{
+    btn.addEventListener('mousemove',e=>{
+      const r = btn.getBoundingClientRect();
+      const x = (e.clientX - r.left - r.width/2) * .16;
+      const y = (e.clientY - r.top - r.height/2) * .16;
+      if(window.gsap) gsap.to(btn,{x,y,duration:.28,ease:'power2.out',overwrite:true});
+      else btn.style.transform = `translate(${x}px,${y}px)`;
+    });
+    btn.addEventListener('mouseleave',()=>{
+      if(window.gsap) gsap.to(btn,{x:0,y:0,duration:.55,ease:'elastic.out(1,.55)'});
+      else btn.style.transform = '';
+    });
+  });
+}
+
+function initFuseRace(){
+  $$('.field input').forEach(inp=>{
+    inp.addEventListener('focus',()=>inp.parentElement.classList.add('fuse-active'));
+    inp.addEventListener('blur',()=>inp.parentElement.classList.remove('fuse-active'));
+  });
+}
+
+function initKmCounters(){
+  $$('.sign').forEach(sign=>{
+    const wrap = sign.querySelector('.sign-km');
+    const n = sign.querySelector('.km-n');
+    if(!wrap || !n) return;
+    const target = parseInt(wrap.dataset.km, 10) || parseInt(n.textContent, 10);
+    sign.addEventListener('mouseenter',()=>{
+      if(reduced || !window.gsap) return;
+      const obj = {v: target * 2.8};
+      gsap.to(obj,{v:target,duration:1.1,ease:'expo.out',
+        onUpdate:()=>{ n.textContent = Math.max(1, Math.ceil(obj.v)); }});
+    });
+  });
+}
+
+function initPinDrops(){
+  const pinIo = new IntersectionObserver(entries=>{
+    entries.forEach(en=>{
+      if(!en.isIntersecting) return;
+      const pin = en.target.querySelector('.pin');
+      if(pin && window.gsap && !reduced){
+        gsap.fromTo(pin,{y:-36,scale:0,opacity:0},
+          {y:0,scale:1,opacity:1,duration:.58,ease:'back.out(2.4)',delay:.08});
+      }
+      pinIo.unobserve(en.target);
+    });
+  },{threshold:.28});
+  $$('.stop').forEach(s=>pinIo.observe(s));
+}
+
+function initParallax(){
+  if(reduced || !window.gsap) return;
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.to('.skyline',{y:90,ease:'none',
+    scrollTrigger:{trigger:'main',start:'top top',end:'bottom bottom',scrub:1.2}});
+
+  /* Copy depth — eyebrows drift less than headlines (~2–4px delta) */
+  $$('section .wrap, .grid-sec .wrap, .convoy .wrap, .gauge-sec .wrap').forEach(wrap=>{
+    const eye = wrap.querySelector('.eyebrow');
+    const head = wrap.querySelector('.sec-h, h2');
+    if(!eye && !head) return;
+    const trigger = {trigger:wrap, start:'top 88%', end:'top 18%', scrub:1.1};
+    if(eye) gsap.fromTo(eye,{y:6},{y:-2,ease:'none',scrollTrigger:{...trigger}});
+    if(head) gsap.fromTo(head,{y:10},{y:-6,ease:'none',scrollTrigger:{...trigger}});
+  });
+}
+
+function initFooterReveal(){
+  const mark = $('.f-mark');
+  if(!mark) return;
+  if(reduced || !window.gsap){ mark.style.opacity='1'; return; }
+  gsap.set(mark,{y:44,opacity:0});
+  ScrollTrigger.create({
+    trigger:'footer', start:'top 88%', once:true,
+    onEnter:()=>gsap.to(mark,{y:0,opacity:1,duration:1.05,ease:'expo.out',
+      filter:'drop-shadow(0 0 22px rgba(108,192,74,.32))'})
+  });
+}
+
+function initCustomCursor(){
+  if(reduced || !matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+  const dot = $('#cursor'), ring = $('#cursorRing');
+  if(!dot || !ring) return;
+  document.body.classList.add('has-cursor');
+  let mx=innerWidth/2, my=innerHeight/2, rx=mx, ry=my;
+  addEventListener('mousemove',e=>{
+    mx=e.clientX; my=e.clientY;
+    dot.style.left=mx+'px'; dot.style.top=my+'px';
+  });
+  (function follow(){
+    rx += (mx-rx)*.18; ry += (my-ry)*.18;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(follow);
+  })();
+  const goSel = 'a,button,.btn,.btn-compact,.sign,.mode-toggle button,.sticky-cta a';
+  document.addEventListener('mouseover',e=>{
+    if(e.target.closest(goSel)){ dot.classList.add('go'); ring.classList.add('go'); }
+  });
+  document.addEventListener('mouseout',e=>{
+    if(e.target.closest(goSel) && !e.relatedTarget?.closest?.(goSel)){
+      dot.classList.remove('go'); ring.classList.remove('go');
+    }
+  });
+}
+
+function typeChip(done){
+  const chip = $('#heroChip'), textEl = $('#chipText');
+  const full = 'LAUNCH SEQUENCE INITIATED';
+  if(!chip || !textEl){ if(done) done(); return; }
+  chip.classList.add('in');
+  if(reduced){
+    textEl.textContent = full;
+    chip.classList.add('locked');
+    if(done) done();
+    return;
+  }
+  let i = 0;
+  textEl.innerHTML = '<span class="caret"></span>';
+  const tick = ()=>{
+    if(i <= full.length){
+      textEl.innerHTML = full.slice(0,i) + '<span class="caret"></span>';
+      i++;
+      setTimeout(tick, 28 + Math.random()*22);
+    } else {
+      textEl.textContent = full;
+      chip.classList.add('locked');
+      if(done) done();
+    }
+  };
+  tick();
+}
+
+function igniteCTA(){
+  const btn = $('#heroPrimary');
+  if(!btn) return;
+  btn.classList.remove('ignite-dim');
+  if(reduced) return;
+  void btn.offsetWidth;
+  btn.classList.add('ignite');
+}
+
+function spawnBrightRider(){
+  if(reduced || !streaks) return;
+  sizeBeams();
+  const s = makeStreak(false);
+  s.y = Math.random() * bh * .55 + bh * .12;
+  s.a = .85; s.g = true;
+  s.sp = 14 * devicePixelRatio;
+  s.len = 480 * devicePixelRatio;
+  s.h = 3.2 * devicePixelRatio;
+  streaks.push(s);
+  setTimeout(()=>{ const i=streaks.indexOf(s); if(i>-1) streaks.splice(i,1); }, 2800);
+}
+
+function initLogoEasterEgg(){
+  const mark = $('.topbar .mark');
+  if(!mark) return;
+  let clicks = 0, t = null;
+  mark.addEventListener('click', e=>{
+    clicks++;
+    clearTimeout(t);
+    t = setTimeout(()=>{ clicks = 0; }, 700);
+    if(clicks >= 3){
+      clicks = 0;
+      e.preventDefault();
+      spawnBrightRider();
+    }
+  });
+}
+
+/* =====================================================
+   CONFIG — launch window
+===================================================== */
+const CAMPAIGN_START = new Date('2026-07-01T00:00:00');
+const LAUNCH = new Date('2026-08-30T09:00:00');
+$('#launchDateLabel').textContent = LAUNCH.toLocaleDateString(undefined,{day:'numeric',month:'long',year:'numeric'});
+
+/* =====================================================
+   1 · LOADER — streaks → wordmark → release
+===================================================== */
+const loader = $('#loader');
+let loaderDone = false;
+function finishLoader(){
+  if(loaderDone) return; loaderDone = true;
+  loader.classList.add('done');
+  setTimeout(()=>{ loader.remove(); heroEnter(); }, 480);
+}
+if(reduced || !window.gsap){
+  loader.remove(); requestAnimationFrame(heroEnter);
+}else{
+  const tl = gsap.timeline({onComplete:finishLoader});
+  tl.to('.ls1',{x:'160vw',duration:.55,ease:'power2.in'})
+    .to('.ls2',{x:'160vw',duration:.5,ease:'power2.in'},'-=.42')
+    .to('.ls3',{x:'160vw',duration:.6,ease:'power2.in'},'-=.44')
+    .to('.loader-logo',{opacity:1,duration:.1},'-=.15')
+    .to('.loader-word .lt',{opacity:1,x:0,filter:'blur(0px)',duration:.42,stagger:.06,ease:'expo.out'})
+    .to('.loader-tag',{opacity:1,letterSpacing:'.5em',duration:.5,ease:'power2.out'},'-=.2')
+    .to('#loaderO',{color:'#6CC04A',textShadow:'0 0 30px rgba(108,192,74,.5)',duration:.3},'-=.1')
+    .to({},{duration:.45});
+  $('#skipLoader').addEventListener('click',()=>{tl.kill();finishLoader();});
+  window.addEventListener('keydown',e=>{ if(!loaderDone && (e.key==='Enter'||e.key===' '||e.key==='Escape')){tl.kill();finishLoader();} },{once:true});
+}
+
+/* =====================================================
+   2 · HERO ENTRANCE
+===================================================== */
+function heroEnter(){
+  if(reduced || !window.gsap){
+    $$('#heroH .word span').forEach(s=>{s.style.transform='none';s.style.filter='none';});
+    ['#heroSub','#heroCtas','#heroRider'].forEach(sel=>$(sel).classList.add('in'));
+    typeChip(()=>igniteCTA());
+    return;
+  }
+  typeChip();
+  gsap.to('#heroH .word span',{y:0,filter:'blur(0px)',duration:.75,stagger:.09,ease:'expo.out',delay:.15});
+  setTimeout(()=>$('#heroSub').classList.add('in'),520);
+  setTimeout(()=>$('#heroCtas').classList.add('in'),680);
+  setTimeout(()=>$('#heroRider').classList.add('in'),360);
+  setTimeout(igniteCTA, 1100);
+}
+
+/* =====================================================
+   3 · BACKGROUND — night highway beams (canvas)
+===================================================== */
+const beams = $('#beams'), bctx = beams.getContext('2d');
+const vignette = $('.vignette');
+let bw,bh,streaks=[],scrollBoost=0,vignetteBoost=0;
+function sizeBeams(){ bw = beams.width = innerWidth * devicePixelRatio; bh = beams.height = innerHeight * devicePixelRatio; }
+function makeStreak(init){
+  const green = Math.random() < .62;
+  return { x: init ? Math.random()*bw : -400,
+    y: Math.random()*bh,
+    len: (60+Math.random()*260)*devicePixelRatio,
+    sp: (.6+Math.random()*2.2)*devicePixelRatio,
+    a: .04+Math.random()*.12,
+    g: green, h:(1+Math.random()*1.2)*devicePixelRatio };
+}
+function beamLoop(){
+  bctx.clearRect(0,0,bw,bh);
+  for(const s of streaks){
+    s.x += s.sp*(1+scrollBoost);
+    if(s.x - s.len > bw){ Object.assign(s, makeStreak(false)); }
+    const grad = bctx.createLinearGradient(s.x-s.len,0,s.x,0);
+    const col = s.g ? '108,192,74' : '255,255,255';
+    grad.addColorStop(0,`rgba(${col},0)`);
+    grad.addColorStop(1,`rgba(${col},${s.a})`);
+    bctx.fillStyle = grad;
+    bctx.fillRect(s.x-s.len, s.y, s.len, s.h);
+  }
+  scrollBoost *= .94;
+  vignetteBoost *= .9;
+  if(vignette) vignette.style.opacity = String(1 + vignetteBoost * .07);
+  requestAnimationFrame(beamLoop);
+}
+if(!reduced){
+  sizeBeams();
+  const density = isMobile() ? 22 : 42;
+  for(let i=0;i<density;i++) streaks.push(makeStreak(true));
+  addEventListener('resize', sizeBeams);
+  let lastY = scrollY;
+  addEventListener('scroll',()=>{
+    const dy = Math.abs(scrollY-lastY);
+    scrollBoost = Math.min(3, scrollBoost + dy/300);
+    vignetteBoost = Math.min(1, vignetteBoost + dy/700);
+    lastY = scrollY;
+  },{passive:true});
+  document.addEventListener('visibilitychange',()=>{ /* rAF auto-pauses when hidden */ });
+  beamLoop();
+}
+
+/* =====================================================
+   4 · CURSOR COMET TRAIL (desktop, fine pointer)
+===================================================== */
+const trail = $('#trail');
+if(!reduced && matchMedia('(hover:hover) and (pointer:fine)').matches){
+  const tctx = trail.getContext('2d');
+  let tw,th,pts=[];
+  const sizeTrail=()=>{ tw=trail.width=innerWidth*devicePixelRatio; th=trail.height=innerHeight*devicePixelRatio; };
+  sizeTrail(); addEventListener('resize',sizeTrail);
+  addEventListener('mousemove',e=>{ pts.push({x:e.clientX*devicePixelRatio,y:e.clientY*devicePixelRatio,life:1}); if(pts.length>26) pts.shift(); });
+  (function trailLoop(){
+    tctx.clearRect(0,0,tw,th);
+    for(let i=1;i<pts.length;i++){
+      const p=pts[i], q=pts[i-1];
+      p.life -= .045;
+      if(p.life<=0) continue;
+      tctx.strokeStyle = `rgba(108,192,74,${p.life*.5})`;
+      tctx.lineWidth = 2*devicePixelRatio*p.life;
+      tctx.lineCap='round';
+      tctx.beginPath(); tctx.moveTo(q.x,q.y); tctx.lineTo(p.x,p.y); tctx.stroke();
+    }
+    pts = pts.filter(p=>p.life>0);
+    requestAnimationFrame(trailLoop);
+  })();
+}
+
+/* =====================================================
+   5 · SPEEDOMETER GAUGE
+===================================================== */
+const CX=200, CY=200, R=150, START=135, SWEEP=270;
+const rad = d => d*Math.PI/180;
+const ptAt = (deg,r=R) => [CX + r*Math.cos(rad(deg)), CY + r*Math.sin(rad(deg))];
+function arcPath(fromDeg, toDeg, r=R){
+  const [x1,y1]=ptAt(fromDeg,r),[x2,y2]=ptAt(toDeg,r);
+  const large = (toDeg-fromDeg) > 180 ? 1 : 0;
+  return `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${r} ${r} 0 ${large} 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+}
+/* redline = last 12% of the arc */
+$('#gRedline').setAttribute('d', arcPath(START+SWEEP*.88, START+SWEEP));
+/* milestone ticks + labels */
+const MILESTONES=['Fleet ready','Partners onboard','Routes mapped','Riders trained','Launch'];
+const ticksG = $('#gTicks');
+MILESTONES.forEach((m,i)=>{
+  const deg = START + SWEEP*(i/(MILESTONES.length-1));
+  const [x1,y1]=ptAt(deg,R-14),[x2,y2]=ptAt(deg,R+2);
+  const t=document.createElementNS('http://www.w3.org/2000/svg','line');
+  t.setAttribute('x1',x1);t.setAttribute('y1',y1);t.setAttribute('x2',x2);t.setAttribute('y2',y2);
+  t.setAttribute('class','g-tick'); t.dataset.p = i/(MILESTONES.length-1);
+  ticksG.appendChild(t);
+  const [lx,ly]=ptAt(deg,R+26);
+  const lbl=document.createElementNS('http://www.w3.org/2000/svg','text');
+  lbl.setAttribute('x',lx);lbl.setAttribute('y',ly);lbl.setAttribute('class','g-label');
+  lbl.dataset.p = i/(MILESTONES.length-1);
+  lbl.setAttribute('text-anchor', deg<225?'end':(deg>315?'start':'middle'));
+  lbl.textContent=m; ticksG.appendChild(lbl);
+});
+/* progress = elapsed campaign time */
+function launchProgress(){
+  const p = (Date.now()-CAMPAIGN_START) / (LAUNCH-CAMPAIGN_START);
+  return Math.max(0, Math.min(1, p));
+}
+const gFill = $('#gFill'), gNeedle = $('#gNeedle');
+const ARCLEN = 2*Math.PI*R*(SWEEP/360);
+gFill.style.strokeDasharray = ARCLEN;
+gFill.style.strokeDashoffset = ARCLEN;
+let gaugeShown = false, needleDeg = 0; /* degrees past START */
+function setNeedle(deltaDeg){
+  gNeedle.setAttribute('transform', `rotate(${deltaDeg} 200 200)`);
+}
+/* elastic ease-out for the sweep */
+function easeElastic(t){
+  return t===0||t===1 ? t : Math.pow(2,-10*t)*Math.sin((t*10-.75)*(2*Math.PI/3))+1;
+}
+function sweepNeedle(target, dur){
+  if(window.gsap && !reduced){
+    const overshoot = target + SWEEP * 0.045;
+    const proxy = {val: needleDeg};
+    gsap.timeline()
+      .to(proxy,{
+        val: overshoot, duration: dur/1000 * .72, ease: 'power2.out',
+        onUpdate(){ setNeedle(proxy.val); }
+      })
+      .to(proxy,{
+        val: target, duration: dur/1000 * .58, ease: 'elastic.out(1, 0.65)',
+        onUpdate(){ setNeedle(proxy.val); needleDeg = proxy.val; }
+      });
+    return;
+  }
+  const t0 = performance.now();
+  (function frame(now){
+    const t = Math.min(1,(now-t0)/dur);
+    needleDeg = target * easeElastic(t);
+    setNeedle(needleDeg);
+    if(t<1) requestAnimationFrame(frame); else needleDeg = target;
+  })(t0);
+}
+function setGauge(p, animate){
+  const off = ARCLEN*(1-p);
+  const target = SWEEP*p;
+  $$('#gTicks .g-tick, #gTicks .g-label').forEach(el=>{
+    el.classList.toggle('on', p >= parseFloat(el.dataset.p) - .001);
+  });
+  $('#gStatus').textContent = p>=.88 ? 'REDLINE — LAUNCH WEEK' : (p>=.5 ? 'ACCELERATING' : 'ENGINE IDLING');
+  if(animate && !reduced){
+    if(window.gsap){ gsap.to(gFill,{strokeDashoffset:off,duration:1.6,ease:'expo.out'}); }
+    else{ gFill.style.transition='stroke-dashoffset 1.6s cubic-bezier(.16,1,.3,1)'; gFill.style.strokeDashoffset=off; }
+    sweepNeedle(target, 1700);
+  }else{
+    gFill.style.strokeDashoffset = off;
+    needleDeg = target; setNeedle(target);
+  }
+}
+/* idle vibration — attribute-based, always anchored at the hub */
+if(!reduced){
+  setInterval(()=>{ if(!gaugeShown) return;
+    setNeedle(needleDeg + (Math.random()*.8-.4));
+  }, 900);
+}
+
+/* =====================================================
+   6 · TELEMETRY — odometer countdown
+===================================================== */
+function buildOdo(cell,count){
+  cell.innerHTML='';
+  for(let i=0;i<count;i++){
+    const d=document.createElement('div'); d.className='odo';
+    const col=document.createElement('div'); col.className='odo-col';
+    for(let n=0;n<10;n++){const s=document.createElement('span');s.textContent=n;col.appendChild(s);}
+    d.appendChild(col); cell.appendChild(d);
+  }
+}
+buildOdo($('[data-unit="d"]'),3); buildOdo($('[data-unit="h"]'),2);
+buildOdo($('[data-unit="m"]'),2); buildOdo($('[data-unit="s"]'),2);
+function setUnit(unit,val,digits){
+  const str=String(Math.max(0,val)).padStart(digits,'0');
+  const cols=$(`[data-unit="${unit}"]`).querySelectorAll('.odo-col');
+  cols.forEach((c,i)=>{
+    const next = str[i];
+    if(c.dataset.last !== next){
+      c.dataset.last = next;
+      c.classList.add('rolling');
+      c.style.transform=`translateY(-${next}em)`;
+      if(window.gsap && !reduced){
+        gsap.fromTo(c,{filter:'blur(5px)'},{filter:'blur(0px)',duration:.38,ease:'power2.out',
+          onComplete:()=>c.classList.remove('rolling')});
+      } else c.classList.remove('rolling');
+    }
+  });
+}
+let lastMinuteAnnounced=-1;
+function tick(){
+  let ms = LAUNCH - Date.now();
+  if(ms<0) ms=0;
+  const d=Math.floor(ms/86400000), h=Math.floor(ms/3600000)%24,
+        m=Math.floor(ms/60000)%60, s=Math.floor(ms/1000)%60;
+  setUnit('d',d,3); setUnit('h',h,2); setUnit('m',m,2); setUnit('s',s,2);
+  if(m!==lastMinuteAnnounced){ lastMinuteAnnounced=m;
+    $('#timerLive').textContent=`${d} days ${h} hours ${m} minutes until launch`; }
+}
+tick(); setInterval(tick,1000);
+
+/* =====================================================
+   7 · SCROLL — reveals, rail, sections
+===================================================== */
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){
+      en.target.classList.add('in');
+      if(en.target.closest('.gauge-wrap') || en.target.classList.contains('gauge-wrap')){
+        if(!gaugeShown){ gaugeShown=true; setGauge(launchProgress(), true); }
+      }
+      io.unobserve(en.target);
+    }
+  });
+},{threshold:.18});
+$$('.reveal:not(.sec-h):not(#gridH), .card, .stop, .sign').forEach(el=>io.observe(el));
+if(reduced){ setGauge(launchProgress(), false); gaugeShown=true; }
+
+/* rail + topbar + sticky cta */
+const railFill=$('#railFill'), railRider=$('#railRider'),
+      topbar=$('#topbar'), sticky=$('#stickyCta');
+function onScroll(){
+  const max=document.documentElement.scrollHeight-innerHeight;
+  const p=max>0?scrollY/max:0;
+  railFill.style.height=(p*100)+'%';
+  railRider.style.top=(p*100)+'%';
+  topbar.classList.toggle('show', scrollY > innerHeight*.75);
+  topbar.classList.toggle('scrolled', scrollY > 40);
+  sticky.classList.toggle('show', scrollY > innerHeight*.9 && p < .82);
+}
+addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+/* route fill */
+if(window.gsap && !reduced){
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.to('#routeFill',{height:'100%',ease:'none',
+    scrollTrigger:{trigger:'.route-wrap',start:'top 70%',end:'bottom 55%',scrub:.6}});
+}else{ $('#routeFill').style.height='60%'; }
+
+/* =====================================================
+   8 · THE ROAD — pinned horizontal ride (desktop)
+===================================================== */
+if(window.gsap && !reduced && !isMobile()){
+  const track=$('#storyTrack'), riderBox=$('.story-rider-box'), trail=$('#storyTrail');
+  const panels = $$('.story-panel');
+  gsap.to(track,{x:'-200vw',ease:'none',
+    scrollTrigger:{
+      trigger:'#storyPin',start:'top top',end:'+=260%',scrub:.8,pin:true,anticipatePin:1,
+      onUpdate(self){
+        const vw=innerWidth;
+        const x = 0.06*vw + self.progress*(0.78*vw);
+        const v = Math.min(Math.abs(self.getVelocity())/1400, 2.4);
+        if(riderBox) riderBox.style.transform=`translateX(${x}px)`;
+        if(trail){
+          trail.style.transform=`translateY(-50%) scaleX(${1 + v * 1.6})`;
+          trail.style.opacity = String(.25 + v * .35);
+        }
+        const active = Math.min(panels.length - 1, Math.floor(self.progress * panels.length));
+        panels.forEach((p,i)=>{
+          const off = Math.abs(i - active);
+          gsap.to(p,{scale: off ? .9 : 1, opacity: off ? .38 : 1, duration:.35, overwrite:true});
+        });
+      }
+    }});
+}
+
+/* =====================================================
+   8b · THE ROAD — mobile swipe + pull-to-reveal flash
+===================================================== */
+function initMobileStory(){
+  if(reduced || !isMobile()) return;
+  const track = $('#storyTrack');
+  const flash = $('#storyFlash');
+  const dotsWrap = $('#storyDots');
+  const num = $('#storyNum');
+  const panels = $$('.story-panel');
+  if(!track || !panels.length) return;
+
+  panels.forEach((_,i)=>{
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-label', `Story panel ${i+1}`);
+    b.addEventListener('click',()=>{
+      panels[i].scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+    });
+    dotsWrap.appendChild(b);
+  });
+  const dots = $$('#storyDots button');
+
+  let active = -1;
+  let flashLock = false;
+  function setActive(i, withFlash){
+    if(i === active) return;
+    const changed = active !== -1;
+    active = i;
+    panels.forEach((p,idx)=>p.classList.toggle('is-active', idx === i));
+    dots.forEach((d,idx)=>d.setAttribute('aria-current', idx === i ? 'true' : 'false'));
+    if(num) num.textContent = `03 · THE ROAD · ${i+1}/${panels.length}`;
+    if(withFlash && changed && flash && !flashLock){
+      flashLock = true;
+      flash.classList.remove('fire');
+      void flash.offsetWidth;
+      flash.classList.add('fire');
+      setTimeout(()=>{ flash.classList.remove('fire'); flashLock = false; }, 560);
+    }
+  }
+
+  function nearestPanel(){
+    const mid = track.scrollLeft + track.clientWidth / 2;
+    let best = 0, bestDist = Infinity;
+    panels.forEach((p,i)=>{
+      const c = p.offsetLeft + p.offsetWidth / 2;
+      const d = Math.abs(c - mid);
+      if(d < bestDist){ bestDist = d; best = i; }
+    });
+    return best;
+  }
+
+  let ticking = false;
+  track.addEventListener('scroll',()=>{
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(()=>{
+      setActive(nearestPanel(), true);
+      ticking = false;
+    });
+  },{passive:true});
+
+  setActive(0, false);
+}
+initMobileStory();
+
+/* =====================================================
+   9 · CARD TILT (desktop)
+===================================================== */
+if(!reduced && matchMedia('(hover:hover)').matches){
+  $$('.card').forEach(card=>{
+    card.addEventListener('mousemove',e=>{
+      const r=card.getBoundingClientRect();
+      const rx=((e.clientY-r.top)/r.height-.5)*-6;
+      const ry=((e.clientX-r.left)/r.width-.5)*6;
+      card.style.transform=`perspective(700px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+    });
+    card.addEventListener('mouseleave',()=>{ card.style.transform=''; });
+  });
+}
+
+/* =====================================================
+   10 · SIGNUP — mode toggle + Grid Pass
+===================================================== */
+const modeC=$('#modeCustomer'), modeR=$('#modeRider'), companyField=$('#companyField');
+let mode='partner';
+const copy={
+  partner:{h:'Put Proven riders on <span style="color:var(--green)">your routes.</span>',
+    sub:'Trained riders, dispatch and tracking — as a service. Founding partners get launch-week rates.',
+    pass:'PARTNER PASS', ph:'Work email',
+    foot:"You're on the founding grid. Our partnerships team will reach out with a pilot plan and launch-week rates."},
+  rider:{h:'Ride with the <span style="color:var(--green)">best.</span>',
+    sub:'Applications open. Fair pay, real gear, routes that respect your time.',
+    pass:'RIDER PASS', ph:'Your email',
+    foot:"Application received. Our crew chief will reach out before launch. Keep the helmet ready."}
+};
+function setMode(m){
+  mode=m;
+  modeC.setAttribute('aria-pressed', m==='partner');
+  modeR.setAttribute('aria-pressed', m==='rider');
+  const h=$('#gridH'), sub=$('#gridSub');
+  const apply=()=>{
+    h.innerHTML=copy[m].h;
+    sub.textContent=copy[m].sub;
+    delete h.dataset.split;
+    splitHeading(h);
+    $('#email').placeholder=copy[m].ph;
+    companyField.style.display = m==='partner' ? '' : 'none';
+  };
+  if(window.gsap && !reduced){
+    gsap.timeline()
+      .to([h,sub],{y:-14,opacity:0,duration:.22,ease:'power2.in',onComplete:apply})
+      .fromTo([h,sub],{y:18,opacity:0},{y:0,opacity:1,duration:.48,ease:'expo.out'});
+  } else apply();
+}
+modeC.addEventListener('click',()=>setMode('partner'));
+modeR.addEventListener('click',()=>setMode('rider'));
+$$('a[data-mode="rider"]').forEach(a=>a.addEventListener('click',()=>setMode('rider')));
+
+const form=$('#gridForm'), email=$('#email'), err=$('#formErr'), pass=$('#pass');
+form.addEventListener('submit',e=>{
+  e.preventDefault();
+  const v=email.value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){
+    err.textContent='That address won\u2019t reach the grid — check the email and try again.';
+    email.parentElement.classList.remove('shake');
+    void email.parentElement.offsetWidth;
+    email.parentElement.classList.add('shake');
+    email.focus();
+    return;
+  }
+  err.textContent='';
+  const co=$('#company').value.trim();
+  const passNo = 'Nº '+String(147+Math.floor(Math.random()*60)).padStart(4,'0');
+  $('#passEmail').textContent = (mode==='partner' && co) ? `${co} · ${v}` : v;
+  $('#passType').textContent=copy[mode].pass;
+  $('#passFoot').textContent=copy[mode].foot;
+  const numEl = $('#passNum');
+  numEl.textContent = 'Nº ----';
+  numEl.classList.remove('stamped');
+
+  function printPass(){
+    form.style.display='none';
+    $('.mode-toggle').style.display='none';
+    pass.classList.add('show');
+    const card = $('#passCard');
+    const tape = $('#passTape');
+    const feed = $('#passFeed');
+    const head = card.querySelector('.pass-head');
+    const body = card.querySelector('.pass-body');
+    const tag = card.querySelector('.pass-tagline');
+    const foot = $('#passFoot');
+
+    if(reduced || !window.gsap){
+      card.classList.add('printed');
+      tape.style.transform='scaleX(1)';
+      [head,body,tag,foot].forEach(el=>{ if(el){ el.style.opacity='1'; }});
+      numEl.textContent = passNo;
+      numEl.classList.add('stamped');
+      return;
+    }
+
+    card.classList.add('printing');
+    gsap.set([head,body,tag,foot],{opacity:0,y:10});
+    gsap.set(tape,{scaleX:0});
+    gsap.set(numEl,{opacity:0,scale:1.35,filter:'blur(4px)'});
+    gsap.set(feed,{opacity:0,scaleX:.4});
+
+    const tl = gsap.timeline({defaults:{ease:'expo.out'}});
+    tl.to(feed,{opacity:1,scaleX:1,duration:.25})
+      .to(card,{opacity:1,y:0,scale:1,duration:.7,ease:'power3.out'},'-=.05')
+      .to(feed,{opacity:0,duration:.2},'-=.25')
+      .to(tape,{scaleX:1,duration:.55,ease:'power2.inOut'},'-=.35')
+      .to(head,{opacity:1,y:0,duration:.4},'-=.2')
+      .to(body,{opacity:1,y:0,duration:.45},'-=.2')
+      .add(()=>{
+        numEl.textContent = passNo;
+        numEl.classList.add('stamped');
+        gsap.fromTo(numEl,
+          {opacity:0,scale:1.45,filter:'blur(5px)'},
+          {opacity:1,scale:1,filter:'blur(0px)',duration:.42,ease:'back.out(2.2)'});
+      })
+      .to(tag,{opacity:1,y:0,duration:.35},'-=.05')
+      .to(foot,{opacity:1,y:0,duration:.4},'-=.15')
+      .add(()=>card.classList.add('printed'));
+  }
+
+  if(window.gsap && !reduced){
+    const btn=$('#lockBtn');
+    gsap.to(btn,{x:60,opacity:0,duration:.35,ease:'power3.in'});
+    gsap.to(form,{opacity:0,duration:.3,delay:.25,onComplete:printPass});
+  }else{ printPass(); }
+});
+
+/* =====================================================
+   11 · IDLE — lone rider streak every 20s
+===================================================== */
+if(!reduced){
+  let idleT;
+  const resetIdle=()=>{ clearTimeout(idleT); idleT=setTimeout(loneRider,20000); };
+  function loneRider(){
+    const s=makeStreak(false);
+    s.y=Math.random()*bh*.6; s.a=.35; s.g=true; s.sp=9*devicePixelRatio; s.len=320*devicePixelRatio; s.h=2.5*devicePixelRatio;
+    streaks.push(s);
+    setTimeout(()=>{ const i=streaks.indexOf(s); if(i>-1) streaks.splice(i,1); },4000);
+    resetIdle();
+  }
+  ['scroll','mousemove','keydown','touchstart'].forEach(ev=>addEventListener(ev,resetIdle,{passive:true}));
+  resetIdle();
+}
+
+/* =====================================================
+   12 · POLISH — splits, parallax, micro-interactions
+===================================================== */
+$$('.sec-h.reveal').forEach(splitHeading);
+splitHeading($('#gridH'));
+initMagneticButtons();
+initFuseRace();
+initKmCounters();
+initPinDrops();
+initParallax();
+initFooterReveal();
+initCustomCursor();
+initLogoEasterEgg();
+})();
+</script>
+</body>
+</html>
