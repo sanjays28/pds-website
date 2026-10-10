@@ -3152,6 +3152,230 @@ section.section {
 }
 
 /* ============================================================
+   About — AboutIntro (pinned statement + supporting copy) and AboutPurpose
+   ============================================================ */
+.rv {
+  opacity: 0;
+  transform: translateX(-12px);
+  transition:
+    opacity 0.5s var(--ease-brake) var(--d, 0ms),
+    transform 0.5s var(--ease-brake) var(--d, 0ms);
+}
+[data-in] .rv {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rv {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+.about {
+  position: relative;
+}
+.ab-h2 {
+  font-size: clamp(28px, 3.6vw, 48px);
+  line-height: 1.02;
+  max-width: 20ch;
+}
+.ab-h2 .accent {
+  color: var(--color-green);
+}
+.ab-statement {
+  margin-top: 32px;
+  max-width: 980px;
+  font-family: var(--font-body);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+@media (min-width: 1024px) {
+  .ab-statement {
+    font-size: 36px;
+  }
+}
+.ab-w {
+  color: rgba(255, 255, 255, 0.18);
+  transition: color 0.25s linear;
+}
+.ab-w[data-on] {
+  color: var(--color-white);
+}
+.ab-w[data-on][data-key] {
+  color: var(--color-green);
+}
+/* pinned (≥1024px, motion allowed) */
+.ab-pin {
+  height: 220vh;
+}
+.ab-pin .ab-stick {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: 72px; /* clears the 64px fixed nav */
+}
+/* unpinned: phones, tablets, reduced motion */
+.ab-flow {
+  padding: clamp(72px, 9vh, 140px) 0;
+}
+.ab-stick,
+.ab-rest {
+  padding-left: clamp(20px, 6vw, 96px);
+  padding-right: clamp(20px, 6vw, 96px);
+}
+@media (min-width: 1024px) {
+  .ab-stick,
+  .ab-rest {
+    padding-left: clamp(64px, 6vw, 96px);
+  }
+}
+.ab-inner,
+.ab-support,
+.ab-who {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+.ab-support {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+@media (min-width: 1024px) {
+  .ab-support {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 48px;
+  }
+}
+.ab-col {
+  max-width: 340px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-line);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-w70);
+}
+.ab-who {
+  margin-top: 120px;
+  padding-bottom: clamp(72px, 9vh, 140px);
+}
+.ab-who-grid {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+@media (min-width: 1024px) {
+  .ab-who-grid {
+    grid-template-columns: 7fr 5fr;
+    gap: 64px;
+    align-items: start;
+  }
+}
+.ab-who-lead {
+  font-family: var(--font-body);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--color-white);
+}
+.ab-who-body p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-w70);
+}
+.ab-who-body p + p {
+  margin-top: 18px;
+}
+/* Mission / Vision */
+section.ab-purpose {
+  padding-top: 64px;
+  padding-bottom: clamp(72px, 9vh, 140px);
+}
+.ab-mv {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  padding: 64px 0;
+}
+.ab-mv-rule {
+  height: 1px;
+  background: var(--color-line);
+}
+@media (min-width: 1024px) {
+  .ab-mv {
+    grid-template-columns: 1fr 1px 1fr;
+    gap: 64px;
+  }
+  .ab-mv-rule {
+    height: auto;
+    width: 1px;
+  }
+}
+.ab-mv-text {
+  max-width: 460px;
+  font-family: var(--font-body);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-white);
+}
+/* Core values */
+.ab-values {
+  margin-top: 32px;
+}
+.ab-val-grid {
+  list-style: none;
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 64px 48px;
+}
+@media (min-width: 640px) {
+  .ab-val-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .ab-val-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.ab-vline {
+  display: block;
+  width: 24px;
+  height: 2px;
+  margin-bottom: 18px;
+  background: var(--color-green);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.5s var(--ease-brake) var(--d, 0ms);
+}
+[data-in] .ab-vline {
+  transform: scaleX(1);
+}
+.ab-vname {
+  font-size: 26px;
+  line-height: 1.1;
+  color: var(--color-white);
+}
+.ab-vbody {
+  margin-top: 12px;
+  max-width: 320px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-w70);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ab-vline {
+    transform: scaleX(1) !important;
+  }
+}
+
+/* ============================================================
    Two-column content block (About / Safety)
    ============================================================ */
 .two-col {

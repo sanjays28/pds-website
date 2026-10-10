@@ -1,6 +1,8 @@
 import { Nav } from "@/components/Nav";
 import { HeroFilm } from "@/components/hero/HeroFilm";
 import { Section } from "@/components/Section";
+import { AboutIntro } from "@/components/sections/AboutIntro";
+import { AboutPurpose } from "@/components/sections/AboutPurpose";
 import { Services } from "@/components/sections/Services";
 import { WhyPds } from "@/components/sections/WhyPds";
 import { Process } from "@/components/sections/Process";
@@ -9,7 +11,6 @@ import { CONTACT_HREF, CONTACT_ID } from "@/lib/contact";
 import { ContactForm } from "@/components/ContactForm";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/Button";
-import { ScrollStory, type StoryBeat } from "@/components/ScrollStory";
 import { CursorTrail } from "@/components/CursorTrail";
 import { RouteSpine } from "@/components/RouteSpine";
 
@@ -34,40 +35,6 @@ import { RouteSpine } from "@/components/RouteSpine";
  * with all 8, positioned where the full version sits in the nav order,
  * rather than showing the same eight labels twice.
  */
-
-/** Minimal stroke icons, matching proven-coming-soon.html's story-icon style. */
-function PackageIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden="true">
-      <path d="M21 8l-9-5-9 5v8l9 5 9-5z" />
-      <path d="M3 8l9 5 9-5M12 13v9" />
-    </svg>
-  );
-}
-function ShieldCheckIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden="true">
-      <path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z" />
-      <path d="M8.5 12l2.5 2.5 4.5-5" />
-    </svg>
-  );
-}
-function HeartIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden="true">
-      <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z" />
-    </svg>
-  );
-}
-
-// content.md's "About — Our Story" paragraph, split into 3 beats for the
-// #our-story ScrollStory (WMS motion M06). Beat 3 is that paragraph's own
-// closing sentence, verbatim.
-const STORY_BEATS: StoryBeat[] = [
-  { icon: <PackageIcon />, text: "A delivery is more than a package." },
-  { icon: <ShieldCheckIcon />, text: "It's a promise,", accent: "delivered." },
-  { icon: <HeartIcon />, text: "Professionalism. Accountability.", accent: "Care." },
-];
 
 const NAV_LINKS = [
   { label: "Home", href: "#hero" },
@@ -169,47 +136,9 @@ export default function Home() {
         />
 
         <RouteSpine>
-        <Section
-          id="about"
-          eyebrow="Delivering Trust at Every Mile"
-          title="Who We Are"
-          subtitle="From trained delivery riders to efficient fleet operations, Proven Delivery Services provides dependable last-mile logistics solutions tailored to the needs of modern businesses."
-        >
-          <div className="two-col">
-            <div>
-              <p>
-                Proven Delivery Services (PDS) is a UAE-based last-mile logistics
-                company providing reliable, safe, and efficient delivery
-                solutions for businesses and individual customers. We support
-                our clients with trained delivery riders, professional fleet
-                management, well-maintained motorcycles, disciplined
-                operational processes, and customer-focused service. Whether
-                you operate an e-commerce platform, restaurant, retail store,
-                pharmacy, Q-commerce, or corporate business, PDS helps you
-                simplify delivery operations and ensure every shipment reaches
-                its destination safely and on time.
-              </p>
-            </div>
-            <div>
-              <h3>Mission</h3>
-              <p>
-                To provide safe, reliable, and efficient last-mile delivery
-                solutions that help businesses simplify their logistics
-                operations, improve customer satisfaction, and grow with
-                confidence.
-              </p>
-              <h3>Vision</h3>
-              <p>
-                To become one of the Middle East&apos;s most trusted last-mile
-                delivery partners, recognized for operational excellence,
-                professional riders, reliable fleet management, and consistent
-                service quality.
-              </p>
-            </div>
-          </div>
-        </Section>
+        <AboutIntro />
+        <AboutPurpose />
 
-        <ScrollStory id="our-story" label="Our Story" beats={STORY_BEATS} />
 
         <Services />
 
