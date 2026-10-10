@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Lenis from "lenis";
 import { ensureGsapRegistered, gsap, ScrollTrigger } from "@/motion/gsap";
 import { useReducedMotion } from "@/motion/useReducedMotion";
+import { registerLenis } from "@/lib/smoothScroll";
 
 /**
  * Lenis smooth scroll — locked stack (WMS §14.1): "desktop, off under
@@ -25,6 +26,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       easing: (t) => 1 - Math.pow(1 - t, 3),
     });
 
+    registerLenis(lenis);
     ensureGsapRegistered();
     lenis.on("scroll", ScrollTrigger.update);
     const onTick = (time: number) => lenis.raf(time * 1000);
@@ -33,6 +35,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
 
     return () => {
       gsap.ticker.remove(onTick);
+      registerLenis(null);
       lenis.destroy();
     };
   }, [reduced]);

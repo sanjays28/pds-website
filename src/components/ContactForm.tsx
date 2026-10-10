@@ -59,7 +59,7 @@ export function ContactForm() {
         <label htmlFor="cf-message">How can we help?</label>
         <textarea id="cf-message" name="message" rows={4} required />
       </div>
-      <button type="submit" className="btn btn-primary" aria-busy={status === "submitting"}>
+      <button type="submit" data-cta="contact-form" className="btn btn-primary" aria-busy={status === "submitting"}>
         <span className="btn-label">{status === "submitting" ? "Sending…" : "Send Message"}</span>
         <span className="arrow" aria-hidden="true">→</span>
       </button>

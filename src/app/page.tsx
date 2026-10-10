@@ -1,5 +1,5 @@
 import { Nav } from "@/components/Nav";
-import { Hero } from "@/components/Hero";
+import { HeroFilm } from "@/components/hero/HeroFilm";
 import { Section } from "@/components/Section";
 import { TagList } from "@/components/TagList";
 import { OpsStatusBar, OpsRow, OpsCoverage } from "@/components/OpsManifest";
@@ -70,7 +70,7 @@ const STORY_BEATS: StoryBeat[] = [
 ];
 
 const NAV_LINKS = [
-  { label: "Home", href: "#home" },
+  { label: "Home", href: "#hero" },
   { label: "Services", href: "#services" },
   { label: "Process", href: "#process" },
   { label: "Why Us", href: "#why-us" },
@@ -221,22 +221,20 @@ export default function Home() {
         logoAlt="Proven Delivery Services"
         links={NAV_LINKS}
         ctaLabel="Request a Delivery Solution"
+        desktopCtaLabel="Contact Our Team"
         ctaHref="#contact"
       />
 
       <main id="main">
-        <Hero
-          chip="Delivering Trust at Every Mile"
-          title="Safe. Reliable. Proven."
-          accentWord="Proven."
-          subtitle="Safe, efficient, and professional B2B delivery services designed to keep your business moving."
+        <HeroFilm
           primaryCta={{ label: "Request a Delivery Solution", href: "#contact" }}
           secondaryCta={{ label: "Contact Our Team", href: "#contact" }}
+          services={SERVICES.map((service) => service.title)}
         />
 
         <Section
           id="about"
-          eyebrow="Who We Are"
+          eyebrow="Delivering Trust at Every Mile"
           title="Who We Are"
           subtitle="From trained delivery riders to efficient fleet operations, Proven Delivery Services provides dependable last-mile logistics solutions tailored to the needs of modern businesses."
         >

@@ -16,6 +16,8 @@ export interface NavProps {
   links: NavLink[];
   ctaLabel: string;
   ctaHref: string;
+  /** Label for the desktop nav pill only (the mobile menu keeps `ctaLabel`). */
+  desktopCtaLabel?: string;
 }
 
 /**
@@ -23,8 +25,10 @@ export interface NavProps {
  * generalized to accept data instead of hardcoded links since no section
  * content exists yet (Prompt 1 builds the shell only).
  *
- * Motion: appears via translateY(-100% → 0) past 75vh (WMS §11.3 "Nav
- * appear"); glass treatment (WMS §12.4, navbar is the sole sanctioned use);
+ * Always visible: transparent over the hero film, switching to the glass
+ * treatment (WMS §12.4, navbar is the sole sanctioned use) after 80px of
+ * scroll — replaces the old "appear past 75vh" slide-in now that the hero
+ * is a full-bleed film the nav has to sit on;
  * link underline sweep on hover/active is M16.
  *
  * FLAG: WMS §8 Navbar contract calls for a "mobile-sheet" with a full focus
@@ -33,18 +37,33 @@ export interface NavProps {
  * sheet) is deferred until the nav has real content to trap focus around;
  * revisit before launch per the WMS §17 accessibility gate.
  */
-export function Nav({ logoSrc, logoAlt, links, ctaLabel, ctaHref }: NavProps) {
-  const [visible, setVisible] = useState(false);
+export function Nav({ logoSrc, logoAlt, links, ctaLabel, ctaHref, desktopCtaLabel }: NavProps) {
+  const [scrolled, setScrolled] = useState(false);
+  // Nav pill is outlined over the hero film, solid green once the film ends.
+  const [solidCta, setSolidCta] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => {
-      setVisible(window.scrollY > window.innerHeight * 0.75);
+      setScrolled(window.scrollY > 80);
+      const hero = document.getElementById("hero");
+      if (!hero) {
+        setSolidCta(true);
+        return;
+      }
+      const r = hero.getBoundingClientRect();
+      const span = r.height - window.innerHeight;
+      const progress = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 1;
+      setSolidCta(progress >= 0.93 || r.bottom <= 0);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -61,8 +80,8 @@ export function Nav({ logoSrc, logoAlt, links, ctaLabel, ctaHref }: NavProps) {
       <a href="#main" className="skip-link">
         Skip to content
       </a>
-      <header className={cn("topbar", (visible || mobileOpen) && "topbar-show")}>
-        <a href="#home" className="topbar-mark" aria-label="Proven Delivery Services — home">
+      <header className={cn("topbar", (scrolled || mobileOpen) && "topbar-glass")}>
+        <a href="#hero" className="topbar-mark" aria-label="Proven Delivery Services — home">
           <Image src={logoSrc} alt={logoAlt} width={140} height={40} priority={false} />
         </a>
 
@@ -75,8 +94,8 @@ export function Nav({ logoSrc, logoAlt, links, ctaLabel, ctaHref }: NavProps) {
         </nav>
 
         <div className="topbar-cta">
-          <Button href={ctaHref} variant="compact">
-            {ctaLabel}
+          <Button href={ctaHref} variant="compact" className={cn(!solidCta && "btn-compact-outline")} data-cta="nav">
+            {desktopCtaLabel ?? ctaLabel}
           </Button>
         </div>
 
@@ -115,7 +134,7 @@ export function Nav({ logoSrc, logoAlt, links, ctaLabel, ctaHref }: NavProps) {
             </a>
           ))}
         </nav>
-        <Button href={ctaHref} variant="primary" className="mobile-sheet-cta">
+        <Button href={ctaHref} variant="primary" className="mobile-sheet-cta" data-cta="nav">
           {ctaLabel}
         </Button>
       </div>

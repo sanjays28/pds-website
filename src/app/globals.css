@@ -11,6 +11,7 @@
   color-scheme: dark; /* WMS §12.5 — dark only, always, even in OS light mode */
 
   --color-black: #0d0d0d;
+  --color-film-black: #070707; /* the hero film's own black — frames are ~#070707, not the page's #0D0D0D */
   --color-panel: #141414;
   --color-panel-2: #181818;
   --color-line: #1f1f1f;
@@ -231,8 +232,7 @@ button {
   overflow: hidden;
 }
 /* Base sizing the component's canvas expects from its root (see the
-   equivalent note on .hero-threeui-canvas — not importing ThreeUI's full
-   style.css for one rule). */
+   note about ThreeUI's style.css — not importing it wholesale for one rule). */
 .dot-grid-canvas {
   position: relative;
   width: 100%;
@@ -278,16 +278,15 @@ button {
   justify-content: space-between;
   gap: 16px;
   padding: 10px 28px;
-  transform: translateY(-100%);
-  transition: transform 0.45s var(--ease-brake);
-  border-bottom: 1px solid var(--color-line);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.35s var(--ease-brake), border-color 0.35s var(--ease-brake);
 }
-.topbar-show {
-  transform: translateY(0);
-}
-/* Glass applies whenever the bar is shown — the WMS's single sanctioned use. */
-.topbar-show {
+/* Transparent over the hero film; glass after 80px of scroll — the WMS's
+   single sanctioned use of glass. */
+.topbar-glass {
   background: rgba(13, 13, 13, 0.72);
+  border-bottom-color: var(--color-line);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
@@ -455,22 +454,39 @@ button {
   min-height: 44px;
   background: var(--color-green);
   color: var(--color-black);
-  border: none;
+  border: 1px solid var(--color-green); /* constant width in both states: no layout shift */
   border-radius: var(--radius-pill);
-  padding: 10px 20px;
+  padding: 9px 19px;
   font-family: var(--font-body);
   font-weight: 800;
   font-style: italic;
   font-size: 13px;
   letter-spacing: 0.04em;
   text-decoration: none;
-  transition: transform 0.15s var(--ease-brake), box-shadow 0.3s;
+  transition:
+    background-color 0.3s var(--ease-brake),
+    border-color 0.3s var(--ease-brake),
+    color 0.3s var(--ease-brake),
+    transform 0.15s var(--ease-brake),
+    box-shadow 0.3s var(--ease-brake);
 }
 .btn-compact:hover {
   box-shadow: 0 0 22px var(--color-green-glow);
 }
 .btn-compact:active {
   transform: scale(0.96);
+}
+/* Nav pill while the hero film is in view: outlined, no glow. */
+.btn-compact.btn-compact-outline {
+  background: transparent;
+  color: var(--color-white);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+.btn-compact.btn-compact-outline:hover,
+.btn-compact.btn-compact-outline:focus-visible {
+  color: var(--color-green);
+  border-color: var(--color-green);
+  box-shadow: none;
 }
 .btn-text {
   display: inline-flex;
@@ -501,97 +517,716 @@ button {
 }
 
 /* ============================================================
-   Hero — plays on mount (not scroll-triggered like Section), reusing the
-   coming-soon build's visual language: night-road backdrop, chip, h1 word
-   split (M02), dual CTA with the primary button's one-time ignite (M17-
-   adjacent — a mount flourish, not the hover/press state M17 itself).
+   HeroFilm — scroll-driven cinematic hero (src/components/hero/HeroFilm.tsx).
+   A 700vh section with a sticky 100vh stage; a canvas plays 279 frames as
+   you scroll. The stage + canvas use --color-film-black (#070707, the
+   frames' own black) so there's no visible rectangle around the film, and
+   the last 160px fades into the page's #0D0D0D so there's no seam below.
    ============================================================ */
-.hero {
+.film-hero {
   position: relative;
-  min-height: 100svh;
-  display: flex;
-  align-items: center;
-  padding: clamp(120px, 20vh, 200px) clamp(20px, 6vw, 96px) 80px;
-  overflow: hidden;
+  height: 700vh;
+  background: var(--color-film-black);
 }
-/* ThreeUI hero backdrop (replaces the old flat .night-road CSS block) —
-   see src/components/HeroBackground.tsx for the gating logic (reduced
-   motion / mobile / tab-visibility). This wrapper only owns layout:
-   fills the hero at the same z-index:0 layer .night-road used to hold,
-   never intercepts pointer events, and never covers .hero-grid (z:1). */
-.hero-threeui {
+.film-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background: var(--color-film-black);
+}
+.film-canvas {
   position: absolute;
   inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-/* Base sizing the PredictiveArcCanvas (data-pixel variant) component
-   expects from its root (normally supplied by the package's own
-   style.css, which we don't import wholesale — importing it would pull
-   in unrelated demo-color CSS for the other ~50 components in the
-   library for zero benefit here; the one rule this variant actually
-   needs is reproduced below). No canvas filter override — the component
-   is mounted with its exact configured props (mode="dark", hue={0},
-   saturation={1}, brightness={1}), so its own authored output is the
-   final look, not something we re-tint on top. */
-.hero-threeui-canvas {
-  position: relative;
+  display: block;
   width: 100%;
   height: 100%;
-  isolation: isolate;
 }
-/* Mobile/coarse-pointer fallback — no canvas context at all, not just a
-   lighter one. A soft static glow standing in for the effect's pixel-arc
-   silhouette. */
-.hero-threeui-static {
+/* Poster (frame 1) — painted by the browser before any JS runs, hidden the
+   moment the canvas has drawn. Mirrors frameLayout() in src/lib/heroFilm.ts
+   so the swap is invisible: cover + shift on desktop, zoomed + focus-pinned
+   on mobile. */
+.film-poster {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 70% 45% at 50% 45%, rgba(108, 192, 74, 0.14), transparent 70%);
-}
-/* Readability scrim — darkens the effect specifically behind the text
-   column (left) more than behind the rider image (right). Re-tightened
-   after a visual pass showed the effect reading as a dominant, busy wash
-   rather than atmosphere at full strength — the previous version's
-   right-side minimum (0.1) let it go almost fully bare there, which is
-   what made it feel like a focal point instead of a backdrop. Paired
-   with the component's own brightness={0.45} (see HeroBackground.tsx)
-   rather than doing all the dimming in one place. */
-.hero-threeui-scrim {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    rgba(13, 13, 13, 0.8) 0%,
-    rgba(13, 13, 13, 0.6) 40%,
-    rgba(13, 13, 13, 0.4) 70%,
-    rgba(13, 13, 13, 0.48) 100%
-  );
-}
-@media (max-width: 900px) {
-  /* .hero-grid stacks to one column on mobile (see below) — scrim goes
-     top-to-bottom instead of left-to-right so it still sits behind the
-     text block specifically, not the whole frame evenly. */
-  .hero-threeui-scrim {
-    background: linear-gradient(180deg, rgba(13, 13, 13, 0.72) 0%, rgba(13, 13, 13, 0.4) 55%, rgba(13, 13, 13, 0.22) 100%);
-  }
-}
-.hero-grid {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 40px;
-  align-items: center;
-  max-width: 1280px;
-  margin: 0 auto;
   width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
 }
-@media (max-width: 900px) {
-  .hero-grid {
-    grid-template-columns: 1fr;
+/* ≥768px: 0.84 × cover, bottom-anchored, shifted right (16% ≥1024, 8% tablet). */
+@media (min-width: 768px) {
+  .film-poster {
+    --pw: calc(0.84 * max(100vw, 100svh * 1.7778));
+    inset: auto;
+    bottom: 0;
+    width: var(--pw);
+    height: auto;
+    left: calc((100vw - var(--pw)) / 2 + 8vw);
+    object-fit: fill;
   }
 }
+@media (min-width: 1024px) {
+  .film-poster {
+    left: calc((100vw - var(--pw)) / 2 + 16vw);
+  }
+}
+@media (max-width: 767px) {
+  .film-poster {
+    inset: auto;
+    width: 180vw; /* MOBILE_ZOOM 1.8 */
+    height: 101.25vw;
+    left: -34.6vw; /* 50vw - 0.47 * 180vw */
+    top: calc(70svh - 55.69vw); /* 0.70 * vh - 0.55 * 101.25vw */
+  }
+}
+.film-stage[data-ready="true"] .film-poster {
+  visibility: hidden;
+}
+.film-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 85% 85% at 50% 50%, transparent 55%, var(--color-film-black) 110%);
+}
+.film-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 160px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--color-black));
+}
+
+/* ---- text cues ---- */
+.film-text {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-content);
+  pointer-events: none;
+}
+.film-cue {
+  position: absolute;
+  inset: 0;
+}
+.film-cue:not([data-active="true"]) {
+  visibility: hidden;
+}
+/* Items are opacity/transform-driven by the frame engine; hidden until its
+   first tick so the intro never flashes before its entrance. */
+.film-cue [data-item] {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.film-col {
+  position: absolute;
+  left: 6vw;
+  top: 44vh;
+  transform: translateY(-50%);
+  max-width: 29vw; /* spec 38vw — narrowed so copy stops short of the bike's box (~x 530 at 1440) */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.film-col > * {
+  pointer-events: auto;
+}
+.film-col-wide {
+  max-width: none;
+  right: 6vw;
+  top: 50vh;
+}
+.film-chip {
+  margin-bottom: 22px;
+}
+.film-hero .accent,
+.film-static .accent {
+  color: var(--color-green);
+  text-shadow: 0 0 40px var(--color-green-dim);
+}
+.film-h1 {
+  font-size: clamp(30px, 3.3vw, 56px); /* spec 4.6vw/64px — wrapped to 6 lines and hit the nav + bike in the 29vw column */
+  line-height: 1;
+  overflow-wrap: break-word;
+}
+.film-hero .hero-sub,
+.film-static .hero-sub {
+  margin-top: 22px;
+  max-width: 100%;
+  color: var(--color-w70);
+  font-size: clamp(14px, 1.15vw, 16px);
+}
+.film-ctas {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.film-ctas .btn {
+  padding: 14px 24px;
+  font-size: 13px;
+}
+.film-tagline {
+  font-size: clamp(34px, 5.4vw, 96px);
+  line-height: 1.02;
+  margin: 0;
+}
+.film-tagline + .film-tagline {
+  margin-top: 0.04em;
+}
+.film-col-wide .film-ctas {
+  margin-top: 36px;
+}
+
+@media (max-width: 767px) {
+  .film-col {
+    left: 20px;
+    right: 20px;
+    top: 84px;
+    transform: none;
+    max-width: none;
+  }
+  .film-col-wide {
+    top: 22vh;
+  }
+  .film-chip {
+    margin-bottom: 14px;
+    padding: 6px 12px;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    white-space: nowrap;
+  }
+  .film-h1 {
+    font-size: clamp(25px, 7.4vw, 32px);
+  }
+  .film-hero .hero-sub {
+    margin-top: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .film-ctas {
+    margin-top: 18px;
+    gap: 10px;
+  }
+  .film-ctas .btn {
+    padding: 11px 16px;
+    font-size: 12px;
+    min-height: 40px;
+  }
+}
+
+/* ---- attached callouts: reticle + elbow leader + chip, at the object ---- */
+.hc {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+}
+.hc-pos {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  will-change: transform;
+}
+.hc-svg {
+  max-width: none; /* the global svg rule would clamp it to its 0-wide parent */
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+}
+.hc-ret,
+.hc-leader {
+  fill: none;
+  stroke-width: 1;
+}
+.hc-ret {
+  stroke: rgba(108, 192, 74, 0.7);
+}
+.hc-leader {
+  stroke: rgba(108, 192, 74, 0.6);
+}
+.hc-dot {
+  fill: var(--color-green);
+  filter: drop-shadow(0 0 6px var(--color-green-glow));
+}
+.hc-chip {
+  position: absolute;
+  width: max-content;
+  margin: 0;
+  padding: 8px 14px;
+  background: rgba(13, 13, 13, 0.7);
+  color: var(--color-white);
+  font-size: 11px;
+  line-height: 1.35;
+  letter-spacing: 0.18em;
+  white-space: nowrap; /* single line, always */
+}
+@media (max-width: 767px) {
+  /* The longest label must fit a 390px screen on one line. */
+  .hc-chip {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    padding: 8px 12px;
+  }
+}
+
+/* ---- HeroManifest: the hero's "Our Services" console ----
+   `.hm` is a column: panel, then (16px below) the riders sentence. The
+   sentence's slot is always reserved so the panel never jumps when it appears.
+   Rows are a fixed 40px and tighten on short viewports so both always fit. */
+.hm {
+  position: absolute;
+  left: 6vw;
+  top: 46vh;
+  width: max(22vw, 260px);
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  pointer-events: none;
+}
+.hm-panel {
+  display: none;
+  opacity: 0;
+  padding: 12px;
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+@media (min-width: 1024px) {
+  .hm-panel {
+    display: block;
+  }
+}
+.hm.hm .hm-riders {
+  position: static;
+  inset: auto;
+}
+.hm .film-riders-line {
+  margin: 0;
+  max-width: none;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.hm-eyebrow {
+  margin: 0;
+  padding: 2px 4px 10px;
+  border-bottom: 1px solid var(--color-line);
+}
+.hm-rows {
+  list-style: none;
+}
+.hm-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--color-line);
+}
+.hm-rows .hm-row:last-child {
+  border-bottom: none;
+}
+.hm-row .ops-code {
+  min-width: 62px;
+  padding: 3px 6px;
+}
+.hm-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--color-w40);
+  transition: color 0.3s var(--ease-brake);
+}
+.hm-bar {
+  flex-shrink: 0;
+  width: 3px;
+  height: 20px;
+  border-radius: 2px;
+  background: var(--color-line-2);
+  transition: background-color 0.3s var(--ease-brake), box-shadow 0.3s var(--ease-brake);
+}
+.hm-row[data-on="true"] .hm-name {
+  color: var(--color-white);
+}
+.hm-row[data-on="true"] .hm-bar {
+  background: var(--color-green);
+  box-shadow: 0 0 10px var(--color-green-glow);
+}
+.hm-row[data-on="true"] .ops-code {
+  opacity: 1;
+  border-color: var(--color-green);
+}
+@media (min-width: 1024px) and (max-height: 820px) {
+  .hm-row {
+    height: 34px;
+  }
+}
+@media (min-width: 1024px) and (max-height: 700px) {
+  .hm-row {
+    height: 30px;
+  }
+  .hm-eyebrow {
+    padding-bottom: 6px;
+  }
+}
+/* <1024px: no panel — the sentence sits at the top, the dock shows the active rows. */
+@media (max-width: 1023px) {
+  .hm {
+    top: 84px;
+    left: 6vw;
+    right: 44px;
+    width: auto;
+    transform: none;
+  }
+}
+@media (max-width: 767px) {
+  .hm {
+    left: 20px;
+  }
+}
+/* <1024px: no list, just the active row(s) docked near the bottom edge. */
+.hm-dock {
+  position: absolute;
+  left: 6vw;
+  right: 44px;
+  bottom: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  opacity: 0;
+  pointer-events: none;
+}
+@media (min-width: 1024px) {
+  .hm-dock {
+    display: none;
+  }
+}
+.hm-dock-row {
+  display: none;
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+}
+.hm-dock-row[data-on="true"] {
+  display: flex;
+}
+@media (max-width: 767px) {
+  .hm-dock {
+    left: 20px;
+    right: 40px;
+  }
+  .hm-row .ops-code {
+    min-width: 56px;
+    font-size: 10px;
+  }
+}
+
+/* ---- ambient layer: dot grid (left 45%) + floor route line ---- */
+.film-dots-mask {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.5;
+  -webkit-mask-image: linear-gradient(to right, #000 0, #000 22%, transparent 45%);
+  mask-image: linear-gradient(to right, #000 0, #000 22%, transparent 45%);
+}
+.film-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -160px;
+  bottom: -160px;
+  background-image: radial-gradient(rgba(108, 192, 74, 0.16) 1px, transparent 1.5px);
+  background-size: 28px 28px;
+  will-change: transform;
+}
+.film-route {
+  position: absolute;
+  left: 6vw;
+  width: 54vw;
+  bottom: 6vh;
+  height: 2px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: calc(var(--z-content) - 1);
+}
+.film-route-track {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, var(--color-line-2) 0 14px, transparent 14px 26px);
+}
+.film-route-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--color-green);
+  box-shadow: 0 0 10px var(--color-green-glow);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.film-route-pin {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 24px;
+  height: 24px;
+  transform: translate(50%, 0);
+  color: var(--color-green);
+  filter: drop-shadow(0 0 8px var(--color-green-glow));
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-brake);
+}
+.film-route-pin[data-on="true"] {
+  opacity: 1;
+}
+.film-route-ring {
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--color-green);
+  border-radius: 50%;
+  opacity: 0;
+}
+.film-route-pin[data-on="true"] .film-route-ring {
+  animation: pinRing 1.4s var(--ease-brake) 1;
+}
+@keyframes pinRing {
+  0% {
+    transform: scale(0.3);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+@media (max-width: 767px) {
+  .film-route,
+  .film-dots-mask {
+    display: none;
+  }
+}
+
+/* ---- intro CTA row: primary + quiet "See how it works" text link ---- */
+.film-ctas-intro {
+  align-items: center;
+  gap: 24px;
+  flex-wrap: nowrap;
+  width: max-content;
+}
+@media (max-width: 1199px) {
+  /* Too wide to sit beside the bike at these widths — stack. */
+  .film-ctas-intro {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
+.film-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--color-w70);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  transition: color 0.25s var(--ease-brake);
+}
+.film-link:hover,
+.film-link:focus-visible {
+  color: var(--color-white);
+}
+.film-link-arrow {
+  animation: linkNudge 2.4s var(--ease-brake) infinite;
+  transition: transform 0.25s var(--ease-brake);
+}
+.film-link:hover .film-link-arrow,
+.film-link:focus-visible .film-link-arrow {
+  animation: none;
+  transform: translateY(4px);
+}
+@keyframes linkNudge {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(3px);
+  }
+}
+
+/* ---- mobile persistent pill (<768px, mid-film only) ---- */
+.film-pill {
+  display: none;
+}
+@media (max-width: 767px) {
+  .film-pill {
+    display: block;
+    position: fixed;
+    left: 50%;
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    z-index: var(--z-cta);
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, 16px);
+    transition:
+      opacity 0.35s var(--ease-brake),
+      transform 0.35s var(--ease-brake),
+      visibility 0s linear 0.35s;
+  }
+  .film-pill[data-on="true"] {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+    transition-delay: 0s;
+  }
+  .film-pill .btn {
+    min-height: 44px;
+    padding: 10px 22px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  /* keep ≥72px clear at the bottom for the pill */
+  .hm-dock {
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  }
+  .hm-dock-row {
+    padding: 5px 12px;
+  }
+}
+
+/* ---- right-edge progress rail (reuses .rail-fill's green + glow) ---- */
+.film-rail {
+  position: absolute;
+  right: 28px;
+  top: 50%;
+  height: 46vh;
+  width: 2px;
+  transform: translateY(-50%);
+  z-index: calc(var(--z-content) + 1);
+  pointer-events: none;
+}
+.film-rail-track {
+  position: absolute;
+  inset: 0;
+  background: var(--color-line-2);
+}
+.film-rail-ticks {
+  list-style: none;
+}
+.film-rail-ticks li {
+  position: absolute;
+  right: -4px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transform: translateY(-50%);
+}
+.film-tick-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-w40);
+  transition: color 0.3s var(--ease-brake);
+}
+.film-tick-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-film-black);
+  border: 1px solid var(--color-w40);
+  transition: background 0.3s var(--ease-brake), border-color 0.3s var(--ease-brake), box-shadow 0.3s var(--ease-brake);
+}
+.film-rail-ticks li[data-on="true"] .film-tick-label {
+  color: var(--color-w70);
+}
+.film-rail-ticks li[data-on="true"] .film-tick-dot {
+  background: var(--color-green);
+  border-color: var(--color-green);
+  box-shadow: 0 0 10px var(--color-green-glow);
+}
+@media (max-width: 1599px) {
+  /* Labels would collide with callouts at these widths — ticks only. */
+  .film-tick-label {
+    display: none;
+  }
+}
+@media (max-width: 767px) {
+  .film-rail {
+    right: 12px;
+  }
+}
+
+/* ---- ?debug=1 ---- */
+.film-debug {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 300;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.82);
+  border: 1px solid var(--color-line-2);
+  border-radius: var(--radius-sm);
+  font: 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--color-green);
+  pointer-events: none;
+}
+
+/* ---- reduced motion: static still + plain content, no scrub ---- */
+.film-static {
+  background: var(--color-film-black);
+}
+.film-static-img {
+  width: 100%;
+  height: auto;
+  max-height: 72svh;
+  object-fit: cover;
+  object-position: 70% 50%;
+  /* The frame's fog reaches its edges — feather them into the film black. */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent),
+    linear-gradient(to bottom, #000 80%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent),
+    linear-gradient(to bottom, #000 80%, transparent);
+  mask-composite: intersect;
+}
+.film-static-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 32px clamp(20px, 6vw, 96px) 96px;
+  max-width: 900px;
+}
+.film-static .film-h1 {
+  font-size: clamp(30px, 5vw, 60px);
+}
+.film-static-list {
+  margin-top: 36px;
+}
+
+/* ---- live chip + dot (carried over from the old hero) ---- */
 .hero-chip {
   display: inline-flex;
   align-items: center;
@@ -606,10 +1241,7 @@ button {
   color: var(--color-w70);
   margin-bottom: 26px;
 }
-/* Status/live indicator — ported from proven-coming-soon.html, which had
-   this and never made it into this build's own globals.css (a real gap:
-   every .pulse-dot usage since Prompt 2, including the hero chip, has
-   been rendering as an invisible 0x0 span). */
+/* Status/live indicator — ported from proven-coming-soon.html. */
 .pulse-dot {
   width: 7px;
   height: 7px;
@@ -628,92 +1260,6 @@ button {
   100% {
     box-shadow: 0 0 0 0 transparent;
   }
-}
-.hero h1 {
-  font-size: clamp(40px, 7.5vw, 96px);
-  line-height: 0.98;
-}
-.hero h1 .accent {
-  color: var(--color-green);
-  text-shadow: 0 0 40px var(--color-green-dim);
-}
-.hero-sub {
-  margin-top: 28px;
-  max-width: 520px;
-  color: var(--color-w70);
-  font-size: clamp(15px, 1.4vw, 18px);
-}
-.hero-ctas {
-  margin-top: 40px;
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.hero-rider {
-  width: min(380px, 80%);
-  height: auto;
-  margin: 0 auto;
-  filter: drop-shadow(0 0 26px var(--color-green-dim));
-}
-@media (max-width: 900px) {
-  .hero-rider {
-    display: none;
-  }
-}
-.scroll-hint {
-  position: absolute;
-  bottom: 26px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 10px;
-  letter-spacing: 0.4em;
-  color: var(--color-w40);
-  text-transform: uppercase;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  z-index: 1;
-}
-.scroll-hint::after {
-  content: "";
-  width: 1px;
-  height: 38px;
-  background: linear-gradient(var(--color-green), transparent);
-  animation: drop 1.8s var(--ease-brake) infinite;
-}
-@keyframes drop {
-  0% {
-    transform: scaleY(0);
-    transform-origin: top;
-  }
-  55% {
-    transform: scaleY(1);
-    transform-origin: top;
-  }
-  56% {
-    transform-origin: bottom;
-  }
-  100% {
-    transform: scaleY(0);
-    transform-origin: bottom;
-  }
-}
-/* One-time ignite flourish on the primary CTA once the hero timeline
-   reaches it — distinct from (and in addition to) the M17 hover glow. */
-@keyframes ctaIgnite {
-  0% {
-    box-shadow: 0 0 0 0 transparent;
-  }
-  35% {
-    box-shadow: 0 0 42px rgba(108, 192, 74, 0.55), 0 0 80px rgba(108, 192, 74, 0.2);
-  }
-  100% {
-    box-shadow: 0 0 34px var(--color-green-glow);
-  }
-}
-.cta-ignite {
-  animation: ctaIgnite 1.15s var(--ease-brake) forwards;
 }
 
 /* ============================================================
@@ -1593,6 +2139,9 @@ footer .footer-copyright {
    itself. See src/motion/registry.ts for the JS-side mirror of this.
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
+  .film-link-arrow {
+    animation: none !important;
+  }
   html {
     scroll-behavior: auto;
   }
@@ -1618,15 +2167,6 @@ footer .footer-copyright {
     display: none !important;
   }
   /* Ambient/decorative continuous motion — off entirely, not just sped up. */
-  .scroll-hint::after {
-    display: none !important;
-  }
-  /* Safety net for HeroBackground.tsx's own JS-level reduced-motion check
-     (which has the same first-render-defaults-false race every hook here
-     has) — belt-and-braces so the effect never paints even for one frame. */
-  .hero-threeui {
-    display: none !important;
-  }
   /* Same belt-and-braces reasoning, for DotGridBackground.tsx. */
   .dot-grid-bg {
     display: none !important;

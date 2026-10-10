@@ -10,6 +10,7 @@
 export const tokens = {
   color: {
     black: "#0D0D0D", // world
+    filmBlack: "#070707", // hero film frames' black — blends into `black` at the hero bottom
     panel: "#141414", // elevation 1
     panel2: "#181818", // elevation 2
     line: "#1F1F1F", // hairline borders

@@ -36,7 +36,7 @@ import { useReducedMotion } from "@/motion/useReducedMotion";
  * this keeps the same readability guardrails used for the hero:
  * - prefers-reduced-motion: renders nothing (no internal handling in the
  *   component itself, unlike LaserCollection, so this is a from-scratch
- *   gate, same shape as HeroBackground's).
+ *   gate, same shape as the old HeroBackground's).
  * - Coarse pointer / narrow viewport: static CSS gradient instead of a
  *   WebGL context — this one wasn't asked to skip that guardrail the way
  *   the last placement question offered as an option, so it's kept.
