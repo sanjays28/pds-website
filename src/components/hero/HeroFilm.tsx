@@ -6,6 +6,7 @@ import { HeroManifest } from "@/components/hero/HeroManifest";
 import { PinIcon } from "@/components/PinIcon";
 import { useReducedMotion } from "@/motion/useReducedMotion";
 import { scrollToY } from "@/lib/smoothScroll";
+import { CONTACT_ID } from "@/lib/contact";
 import {
   CALLOUTS,
   CUES,
@@ -452,7 +453,7 @@ export function HeroFilm({ primaryCta, secondaryCta, services }: HeroFilmProps) 
       }
     });
     io.observe(section);
-    const contactEl = document.getElementById("contact");
+    const contactEl = document.getElementById(CONTACT_ID);
     const contactIo = contactEl
       ? new IntersectionObserver(([entry]) => {
           contactInView = entry.isIntersecting;

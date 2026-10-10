@@ -1,17 +1,17 @@
 import { Nav } from "@/components/Nav";
 import { HeroFilm } from "@/components/hero/HeroFilm";
 import { Section } from "@/components/Section";
-import { TagList } from "@/components/TagList";
 import { Services } from "@/components/sections/Services";
-import { RouteTimeline } from "@/components/RouteTimeline";
-import { Accordion } from "@/components/Accordion";
+import { WhyPds } from "@/components/sections/WhyPds";
+import { Process } from "@/components/sections/Process";
+import { Faq } from "@/components/sections/Faq";
+import { CONTACT_HREF, CONTACT_ID } from "@/lib/contact";
 import { ContactForm } from "@/components/ContactForm";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/Button";
 import { ScrollStory, type StoryBeat } from "@/components/ScrollStory";
 import { CursorTrail } from "@/components/CursorTrail";
 import { RouteSpine } from "@/components/RouteSpine";
-import { DotGridBackground } from "@/components/DotGridBackground";
 
 /**
  * The full single-page build (Prompt 2) — content sourced verbatim from
@@ -73,9 +73,9 @@ const NAV_LINKS = [
   { label: "Home", href: "#hero" },
   { label: "Services", href: "#services" },
   { label: "Process", href: "#process" },
-  { label: "Why Us", href: "#why-us" },
+  { label: "Why Us", href: "#why-pds" },
   { label: "FAQ", href: "#faq" },
-  { label: "Contact", href: "#contact" },
+  { label: "Contact", href: CONTACT_HREF },
 ];
 
 const PRIMARY_TAGLINE = "Proven Reliability. Delivered.";
@@ -147,72 +147,6 @@ const INDUSTRIES = [
   "Small and medium-sized businesses",
 ];
 
-const PROCESS_STEPS = [
-  {
-    title: "Understanding Your Requirements",
-    body: "We assess your business model, delivery volume, service area, and operating schedule.",
-  },
-  {
-    title: "Creating the Right Solution",
-    body: "We develop a delivery or rider solution aligned to your operational needs.",
-  },
-  {
-    title: "Rider and Fleet Deployment",
-    body: "Trained riders and suitable motorcycles are assigned per your agreed requirements.",
-  },
-  {
-    title: "Delivery Execution",
-    body: "Orders are collected, handled responsibly, and delivered.",
-  },
-  {
-    title: "Operational Support",
-    body: "Ongoing coordination keeps performance consistent.",
-  },
-];
-
-const WHY_CHOOSE_PDS = [
-  "Trained Delivery Riders",
-  "Reliable Fleet Operations",
-  "Safety-Focused Approach",
-  "Flexible Business Solutions",
-  "B2B Expertise",
-  "Professional Brand Representation",
-  "Customer-Focused Service",
-  "Technology-Supported Operations",
-];
-
-const FAQS = [
-  {
-    question: "What types of delivery services does PDS provide?",
-    answer:
-      "B2B and B2C last-mile solutions across e-commerce, restaurants, retail, Q-commerce, pharmacies, and corporate clients.",
-  },
-  {
-    question: "Does PDS provide trained delivery riders?",
-    answer: "Yes — trained and professional riders across industries.",
-  },
-  {
-    question: "Does PDS manage delivery motorcycles?",
-    answer: "Yes — professional fleet management and well-maintained motorcycles.",
-  },
-  {
-    question: "Can your delivery solutions be customized?",
-    answer: "Yes — tailored to business type, volume, and operating model.",
-  },
-  {
-    question: "Do you support both businesses and individual customers?",
-    answer: "Yes — both B2B and B2C.",
-  },
-  {
-    question: "Which industries do you serve?",
-    answer: "E-commerce, restaurants, cafes, cloud kitchens, Q-commerce, retailers, pharmacies, and corporate clients.",
-  },
-  {
-    question: "How can I request a delivery solution?",
-    answer: "Contact the team with your requirements for a tailored recommendation.",
-  },
-];
-
 export default function Home() {
   return (
     <>
@@ -224,13 +158,13 @@ export default function Home() {
         links={NAV_LINKS}
         ctaLabel="Request a Delivery Solution"
         desktopCtaLabel="Contact Our Team"
-        ctaHref="#contact"
+        ctaHref={CONTACT_HREF}
       />
 
       <main id="main">
         <HeroFilm
-          primaryCta={{ label: "Request a Delivery Solution", href: "#contact" }}
-          secondaryCta={{ label: "Contact Our Team", href: "#contact" }}
+          primaryCta={{ label: "Request a Delivery Solution", href: CONTACT_HREF }}
+          secondaryCta={{ label: "Contact Our Team", href: CONTACT_HREF }}
           services={SERVICES.map((service) => service.title)}
         />
 
@@ -279,20 +213,9 @@ export default function Home() {
 
         <Services />
 
-        <Section
-          id="process"
-          spineNode="Process"
-          eyebrow="How It Works"
-          title="Our Process"
-          staggerChildren={false}
-          background={<DotGridBackground />}
-        >
-          <RouteTimeline stops={PROCESS_STEPS} />
-        </Section>
+        <WhyPds />
 
-        <Section id="why-us" spineNode="Why PDS" eyebrow="The Difference" title="Why Choose PDS">
-          <TagList items={WHY_CHOOSE_PDS} />
-        </Section>
+        <Process />
 
         <Section id="safety" eyebrow="Our Standards" title="Safety & Commitment to Clients">
           <div className="two-col">
@@ -315,12 +238,10 @@ export default function Home() {
           </div>
         </Section>
 
-        <Section id="faq" spineNode="FAQ" eyebrow="Questions" title="FAQ" className="section-narrow">
-          <Accordion items={FAQS} />
-        </Section>
+        <Faq />
 
         <Section
-          id="contact"
+          id={CONTACT_ID}
           spineNode="Contact"
           eyebrow="Get Started"
           title="Let's Move Your Business Forward"
@@ -334,10 +255,10 @@ export default function Home() {
             Delivery Services is ready to support your business.
           </p>
           <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 28 }}>
-            <Button href="#contact-form" variant="primary">
+            <Button href={CONTACT_HREF} variant="primary">
               Contact PDS Today
             </Button>
-            <Button href="#contact-form" variant="ghost">
+            <Button href={CONTACT_HREF} variant="ghost">
               Request a Business Proposal
             </Button>
           </div>

@@ -2588,6 +2588,570 @@ section.section {
 }
 
 /* ============================================================
+   Why PDS — eight lamps (src/components/sections/WhyPds.tsx)
+   ============================================================ */
+.why-head {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+@media (min-width: 1024px) {
+  .why-head {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+}
+.why-h2 {
+  font-size: clamp(28px, 3.6vw, 48px);
+  line-height: 1.02;
+  max-width: 20ch;
+}
+.why-h2 .accent {
+  color: var(--color-green);
+}
+.why-count {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-w40);
+  white-space: nowrap;
+}
+.why-count-now {
+  color: rgba(255, 255, 255, 0.85);
+}
+.why-grid {
+  margin-top: 40px;
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  border-bottom: 1px solid var(--color-line);
+}
+@media (min-width: 1024px) {
+  .why-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.why-item {
+  position: relative;
+  padding: 28px 0;
+  border-top: 1px solid var(--color-line);
+  opacity: 0;
+  transform: translateX(-12px);
+  transition:
+    opacity 0.5s var(--ease-brake),
+    transform 0.5s var(--ease-brake);
+}
+.why-item[data-lit] {
+  opacity: 1;
+  transform: none;
+}
+@media (min-width: 1024px) {
+  /* 48px gutter built from padding, so the row dividers run unbroken across it */
+  .why-item:nth-child(odd) {
+    padding-right: 24px;
+  }
+  .why-item:nth-child(even) {
+    padding-left: 24px;
+  }
+}
+.why-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 16px;
+  margin-bottom: 14px;
+}
+.why-lamp {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-line-2);
+  transition:
+    background-color 0.4s var(--ease-brake),
+    box-shadow 0.4s var(--ease-brake);
+}
+.why-item[data-lit] .why-lamp {
+  background: var(--color-green);
+  box-shadow: 0 0 8px rgba(108, 192, 74, 0.35);
+}
+.why-num {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: var(--color-w40);
+}
+.why-name {
+  font-size: 20px;
+  line-height: 1.1;
+  color: rgba(255, 255, 255, 0.55);
+  transition: color 0.4s var(--ease-brake);
+}
+.why-item[data-lit] .why-name {
+  color: var(--color-white);
+}
+.why-body {
+  margin-top: 12px;
+  max-width: 440px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-w70);
+}
+/* connector across the gutter: draws as the second lamp of a row lights */
+.why-conn {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .why-item:nth-child(even) .why-conn {
+    display: block;
+    position: absolute;
+    left: -24px;
+    top: 36px; /* lamp centre: 28px padding + half the 16px meta row */
+    width: 48px;
+    height: 1px;
+    background: rgba(108, 192, 74, 0.4);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.4s var(--ease-brake);
+  }
+  .why-item:nth-child(even)[data-lit] .why-conn {
+    transform: scaleX(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .why-item {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ============================================================
+   Process — pinned route (≥1024px) / vertical list (<1024px)
+   (src/components/sections/Process.tsx)
+   ============================================================ */
+.proc-h2 {
+  font-size: clamp(26px, 3vw, 40px);
+  line-height: 1.05;
+}
+.proc-h2 .accent {
+  color: var(--color-green);
+}
+.proc .eyebrow {
+  margin-bottom: 14px;
+}
+.proc-num {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: var(--color-w40);
+}
+.proc-title {
+  font-size: 18px;
+  line-height: 1.1;
+  color: var(--color-white);
+  transition: opacity 0.5s var(--ease-brake);
+}
+.proc-desc {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-w70);
+  transition: opacity 0.5s var(--ease-brake);
+}
+/* ---- desktop ---- */
+.proc-d {
+  position: relative;
+  height: 400vh;
+}
+.proc-d[data-still] {
+  height: auto;
+}
+.proc-stick {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: 0 clamp(20px, 6vw, 96px) 0 clamp(64px, 6vw, 96px);
+}
+.proc-d[data-still] .proc-stick {
+  position: relative;
+  height: max(100vh, 700px);
+}
+.proc-inner {
+  position: relative;
+  height: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 72px; /* clears the 64px fixed nav; tighter than before so the gap under the spine's label is smaller */
+}
+.proc-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.proc-head {
+  position: relative;
+  z-index: 2;
+}
+.proc-svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  overflow: visible;
+}
+.proc-track,
+.proc-fill {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.proc-track {
+  stroke: var(--color-line);
+  stroke-dasharray: 6 6;
+}
+.proc-fill {
+  stroke: var(--color-green);
+}
+.proc-node {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  box-sizing: border-box;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  background: var(--color-black);
+  transform: translate(-50%, -50%);
+  transition:
+    transform 0.3s var(--ease-brake),
+    background-color 0.3s var(--ease-brake),
+    border-color 0.3s var(--ease-brake),
+    box-shadow 0.3s var(--ease-brake);
+}
+.proc-node[data-on="true"] {
+  background: var(--color-green);
+  border-color: var(--color-green);
+  transform: translate(-50%, -50%) scale(1.2); /* 10px → 12px */
+  box-shadow: 0 0 10px rgba(108, 192, 74, 0.45);
+}
+.proc-pin {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  color: var(--color-line-2);
+  transform: translate(-50%, -90%);
+  transition: color 0.3s var(--ease-brake);
+}
+.proc-pin[data-on="true"] {
+  color: var(--color-green);
+}
+.proc-tick {
+  position: absolute;
+  width: 1px;
+  background: var(--color-line-2);
+  transform: translateX(-50%);
+  transition: background-color 0.3s var(--ease-brake);
+}
+.proc-tick[data-on="true"] {
+  background: var(--color-green);
+}
+.proc-marker {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  z-index: 3;
+  will-change: transform;
+}
+.proc-marker img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 34px;
+  height: auto;
+  max-width: none;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 6px var(--color-green-glow));
+}
+.proc-steps {
+  list-style: none;
+  position: absolute;
+  inset: 0;
+}
+.proc-block {
+  position: absolute;
+  width: 220px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.5s var(--ease-brake),
+    transform 0.5s var(--ease-brake);
+}
+.proc-block:not([data-above]) {
+  transform: translateY(-12px);
+}
+.proc-block[data-state="current"],
+.proc-block[data-state="past"] {
+  opacity: 1;
+  transform: none;
+}
+.proc-block[data-state="past"] .proc-title,
+.proc-block[data-state="past"] .proc-desc {
+  opacity: 0.65; /* settles here once the next step arrives — never lower */
+}
+/* ---- mobile / tablet list ---- */
+.proc-list {
+  list-style: none;
+  margin-top: 40px;
+}
+.proc-m-item {
+  position: relative;
+  padding: 0 0 36px 40px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.5s var(--ease-brake),
+    transform 0.5s var(--ease-brake);
+}
+.proc-m-item[data-in] {
+  opacity: 1;
+  transform: none;
+}
+.proc-m-seg {
+  position: absolute;
+  left: 4px;
+  top: 9px;
+  bottom: -9px;
+  width: 2px;
+  background: var(--color-line);
+}
+.proc-m-seg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-green);
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: transform 0.4s var(--ease-brake);
+}
+.proc-m-seg[data-on]::after {
+  transform: scaleY(1);
+}
+.proc-m-item[data-last] .proc-m-seg {
+  display: none;
+}
+.proc-m-node {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  width: 10px;
+  height: 10px;
+  box-sizing: border-box;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  background: var(--color-black);
+  transition:
+    transform 0.3s var(--ease-brake),
+    background-color 0.3s var(--ease-brake),
+    border-color 0.3s var(--ease-brake),
+    box-shadow 0.3s var(--ease-brake);
+}
+.proc-m-node[data-on] {
+  background: var(--color-green);
+  border-color: var(--color-green);
+  transform: scale(1.2);
+  box-shadow: 0 0 10px rgba(108, 192, 74, 0.45);
+}
+.proc-m-pin {
+  position: absolute;
+  left: -7px;
+  top: -10px;
+  width: 24px;
+  height: 24px;
+  color: var(--color-line-2);
+  transition: color 0.3s var(--ease-brake);
+}
+.proc-m-pin[data-on] {
+  color: var(--color-green);
+}
+.proc-m .proc-desc {
+  font-size: 16px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .proc-m-item {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ============================================================
+   FAQ — same row pattern as Services (src/components/sections/Faq.tsx)
+   ============================================================ */
+.faq-list {
+  list-style: none;
+  margin-top: 28px;
+  border-top: 1px solid var(--color-line);
+  contain: layout;
+}
+.faq-row {
+  position: relative;
+  border-bottom: 1px solid var(--color-line);
+  opacity: 0;
+  transform: translateX(-12px);
+  transition:
+    opacity 0.5s var(--ease-brake) calc(var(--i) * 60ms),
+    transform 0.5s var(--ease-brake) calc(var(--i) * 60ms);
+}
+.faq-list[data-in] .faq-row {
+  opacity: 1;
+  transform: none;
+}
+.faq-row::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: transparent;
+  transition: background-color 0.3s var(--ease-brake);
+}
+.faq-row[data-on]::before {
+  background: var(--color-green);
+}
+.faq-head {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  width: 100%;
+  min-height: 56px;
+  padding: 18px 12px 18px 22px;
+  background: none;
+  border: none;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+.faq-num {
+  flex: 0 0 28px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: var(--color-w40);
+  transition: color 0.3s var(--ease-brake);
+}
+.faq-q {
+  font-size: 20px;
+  line-height: 1.15;
+  color: rgba(255, 255, 255, 0.55);
+  transition: color 0.3s var(--ease-brake);
+}
+.faq-row[data-on] .faq-num {
+  color: var(--color-green);
+}
+.faq-row[data-on] .faq-q {
+  color: var(--color-white);
+}
+.faq-arrow {
+  flex-shrink: 0;
+  align-self: center;
+  margin-left: auto;
+  color: rgba(255, 255, 255, 0.4);
+  transform: translateX(0) rotate(0deg);
+  transition:
+    transform 0.3s var(--ease-brake),
+    color 0.3s var(--ease-brake);
+}
+.faq-row[data-on] .faq-arrow {
+  color: var(--color-green);
+  transform: rotate(90deg);
+}
+@media (hover: hover) and (pointer: fine) {
+  .faq-row:not([data-on]) .faq-head:hover .faq-arrow {
+    color: rgba(255, 255, 255, 0.85);
+    transform: translateX(4px);
+  }
+}
+/* open/close: grid-template-rows 0fr → 1fr (never pixel height) + answer fade */
+.faq-desc {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s var(--ease-brake);
+}
+.faq-row[data-on] .faq-desc {
+  grid-template-rows: 1fr;
+}
+.faq-desc-inner {
+  overflow: hidden;
+  min-height: 0;
+  padding-left: 70px; /* under the question, past the number column */
+  opacity: 0;
+  transition: opacity 0.2s linear;
+}
+.faq-row[data-on] .faq-desc-inner {
+  opacity: 1;
+  transition-delay: 0.1s;
+}
+.faq-desc-inner p {
+  max-width: 640px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-w70);
+}
+.faq-desc-inner > :last-child {
+  margin-bottom: 28px;
+}
+.faq-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  min-height: 44px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+  color: var(--color-white);
+  transition: text-decoration-color 0.25s var(--ease-brake);
+}
+.faq-link:hover,
+.faq-link:focus-visible {
+  text-decoration-color: var(--color-green);
+}
+@media (max-width: 767px) {
+  .faq-q {
+    font-size: 18px;
+  }
+  .faq-head {
+    flex-wrap: wrap;
+    gap: 6px 14px;
+  }
+  .faq-num {
+    flex-basis: 100%; /* number above the question */
+  }
+  .faq-desc-inner {
+    padding-left: 22px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .faq-row {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ============================================================
    Two-column content block (About / Safety)
    ============================================================ */
 .two-col {

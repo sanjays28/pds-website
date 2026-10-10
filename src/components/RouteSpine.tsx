@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import { PinIcon } from "@/components/PinIcon";
+import { CONTACT_ID } from "@/lib/contact";
 import { useReducedMotion } from "@/motion/useReducedMotion";
 
 /**
@@ -97,7 +98,7 @@ export function RouteSpine({ children }: { children: ReactNode }) {
       const list: SpineNode[] = Array.from(wrap.querySelectorAll<HTMLElement>("[data-spine-node]")).map((el) => ({
         label: el.dataset.spineNode ?? "",
         y: Math.round(el.getBoundingClientRect().top + window.scrollY - top),
-        pin: el.id === "contact",
+        pin: el.id === CONTACT_ID,
       }));
       ys = list.map((n) => n.y);
       pins = list.map((n) => n.pin);
