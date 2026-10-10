@@ -14,6 +14,8 @@ export interface SectionProps {
   subtitle?: string;
   children?: ReactNode;
   className?: string;
+  /** Label for the page's RouteSpine node (see RouteSpine.tsx); omit for no node. */
+  spineNode?: string;
   /** Direct children of this wrapper get the M07 stagger. Set false for
    * sections that manage their own internal reveal (e.g. RouteTimeline). */
   staggerChildren?: boolean;
@@ -57,6 +59,7 @@ export function Section({
   subtitle,
   children,
   className,
+  spineNode,
   staggerChildren = true,
   contentClassName,
   wipe = true,
@@ -162,7 +165,7 @@ export function Section({
   }, [reduced, wipe, staggerChildren]);
 
   return (
-    <section id={id} ref={sectionRef} className={cn("section", className)}>
+    <section id={id} ref={sectionRef} className={cn("section", className)} data-spine-node={spineNode}>
       {background}
       <div className="wrap">
         {eyebrow && (

@@ -1322,6 +1322,124 @@ section.section {
 }
 
 /* ============================================================
+   RouteSpine — the hero's floor route, continued down the page
+   (src/components/RouteSpine.tsx). Desktop only; decorative.
+   ============================================================ */
+.spine-wrap {
+  position: relative;
+}
+@media (min-width: 1024px) {
+  /* keep section text clear of the line */
+  section.section {
+    padding-left: clamp(64px, 6vw, 96px);
+  }
+}
+.spine {
+  display: none;
+  position: absolute;
+  left: 24px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  z-index: 2;
+  pointer-events: none;
+}
+@media (min-width: 1024px) {
+  .spine {
+    display: block;
+  }
+}
+.spine-track,
+.spine-fill {
+  position: absolute;
+  inset: 0;
+}
+.spine-track {
+  background: var(--color-line);
+}
+.spine-fill {
+  background: var(--color-green);
+  transform: scaleY(0);
+  transform-origin: top center;
+}
+.spine-tip {
+  position: absolute;
+  left: 1px; /* centre of the 2px line */
+  top: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  will-change: transform;
+}
+/* The rider icon from the old page rail rides the leading tip; its soft green
+   glow is the tip's only light. */
+.spine-tip img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 34px;
+  height: auto;
+  max-width: none;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 6px var(--color-green-glow));
+}
+.spine-node {
+  position: absolute;
+  left: 0;
+  width: 2px;
+  height: 0;
+}
+.spine-dot {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-line-2);
+  transform: translate(-50%, -50%);
+  transition:
+    transform 0.3s var(--ease-brake),
+    background-color 0.3s var(--ease-brake),
+    box-shadow 0.3s var(--ease-brake);
+}
+.spine-node[data-on="true"] .spine-dot {
+  background: var(--color-green);
+  transform: translate(-50%, -50%) scale(1.2857); /* 7px → 9px */
+  box-shadow: 0 0 8px rgba(108, 192, 74, 0.35);
+}
+.spine-pin {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 24px;
+  height: 24px;
+  color: var(--color-line-2);
+  transform: translate(-50%, -100%);
+  transition: color 0.3s var(--ease-brake);
+}
+.spine-node[data-on="true"] .spine-pin {
+  color: var(--color-green);
+}
+.spine-label {
+  position: absolute;
+  left: 18px;
+  top: 0;
+  transform: translateY(-50%);
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--color-w40);
+  transition: color 0.3s var(--ease-brake);
+}
+.spine-node[data-on="true"] .spine-label {
+  color: var(--color-w70);
+}
+
+/* ============================================================
    Card — WMS §8 PillarCard/ServiceCard — hover motion is M08
    (entrance stagger is the parent Section's M07, not owned here)
    ============================================================ */

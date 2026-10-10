@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/Button";
 import { HeroManifest } from "@/components/hero/HeroManifest";
+import { PinIcon } from "@/components/PinIcon";
 import { useReducedMotion } from "@/motion/useReducedMotion";
 import { scrollToY } from "@/lib/smoothScroll";
 import {
@@ -134,16 +135,6 @@ function Callout({ cfg, cue, lay }: { cfg: CalloutCfg; cue: Cue; lay: FrameLayou
         </span>
       </div>
     </div>
-  );
-}
-
-/** Brand map-pin (stroke icon, same family as the page's story icons). */
-function PinIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden="true">
-      <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z" />
-      <circle cx="12" cy="9.5" r="2.5" />
-    </svg>
   );
 }
 

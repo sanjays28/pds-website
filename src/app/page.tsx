@@ -10,7 +10,7 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/Button";
 import { ScrollStory, type StoryBeat } from "@/components/ScrollStory";
 import { CursorTrail } from "@/components/CursorTrail";
-import { ScrollRail } from "@/components/ScrollRail";
+import { RouteSpine } from "@/components/RouteSpine";
 import { DotGridBackground } from "@/components/DotGridBackground";
 
 /**
@@ -214,7 +214,6 @@ export default function Home() {
   return (
     <>
       <CursorTrail />
-      <ScrollRail />
 
       <Nav
         logoSrc="/pds-logo-white.png"
@@ -232,6 +231,7 @@ export default function Home() {
           services={SERVICES.map((service) => service.title)}
         />
 
+        <RouteSpine>
         <Section
           id="about"
           eyebrow="Delivering Trust at Every Mile"
@@ -276,6 +276,7 @@ export default function Home() {
 
         <Section
           id="services"
+          spineNode="Services"
           eyebrow="What We Do"
           title="Services"
           contentClassName="ops-rows"
@@ -289,6 +290,7 @@ export default function Home() {
 
         <Section
           id="process"
+          spineNode="Process"
           eyebrow="How It Works"
           title="Our Process"
           staggerChildren={false}
@@ -297,7 +299,7 @@ export default function Home() {
           <RouteTimeline stops={PROCESS_STEPS} />
         </Section>
 
-        <Section id="why-us" eyebrow="The Difference" title="Why Choose PDS">
+        <Section id="why-us" spineNode="Why PDS" eyebrow="The Difference" title="Why Choose PDS">
           <TagList items={WHY_CHOOSE_PDS} />
         </Section>
 
@@ -322,12 +324,13 @@ export default function Home() {
           </div>
         </Section>
 
-        <Section id="faq" eyebrow="Questions" title="FAQ" className="section-narrow">
+        <Section id="faq" spineNode="FAQ" eyebrow="Questions" title="FAQ" className="section-narrow">
           <Accordion items={FAQS} />
         </Section>
 
         <Section
           id="contact"
+          spineNode="Contact"
           eyebrow="Get Started"
           title="Let's Move Your Business Forward"
           wipe={false}
@@ -351,6 +354,7 @@ export default function Home() {
             <ContactForm />
           </div>
         </Section>
+        </RouteSpine>
       </main>
 
       <Footer
