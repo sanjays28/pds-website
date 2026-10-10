@@ -2,7 +2,7 @@ import { Nav } from "@/components/Nav";
 import { HeroFilm } from "@/components/hero/HeroFilm";
 import { Section } from "@/components/Section";
 import { TagList } from "@/components/TagList";
-import { OpsStatusBar, OpsRow, OpsCoverage } from "@/components/OpsManifest";
+import { Services } from "@/components/sections/Services";
 import { RouteTimeline } from "@/components/RouteTimeline";
 import { Accordion } from "@/components/Accordion";
 import { ContactForm } from "@/components/ContactForm";
@@ -131,6 +131,9 @@ const SERVICES = [
   },
 ];
 
+// Industries list: no longer shown (the Services section no longer carries a coverage
+// list) — kept here so the client's copy isn't lost if a section wants it again.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const INDUSTRIES = [
   "E-commerce platforms",
   "Restaurants and cafes",
@@ -274,19 +277,7 @@ export default function Home() {
 
         <ScrollStory id="our-story" label="Our Story" beats={STORY_BEATS} />
 
-        <Section
-          id="services"
-          spineNode="Services"
-          eyebrow="What We Do"
-          title="Services"
-          contentClassName="ops-rows"
-          extra={<OpsCoverage items={INDUSTRIES} />}
-        >
-          <OpsStatusBar />
-          {SERVICES.map((service) => (
-            <OpsRow key={service.code} {...service} />
-          ))}
-        </Section>
+        <Services />
 
         <Section
           id="process"
