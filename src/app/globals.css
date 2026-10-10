@@ -3647,24 +3647,28 @@ section.ab-purpose {
   background: var(--color-film-black);
   border-top: 1px solid var(--color-line);
 }
-.ft-inner {
-  max-width: 1200px;
-  margin: 0 auto;
+/* same box model as a section + its .wrap, so footer text shares the sections' left edge */
+.site-footer {
   padding: 0 clamp(20px, 6vw, 96px);
 }
 @media (min-width: 1024px) {
-  .ft-inner {
+  .site-footer {
     padding-left: clamp(64px, 6vw, 96px);
   }
 }
+.ft-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
 .ft-tagline {
-  padding: 96px 0 64px;
+  padding: 72px 0 48px;
   font-family: var(--font-display);
   font-weight: 900;
   font-style: italic;
   font-variation-settings: "wdth" 125;
   text-transform: uppercase;
-  font-size: clamp(36px, 7vw, 104px);
+  font-size: clamp(32px, 5.4vw, 88px);
   line-height: 0.95;
   letter-spacing: -0.02em;
   color: var(--color-white);
@@ -3716,11 +3720,12 @@ section.ab-purpose {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 14px;
 }
 .ft-link {
-  display: inline-block;
-  padding: 8px 0;
+  display: block;
+  width: fit-content;
+  padding: 0;
   font-family: var(--font-body);
   font-size: 13px;
   font-weight: 700;
@@ -3732,6 +3737,16 @@ section.ab-purpose {
 }
 .ft-link:hover {
   color: var(--color-white);
+}
+@media (max-width: 767px) {
+  /* ≥44px tap target via padding (the 14px gap is replaced by it on touch layouts) */
+  .ft-nav ul {
+    gap: 0;
+  }
+  .ft-link {
+    padding: 12px 0;
+    min-height: 44px;
+  }
 }
 .ft-bar {
   padding: 24px 0;

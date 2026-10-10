@@ -7,7 +7,9 @@ export function FooterTagline() {
   const [ref, seen] = useInViewOnce<HTMLParagraphElement>(0.25);
   return (
     <p ref={ref} className="ft-tagline" data-in={seen || undefined}>
-      Proven Reliability. <span className="accent">Delivered.</span>
+      Proven Reliability.
+      <br />
+      <span className="accent">Delivered.</span>
     </p>
   );
 }
