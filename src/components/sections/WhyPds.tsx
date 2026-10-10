@@ -56,12 +56,10 @@ export function WhyPds() {
     };
   }, []);
 
-  // Top padding is trimmed (−96px desktop / −48px mobile, floored) so the gap under the
-  // spine's "Why PDS" label is ~56px; `!` beats the unlayered `section.section` rule.
   return (
     <section
       id="why-pds"
-      className="section why pt-[max(24px,calc(clamp(72px,9vh,140px)_-_48px))]! lg:pt-[max(64px,calc(clamp(72px,9vh,140px)_-_96px))]!"
+      className="section why"
       data-spine-node="Why PDS"
     >
       <div className="wrap">

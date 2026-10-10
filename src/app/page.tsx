@@ -7,6 +7,8 @@ import { Services } from "@/components/sections/Services";
 import { WhyPds } from "@/components/sections/WhyPds";
 import { Process } from "@/components/sections/Process";
 import { Faq } from "@/components/sections/Faq";
+import { Industries } from "@/components/sections/Industries";
+import { Safety } from "@/components/sections/Safety";
 import { CONTACT_HREF, CONTACT_ID } from "@/lib/contact";
 import { ContactForm } from "@/components/ContactForm";
 import { Footer } from "@/components/Footer";
@@ -45,7 +47,6 @@ const NAV_LINKS = [
   { label: "Contact", href: CONTACT_HREF },
 ];
 
-const PRIMARY_TAGLINE = "Proven Reliability. Delivered.";
 
 // "code" is a stylistic callsign abbreviation of the service's own real
 // title (for the Live Ops Manifest treatment — see OpsManifest.tsx) — not
@@ -144,28 +145,11 @@ export default function Home() {
 
         <WhyPds />
 
+        <Industries />
+
         <Process />
 
-        <Section id="safety" eyebrow="Our Standards" title="Safety & Commitment to Clients">
-          <div className="two-col">
-            <div>
-              <h3>Safety</h3>
-              <p>
-                At PDS, safety is not an additional feature — it is essential to
-                every delivery: responsible riding, professional conduct,
-                proper shipment handling, and regular motorcycle maintenance.
-              </p>
-            </div>
-            <div>
-              <h3>Commitment to Clients</h3>
-              <p>
-                Delivery operations directly influence how customers experience
-                a brand, so every assignment is approached with
-                accountability, professionalism, and attention to detail.
-              </p>
-            </div>
-          </div>
-        </Section>
+        <Safety />
 
         <Faq />
 
@@ -198,10 +182,7 @@ export default function Home() {
         </RouteSpine>
       </main>
 
-      <Footer
-        description="Proven Delivery Services is a UAE-based last-mile logistics company providing reliable B2B and B2C delivery services, professional rider solutions, and efficient fleet management for businesses across multiple industries."
-        tagline={PRIMARY_TAGLINE}
-      />
+      <Footer links={NAV_LINKS} />
     </>
   );
 }

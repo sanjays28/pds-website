@@ -85,12 +85,10 @@ export function Faq() {
     rowRefs.current[next]?.focus(); // focus only; activation is click / Enter / Space
   };
 
-  // Top padding trimmed (−96px desktop / −48px mobile, floored) so the gap under the
-  // spine's "FAQ" label is ~56px; `!` beats the unlayered `section.section` rule.
   return (
     <section
       id="faq"
-      className="section faq pt-[max(24px,calc(clamp(72px,9vh,140px)_-_48px))]! lg:pt-[max(64px,calc(clamp(72px,9vh,140px)_-_96px))]!"
+      className="section faq"
       data-spine-node="FAQ"
     >
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON_LD }} />

@@ -21,7 +21,7 @@ export function AboutPurpose() {
   const [valRef, valIn] = useInViewOnce<HTMLDivElement>(0.25);
 
   return (
-    <section className="section ab-purpose pt-0! pb-0!" aria-label="Our purpose and values">
+    <section className="section ab-purpose pt-0!" aria-label="Our purpose and values">
       <div className="wrap">
         <div ref={mvRef} className="ab-mv pt-16! pb-14!" data-in={mvIn || undefined}>
           <div className="ab-mv-item rv" style={{ "--d": "0ms" } as CSSProperties}>
