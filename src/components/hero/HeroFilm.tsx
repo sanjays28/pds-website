@@ -16,6 +16,7 @@ import {
   FRAME_COUNT,
   FRAME_H,
   FRAME_W,
+  INTRO_BLEND,
   MANIFEST,
   MANIFEST_WINDOW,
   MOBILE_DECODE_WIDTH,
@@ -25,7 +26,10 @@ import {
   easeBrake,
   frameLayout,
   frameSrc,
+  introLayout,
+  mixLayout,
   progressToFrame,
+  STAGE_MASK,
   trackAt,
   type CalloutCfg,
   type Cue,
@@ -157,6 +161,8 @@ export function HeroFilm({ primaryCta, secondaryCta, services }: HeroFilmProps) 
   const routeFillRef = useRef<HTMLDivElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
   const pillRef = useRef<HTMLDivElement>(null);
+  const introColRef = useRef<HTMLDivElement>(null);
+  const scrollCueRef = useRef<HTMLDivElement>(null);
   const [debug, setDebug] = useState(false);
 
   const seeHowItWorks = () => {
@@ -169,6 +175,21 @@ export function HeroFilm({ primaryCta, secondaryCta, services }: HeroFilmProps) 
   useEffect(() => {
     setDebug(new URLSearchParams(window.location.search).get("debug") === "1");
   }, []);
+
+  // "Scroll" cue (phones/tablets): gone for good once the page has scrolled 40px.
+  useEffect(() => {
+    const el = scrollCueRef.current;
+    if (!el) return;
+    const check = () => {
+      if (window.scrollY > 40) {
+        el.dataset.gone = "true";
+        window.removeEventListener("scroll", check);
+      }
+    };
+    check();
+    window.addEventListener("scroll", check, { passive: true });
+    return () => window.removeEventListener("scroll", check);
+  }, [reduced]);
 
   useEffect(() => {
     if (reduced) return;
@@ -189,6 +210,11 @@ export function HeroFilm({ primaryCta, secondaryCta, services }: HeroFilmProps) 
     const frames: (ImageBitmap | undefined)[] = new Array(FRAME_COUNT + 1);
     let loaded = 0;
     let lastDrawn = -1;
+    let lastKey = "";
+    let introLay: FrameLayout | null = null;
+    let introTop = 0;
+    let introBottom = 0;
+    let introKey = 0;
 
     let current = 1;
     let target = 1;
@@ -198,6 +224,28 @@ export function HeroFilm({ primaryCta, secondaryCta, services }: HeroFilmProps) 
     // Test hook: automated checks can pin the film to a frame with
     // window.__heroSetFrame(n) (call with no argument to hand scroll back).
     let hooked: number | undefined;
+
+    /* ---------- phone intro framing: fit the bike between the caption block and the pill/cue space ---------- */
+    const measureIntro = () => {
+      const col = introColRef.current;
+      const cue = scrollCueRef.current;
+      if (!lay.mobile || !col || !cue) {
+        introLay = null;
+        introKey++;
+        return;
+      }
+      introTop = col.getBoundingClientRect().bottom + 16; // caption block + 16px
+      introBottom = cue.getBoundingClientRect().top - 8; // pill + scroll-cue space
+      introLay = introBottom - introTop > 80 ? introLayout(lay.vw, lay.vh, introTop, introBottom) : null;
+      introKey++;
+      dirty = true;
+    };
+    const layFor = (f: number) => {
+      if (!lay.mobile || !introLay) return { l: lay, t: 1 };
+      const x = clamp01((f - INTRO_BLEND.from) / (INTRO_BLEND.to - INTRO_BLEND.from));
+      const t = easeBrake(x);
+      return { l: t >= 1 ? lay : mixLayout(introLay, lay, t), t };
+    };
 
     /* ---------- sizing ---------- */
     const resize = () => {
@@ -209,7 +257,9 @@ export function HeroFilm({ primaryCta, secondaryCta, services }: HeroFilmProps) 
       canvas.height = Math.round(h * dpr);
       lay = frameLayout(w, h);
       setLayout(lay);
+      measureIntro();
       lastDrawn = -1;
+      lastKey = "";
       dirty = true;
     };
 
@@ -235,15 +285,39 @@ export function HeroFilm({ primaryCta, secondaryCta, services }: HeroFilmProps) 
       let f = idx;
       while (f >= 1 && !frames[f]) f--; // nearest loaded earlier frame
       if (f < 1) return false;
-      if (f === lastDrawn) return true;
+      const { l, t } = layFor(f);
+      const key = `${f}|${t.toFixed(3)}|${introKey}`;
+      if (key === lastKey) return true;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.fillStyle = FILM_BLACK;
       ctx.fillRect(0, 0, lay.vw, lay.vh);
-      const dw = FRAME_W * lay.scale;
-      const dh = FRAME_H * lay.scale;
-      ctx.drawImage(frames[f]!, lay.x, lay.y, dw, dh);
-      feather(lay.x, lay.y, dw, dh);
+      const dw = FRAME_W * l.scale;
+      const dh = FRAME_H * l.scale;
+      // Intro framing: nothing but the film inside the stage band, faded into the black at its
+      // top and bottom; the band opens up to the full screen as the intro blends away.
+      const staged = !!introLay && t < 1;
+      let top = 0;
+      let bottom = lay.vh;
+      if (staged) {
+        top = introTop * t;
+        bottom = introBottom + (lay.vh - introBottom) * t;
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0, top, lay.vw, bottom - top);
+        ctx.clip();
+      }
+      ctx.drawImage(frames[f]!, l.x, l.y, dw, dh);
+      feather(l.x, l.y, dw, dh);
+      if (staged) {
+        const mh = (introBottom - introTop) * STAGE_MASK;
+        ctx.globalAlpha = 1 - t;
+        edge(0, introTop, 0, introTop + mh, 0, top, lay.vw, introTop + mh - top);
+        edge(0, introBottom, 0, introBottom - mh, 0, introBottom - mh, lay.vw, bottom - (introBottom - mh));
+        ctx.globalAlpha = 1;
+        ctx.restore();
+      }
       lastDrawn = f;
+      lastKey = key;
       return true;
     };
 
@@ -349,7 +423,7 @@ export function HeroFilm({ primaryCta, secondaryCta, services }: HeroFilmProps) 
     const updatePill = (cur: number, p: number) => {
       // Hidden at the start, once the tagline's own CTAs arrive (frame 258+),
       // and whenever the contact section is on screen.
-      setOn(pillRef.current, visible && p >= 0.15 && p <= 0.93 && cur < 258 && !contactInView);
+      setOn(pillRef.current, visible && p <= 0.93 && cur < 258 && !contactInView);
     };
 
     /* ---------- rail + debug ---------- */
@@ -452,6 +526,11 @@ export function HeroFilm({ primaryCta, secondaryCta, services }: HeroFilmProps) 
       wake();
     });
     ro.observe(stage);
+    if (introColRef.current) ro.observe(introColRef.current);
+    document.fonts?.ready.then(() => {
+      measureIntro();
+      wake();
+    });
     const io = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
       if (!visible) setOn(pillRef.current, false);
@@ -568,7 +647,7 @@ export function HeroFilm({ primaryCta, secondaryCta, services }: HeroFilmProps) 
 
         <div className="film-text">
           <div ref={cueRef("intro")} className="film-cue" data-id="intro" data-active="true">
-            <div className="film-col">
+            <div ref={introColRef} className="film-col">
               <span data-item className="hero-chip film-chip">
                 <span className="pulse-dot" aria-hidden="true" />
                 Now operating across the UAE
@@ -637,6 +716,12 @@ export function HeroFilm({ primaryCta, secondaryCta, services }: HeroFilmProps) 
           <Button href={primaryCta.href} variant="primary" data-cta="mobile-pill">
             {primaryCta.label}
           </Button>
+        </div>
+
+        {/* phones/tablets: "Scroll" cue above the pill; gone once the page has scrolled 40px */}
+        <div ref={scrollCueRef} className="film-scrollcue" aria-hidden="true">
+          <span>Scroll</span>
+          <i />
         </div>
 
         {debug && <pre ref={debugRef} className="film-debug" aria-hidden="true" />}

@@ -220,3 +220,29 @@ export function easeBrake(t: number): number {
   }
   return bez(y1, y2, Math.min(1, Math.max(0, s)));
 }
+
+/* ---------- phone intro framing (<1024px, frames 1–52) ----------
+   While the intro text is on screen the bike is fitted into the "stage" — the band between
+   the caption block and the pill/scroll-cue space — instead of the standard mobile framing.
+   From frame INTRO_BLEND.from to .to the framing eases back to the standard mobile layout, so
+   scrolling past the intro never makes the bike jump. */
+export const BIKE_BBOX = { x0: 0.245, y0: 0.215, x1: 0.725, y1: 0.945 }; // the bike itself, as frame fractions (frame 1)
+export const INTRO_BLEND = { from: 46, to: 60 };
+export const STAGE_CLEARANCE = 8; // px kept clear on every side of the bike inside the stage
+export const STAGE_MASK = 0.12; // top/bottom share of the stage faded into the film black
+
+export function introLayout(vw: number, vh: number, stageTop: number, stageBottom: number): FrameLayout {
+  const bw = (BIKE_BBOX.x1 - BIKE_BBOX.x0) * FRAME_W;
+  const bh = (BIKE_BBOX.y1 - BIKE_BBOX.y0) * FRAME_H;
+  const availW = vw - 2 * STAGE_CLEARANCE;
+  const availH = stageBottom - stageTop - 2 * STAGE_CLEARANCE;
+  const scale = Math.max(0.05, Math.min(availW / bw, availH / bh));
+  const cx = ((BIKE_BBOX.x0 + BIKE_BBOX.x1) / 2) * FRAME_W;
+  const cy = ((BIKE_BBOX.y0 + BIKE_BBOX.y1) / 2) * FRAME_H;
+  return { vw, vh, scale, x: vw / 2 - cx * scale, y: (stageTop + stageBottom) / 2 - cy * scale, mobile: true };
+}
+
+export function mixLayout(a: FrameLayout, b: FrameLayout, t: number): FrameLayout {
+  const m = (p: number, q: number) => p + (q - p) * t;
+  return { vw: b.vw, vh: b.vh, scale: m(a.scale, b.scale), x: m(a.x, b.x), y: m(a.y, b.y), mobile: true };
+}

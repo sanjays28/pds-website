@@ -577,13 +577,26 @@ button {
     object-fit: fill;
   }
 }
+/* <1024px: the poster mirrors introLayout() in src/lib/heroFilm.ts — the bike fitted into the stage
+   between the caption block and the pill/scroll-cue space (assumes the 3-line H1 + 2-line subline
+   the design targets; the canvas measures the real thing once JS runs). */
 @media (max-width: 1023px) {
+  .film-stage {
+    --fs: min(calc((100vw - 56px) / 14.4), 30px);
+    --sf: max(12.4px, min(14px, calc((100vw - 56px) / 24.6)));
+    --st: calc(72px + 3 * var(--fs) + 12px + 2.9 * var(--sf) + 16px); /* caption block + 16px */
+    --sb: calc(100svh - 116px - env(safe-area-inset-bottom, 0px)); /* pill + scroll-cue space */
+    --pw: calc(1280 / 614 * min(100vw - 16px, (var(--sb) - var(--st) - 16px) * 614 / 526));
+    --ph: calc(var(--pw) * 0.5625);
+    --pt: calc((var(--st) + var(--sb)) / 2 - 0.58 * var(--ph));
+  }
   .film-poster {
     inset: auto;
-    width: 180vw; /* MOBILE_ZOOM 1.8 */
-    height: 101.25vw;
-    left: -34.6vw; /* 50vw - 0.47 * 180vw */
-    top: calc(70svh - 55.69vw); /* 0.70 * vh - 0.55 * 101.25vw */
+    width: var(--pw);
+    height: var(--ph);
+    left: calc(50vw - 0.485 * var(--pw));
+    top: var(--pt);
+    clip-path: inset(max(0px, calc(var(--st) - var(--pt))) 0 max(0px, calc(var(--pt) + var(--ph) - var(--sb))) 0);
   }
 }
 .film-stage[data-ready="true"] .film-poster {
@@ -720,13 +733,33 @@ button {
     letter-spacing: 0.16em;
     white-space: nowrap;
   }
+  /* intro (frames 1–52): headline + subline only; the pill below is the single CTA */
+  .film-cue[data-id="intro"] .film-chip,
+  .film-cue[data-id="intro"] .film-ctas-intro {
+    display: none;
+  }
+  .film-cue[data-id="intro"] .film-col {
+    top: 72px; /* 16px under the 56px nav */
+    left: 20px;
+    right: 36px; /* clear of the film progress rail */
+  }
+  /* Sized from the column width, not a fixed vw: Archivo Expanded's widest line
+     ("DELIVERY SOLUTIONS") is 14.27em, so the font must be ≤ (column width) / 14.27 for the
+     headline to hold 3 lines ("Reliable Last-Mile" therefore always fits on one line, so "Last-Mile"
+     never splits). Column = 100vw − 20px left − 36px right. */
   .film-h1 {
-    font-size: clamp(25px, 7.4vw, 32px);
+    font-size: min(calc((100vw - 56px) / 14.4), 30px);
+    line-height: 1;
   }
   .film-hero .hero-sub {
     margin-top: 12px;
     font-size: 13px;
     line-height: 1.5;
+  }
+  /* intro subline: 14px where it fits on 2 lines, smaller on narrow phones (the copy is ~46 em wide) */
+  .film-cue[data-id="intro"] .hero-sub {
+    font-size: max(12.4px, min(14px, calc((100vw - 56px) / 24.6)));
+    line-height: 1.45;
   }
   .film-ctas {
     margin-top: 18px;
@@ -1101,20 +1134,22 @@ button {
   }
 }
 
-/* ---- mobile persistent pill (<768px, mid-film only) ---- */
-.film-pill {
+/* ---- phones/tablets (<1024px): the fixed pill is the single CTA from the first screen ---- */
+.film-pill,
+.film-scrollcue {
   display: none;
 }
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   .film-pill {
     display: block;
     position: fixed;
-    left: 50%;
-    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    left: 20px;
+    right: 20px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
     z-index: var(--z-cta);
     opacity: 0;
     visibility: hidden;
-    transform: translate(-50%, 16px);
+    transform: translateY(16px);
     transition:
       opacity 0.35s var(--ease-brake),
       transform 0.35s var(--ease-brake),
@@ -1123,14 +1158,52 @@ button {
   .film-pill[data-on="true"] {
     opacity: 1;
     visibility: visible;
-    transform: translate(-50%, 0);
+    transform: none;
     transition-delay: 0s;
   }
   .film-pill .btn {
-    min-height: 44px;
-    padding: 10px 22px;
-    font-size: 12px;
+    width: 100%;
+    justify-content: center;
+    min-height: 48px;
+    padding: 12px 22px;
+    font-size: clamp(12px, 3.6vw, 14px);
     white-space: nowrap;
+  }
+  /* "Scroll" cue above the pill; removed for good after 40px of scrolling */
+  .film-scrollcue {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    position: fixed;
+    left: 50%;
+    bottom: calc(16px + 48px + 10px + env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%);
+    z-index: var(--z-cta);
+    pointer-events: none;
+    transition:
+      opacity 0.4s var(--ease-brake),
+      visibility 0s linear 0.4s;
+  }
+  .film-scrollcue[data-gone] {
+    opacity: 0;
+    visibility: hidden;
+  }
+  .film-scrollcue span {
+    padding-left: 0.3em; /* balances the trailing letter-spacing so the word is optically centred */
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 12px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .film-scrollcue i {
+    display: block;
+    width: 1px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.5);
+    animation: cuePulse 2s ease-in-out infinite;
   }
   /* keep ≥72px clear at the bottom for the pill */
   .hm-dock {
@@ -1138,6 +1211,20 @@ button {
   }
   .hm-dock-row {
     padding: 5px 12px;
+  }
+}
+@keyframes cuePulse {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .film-scrollcue i {
+    animation: none;
   }
 }
 
@@ -3789,6 +3876,10 @@ section.ab-purpose {
   .svc-grid > *,
   .svc-board {
     min-width: 0;
+  }
+  /* nav is 56px tall on phones/tablets (44px burger + 6px above/below) */
+  .topbar {
+    padding: 6px 20px;
   }
   /* tap targets ≥44px */
   .topbar-mark {
