@@ -66,6 +66,20 @@ export function Nav({ logoSrc, logoAlt, links, ctaLabel, ctaHref, desktopCtaLabe
     };
   }, []);
 
+  // Lock page scroll while the menu is open (the sheet is a full-screen overlay).
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const html = document.documentElement;
+    const prevHtml = html.style.overflow;
+    const prevBody = document.body.style.overflow;
+    html.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    return () => {
+      html.style.overflow = prevHtml;
+      document.body.style.overflow = prevBody;
+    };
+  }, [mobileOpen]);
+
   useEffect(() => {
     if (!mobileOpen) return;
     const onKey = (e: KeyboardEvent) => {

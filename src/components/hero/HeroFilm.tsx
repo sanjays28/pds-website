@@ -270,8 +270,14 @@ export function HeroFilm({ primaryCta, secondaryCta, services }: HeroFilmProps) 
           const delay = k * 1.1;
           // The intro has no "in" scroll range (frame 1 is where the page
           // starts) so it plays a short time-based entrance on load instead.
+          // On phones/tablets the intro is visible from first paint (CSS, no JS needed) and plays a
+          // CSS-only entrance on its column, so there is no hide-then-reveal flash when JS hydrates.
           const tin =
-            cue.from === 1 ? clamp01((now - t0 - 150 - k * 90) / 900) : clamp01((cur - cue.from - delay) / CUE_FADE_FRAMES);
+            cue.from === 1
+              ? lay.mobile
+                ? 1
+                : clamp01((now - t0 - 150 - k * 90) / 900)
+              : clamp01((cur - cue.from - delay) / CUE_FADE_FRAMES);
           const tout = cue.to === FRAME_COUNT ? 1 : clamp01((cue.to - cur) / CUE_FADE_FRAMES);
           const ein = easeBrake(tin);
           const eout = easeBrake(tout);
@@ -424,7 +430,9 @@ export function HeroFilm({ primaryCta, secondaryCta, services }: HeroFilmProps) 
       else setTimeout(fn, 60);
     };
     const loadAll = async () => {
-      await Promise.all(Array.from({ length: 24 }, (_, k) => load(k + 1)));
+      // Frame 1 alone first, so nothing competes with it for bandwidth; then 2–24 together.
+      await load(1);
+      await Promise.all(Array.from({ length: 23 }, (_, k) => load(k + 2)));
       let next = 25;
       const step = () => {
         if (dead || next > FRAME_COUNT) return;

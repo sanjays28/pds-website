@@ -564,24 +564,20 @@ button {
   max-width: none;
   object-fit: cover;
 }
-/* ≥768px: 0.84 × cover, bottom-anchored, shifted right (16% ≥1024, 8% tablet). */
-@media (min-width: 768px) {
+/* ≥1024px: 0.84 × cover, bottom-anchored, shifted right 16%. Below 1024px (phones and
+   portrait tablets) the mobile layout is used: zoomed 1.8×, focus-pinned (mirrors frameLayout()). */
+@media (min-width: 1024px) {
   .film-poster {
     --pw: calc(0.84 * max(100vw, 100svh * 1.7778));
     inset: auto;
     bottom: 0;
     width: var(--pw);
     height: auto;
-    left: calc((100vw - var(--pw)) / 2 + 8vw);
+    left: calc((100vw - var(--pw)) / 2 + 16vw);
     object-fit: fill;
   }
 }
-@media (min-width: 1024px) {
-  .film-poster {
-    left: calc((100vw - var(--pw)) / 2 + 16vw);
-  }
-}
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   .film-poster {
     inset: auto;
     width: 180vw; /* MOBILE_ZOOM 1.8 */
@@ -628,6 +624,23 @@ button {
 .film-cue [data-item] {
   opacity: 0;
   will-change: transform, opacity;
+}
+/* Phones/tablets: the intro text is visible at first paint (it used to wait for JS, which on a
+   slow connection left the hero text-less for seconds). Its entrance is a CSS animation on the
+   column; the scroll engine takes over only when the cue fades out. */
+@media (max-width: 1023px) {
+  .film-cue[data-id="intro"] [data-item] {
+    opacity: 1;
+  }
+  .film-cue[data-id="intro"] .film-col {
+    animation: introIn 0.9s var(--ease-brake) 0.1s backwards;
+  }
+}
+@keyframes introIn {
+  from {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
 }
 .film-col {
   position: absolute;
@@ -689,7 +702,7 @@ button {
   margin-top: 36px;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   .film-col {
     left: 20px;
     right: 20px;
@@ -722,7 +735,7 @@ button {
   .film-ctas .btn {
     padding: 11px 16px;
     font-size: 12px;
-    min-height: 40px;
+    min-height: 44px;
   }
 }
 
@@ -776,12 +789,15 @@ button {
   letter-spacing: 0.18em;
   white-space: nowrap; /* single line, always */
 }
-@media (max-width: 767px) {
-  /* The longest label must fit a 390px screen on one line. */
+@media (max-width: 1023px) {
+  /* Phones/tablets: chips are parked near the right edge above the object; the longest
+     label wraps to two lines instead of running off the left edge at 360px. */
   .hc-chip {
     font-size: 10px;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     padding: 8px 12px;
+    white-space: normal;
+    max-width: calc(100vw - 64px);
   }
 }
 
@@ -1024,7 +1040,7 @@ button {
     opacity: 0;
   }
 }
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   .film-route,
   .film-dots-mask {
     display: none;
@@ -3758,6 +3774,65 @@ section.ab-purpose {
   .ft-tagline {
     opacity: 1 !important;
     transform: none !important;
+  }
+}
+
+/* ============================================================
+   Mobile / tablet pass (<1024px). Nothing here applies at ≥1024px.
+   ============================================================ */
+@media (max-width: 1023px) {
+  /* vertical rhythm: ~96px between sections' content instead of ~144px */
+  :root {
+    --section-y: 48px;
+  }
+  /* grid children may shrink: the Services board overflowed the screen by ~4px at 360px */
+  .svc-grid > *,
+  .svc-board {
+    min-width: 0;
+  }
+  /* tap targets ≥44px */
+  .topbar-mark {
+    display: inline-flex;
+    align-items: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .ft-nav ul {
+    gap: 0;
+  }
+  .ft-link {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 12px 0;
+  }
+  /* body copy ≥15px */
+  .ft-desc {
+    font-size: 15px;
+  }
+  .form-note,
+  .ft-bar {
+    font-size: 13px;
+  }
+  /* long single words ("Professionalism", "Last-Mile") must not touch the edge at 360px */
+  .ab-vname {
+    font-size: clamp(22px, 6.4vw, 24px);
+  }
+  .svc-title {
+    font-size: clamp(25px, 7.4vw, 28px);
+  }
+}
+@media (max-width: 767px) {
+  /* FAQ: keep the arrow on the question's row when the question wraps under its number */
+  .faq-q {
+    flex: 1;
+    min-width: 0;
+  }
+}
+@media (max-width: 400px) {
+  /* "NOW OPERATING ACROSS THE UAE" is wider than a 360px screen at its normal tracking */
+  .film-chip {
+    letter-spacing: 0.12em;
+    padding: 6px 10px;
   }
 }
 

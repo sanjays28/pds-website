@@ -154,8 +154,7 @@ export const EDGE_FEATHER = { x: 0.14, y: 0.1 };
 /* ---------- draw layout ---------- */
 
 export const DESKTOP_SCALE = 0.84; // × cover scale: a smaller bike leaves room for the manifest
-export const DESKTOP_SHIFT = 0.16; // ≥1024px: bike sits right of the manifest column
-export const TABLET_SHIFT = 0.08; // 768–1023px
+export const DESKTOP_SHIFT = 0.16; // ≥1024px: bike sits right of the manifest column. Below 1024px the mobile layout is used (portrait tablets too).
 /** Mobile: the frame is drawn at vw * MOBILE_ZOOM / FRAME_W so the whole bike
  * fits the screen (true "cover" would crop the bike to its middle third). The
  * frame's (fx, fy) focus point is pinned to viewport (0.5, MOBILE_VIEW_Y). */
@@ -175,7 +174,7 @@ export interface FrameLayout {
 }
 
 export function frameLayout(vw: number, vh: number): FrameLayout {
-  if (vw < 768) {
+  if (vw < 1024) {
     const scale = (vw * MOBILE_ZOOM) / FRAME_W;
     return {
       vw,
@@ -187,7 +186,7 @@ export function frameLayout(vw: number, vh: number): FrameLayout {
     };
   }
   const scale = Math.max(vw / FRAME_W, vh / FRAME_H) * DESKTOP_SCALE; // 0.84 × cover
-  const shift = vw >= 1024 ? DESKTOP_SHIFT : TABLET_SHIFT;
+  const shift = DESKTOP_SHIFT;
   return {
     vw,
     vh,
