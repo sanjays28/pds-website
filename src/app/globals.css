@@ -2889,6 +2889,7 @@ section.section {
 }
 .proc-inner {
   position: relative;
+  z-index: 1; /* above the rain */
   height: 100%;
   max-width: 1200px;
   margin: 0 auto;
@@ -3630,6 +3631,77 @@ section.ab-purpose {
   .saf-rule-fill {
     transform: scaleX(1) !important;
   }
+}
+
+/* ============================================================
+   DataRain (src/components/ui/data-rain.tsx) — used only by Process ("rider wake").
+   Its colours are scoped to .process-rain, not :root, so nothing else changes.
+   ============================================================ */
+.dr-root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: transparent;
+}
+.dr-root:not(.dr-root--contained) {
+  position: fixed;
+}
+.dr-main,
+.dr-bloom {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.dr-bloom {
+  filter: blur(var(--dr-bloom-blur));
+  opacity: var(--dr-bloom-opacity);
+  mix-blend-mode: screen;
+}
+.dr-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(7, 7, 7, var(--dr-vignette)) 100%);
+}
+.dr-grain {
+  display: none;
+}
+.process-rain {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  --dr-calm: #2f7a20;
+  --dr-mid: #6cc04a;
+  --dr-hot: #bdf28a;
+  --dr-core: #f2ffe8;
+  --dr-vignette: 0.7;
+  --dr-grain: 0;
+  --dr-bloom-blur: 8px;
+  --dr-bloom-opacity: 0.35;
+}
+/* Performance: the blurred, screen-blended bloom layer and a masked/translucent wrapper each force an
+   offscreen composite every frame, which is what made this effect too slow under CPU throttling.
+   Here the bloom layer is dropped and the text-safe fade is a static gradient overlay instead of a mask. */
+.process-rain .dr-bloom {
+  display: none;
+}
+/* Text-safe fade: streams at full strength in a band around the route (~58% of the height ± 22%),
+   dimmed to ~20% toward the top and bottom where the text blocks sit. The overlay is the page
+   black, so it reads exactly like a mask on the solid background, without a per-frame mask. */
+.process-rain-fade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(13, 13, 13, 0.8) 0%,
+    rgba(13, 13, 13, 0) 36%,
+    rgba(13, 13, 13, 0) 80%,
+    rgba(13, 13, 13, 0.8) 100%
+  );
 }
 
 /* ============================================================

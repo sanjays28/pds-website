@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PinIcon } from "@/components/PinIcon";
+import DataRain, { type DataRainFocus, type DataRainPalette } from "@/components/ui/data-rain";
 import { useReducedMotion } from "@/motion/useReducedMotion";
 
 /**
@@ -41,6 +42,10 @@ const NODE_PAD = 12; // route inset from the layer edges
 const BLOCK_W = 220;
 const TICK = 24;
 const GAP = 8;
+// PDS greens only — the "rider wake" streams behind the route (desktop, pinned container only).
+const RAIN_PALETTE: DataRainPalette = { calm: "#2F7A20", mid: "#6CC04A", hot: "#BDF28A" };
+const RAIN_COUNT = 900;
+
 const pad = (n: number) => String(n).padStart(2, "0");
 const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
 
@@ -103,6 +108,21 @@ function Pinned({ header, still = false }: { header: React.ReactNode; still?: bo
   const tickRefs = useRef<(HTMLElement | null)[]>([]);
   const blockRefs = useRef<(HTMLLIElement | null)[]>([]);
 
+  // rider wake: streams part around the rider marker. Updated imperatively (no re-render per frame).
+  const rainRef = useRef<HTMLDivElement>(null);
+  const riderFocus = useRef<DataRainFocus | null>({ x: 0, y: 0, active: false });
+  const rainOff = useRef({ x: 0, y: 0 }); // route layer's offset inside the rain wrapper (cached)
+  const inViewRef = useRef(false);
+  const [rainOn, setRainOn] = useState(false);
+  const updateRainOffset = () => {
+    const l = layerRef.current;
+    const r = rainRef.current;
+    if (!l || !r) return;
+    const a = l.getBoundingClientRect();
+    const b = r.getBoundingClientRect();
+    rainOff.current = { x: a.left - b.left, y: a.top - b.top };
+  };
+
   const [size, setSize] = useState<Size | null>(null);
   const [stops, setStops] = useState<Stop[]>([]);
   const [total, setTotal] = useState(0);
@@ -114,6 +134,7 @@ function Pinned({ header, still = false }: { header: React.ReactNode; still?: bo
     const layer = layerRef.current;
     if (!layer) return;
     const read = () => {
+      updateRainOffset();
       const w = Math.round(layer.clientWidth);
       const h = Math.round(layer.clientHeight);
       setSize((prev) => (prev && prev.w === w && prev.h === h ? prev : { w, h }));
@@ -178,6 +199,23 @@ function Pinned({ header, still = false }: { header: React.ReactNode; still?: bo
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stops, size, tick, samples]);
 
+  /* ---- mount the rain only while the pinned container is within 20% of the viewport ---- */
+  useEffect(() => {
+    if (still) return;
+    const el = wrapRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        inViewRef.current = e.isIntersecting;
+        if (riderFocus.current) riderFocus.current.active = e.isIntersecting;
+        setRainOn(e.isIntersecting);
+      },
+      { rootMargin: "20% 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [still]);
+
   /* ---- scroll mapping + paint ---- */
   useEffect(() => {
     if (!stops.length || !total) return;
@@ -204,6 +242,12 @@ function Pinned({ header, still = false }: { header: React.ReactNode; still?: bo
         fillRef.current.style.strokeDashoffset = `${total - fillLen}`;
       }
       const pt = path.getPointAtLength(fillLen);
+      const rf = riderFocus.current;
+      if (rf) {
+        rf.x = pt.x + rainOff.current.x;
+        rf.y = pt.y + rainOff.current.y;
+        rf.active = inViewRef.current;
+      }
       const a = path.getPointAtLength(Math.max(0, fillLen - 4));
       const b = path.getPointAtLength(Math.min(total, fillLen + 4));
       const ang = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
@@ -274,6 +318,20 @@ function Pinned({ header, still = false }: { header: React.ReactNode; still?: bo
   return (
     <section ref={wrapRef} id="process" className="proc proc-d" data-still={still || undefined} data-spine-node="Process">
       <div className="proc-stick">
+        <div ref={rainRef} className="process-rain" aria-hidden="true">
+          {rainOn && !still && (
+            <DataRain
+              fullscreen={false}
+              interactive={false}
+              focusRef={riderFocus}
+              count={RAIN_COUNT}
+              flowSpeed={0.8}
+              obstacleRadius={22}
+              palette={RAIN_PALETTE}
+            />
+          )}
+          <div className="process-rain-fade" />
+        </div>
         <div className="proc-inner">
         <div ref={headRef} className="proc-head">
           {header}
