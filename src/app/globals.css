@@ -1451,7 +1451,7 @@ section.section {
   position: absolute;
   left: 24px;
   top: 0;
-  bottom: 0;
+  height: 100%; /* replaced by the pin's position from RouteSpine.tsx */
   width: 2px;
   z-index: 2;
   pointer-events: none;
@@ -1532,6 +1532,31 @@ section.section {
 }
 .spine-node[data-on="true"] .spine-pin {
   color: var(--color-green);
+}
+.spine-pulse {
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 24px;
+  height: 24px;
+  margin-left: -12px;
+  border: 1px solid var(--color-green);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+.spine-pin[data-pulse="true"] .spine-pulse {
+  animation: spinePulse 0.9s var(--ease-brake) 1;
+}
+@keyframes spinePulse {
+  0% {
+    transform: scale(0.4);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
 }
 .spine-label {
   position: absolute;
@@ -3702,6 +3727,291 @@ section.ab-purpose {
     rgba(13, 13, 13, 0) 80%,
     rgba(13, 13, 13, 0.8) 100%
   );
+}
+
+/* ============================================================
+   Contact (src/components/sections/Contact.tsx)
+   ============================================================ */
+.ct-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+}
+@media (min-width: 1024px) {
+  .ct-grid {
+    grid-template-columns: 5fr 7fr;
+    gap: 64px;
+    align-items: start;
+  }
+}
+.ct-h2 {
+  font-size: clamp(28px, 3.6vw, 48px);
+  line-height: 1.02;
+}
+.ct-h2 .accent {
+  color: var(--color-green);
+}
+.ct-lead {
+  margin-top: 28px;
+  font-family: var(--font-body);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--color-white);
+}
+.ct-p {
+  margin-top: 20px;
+  max-width: 440px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-w70);
+}
+.ct-lead + .ct-p {
+  margin-top: 16px;
+}
+.ct-formwrap {
+  display: grid; /* form and thank-you share one cell, so the swap never changes the height */
+}
+.ct-form,
+.ct-success {
+  grid-area: 1 / 1;
+}
+.ct-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  transition: opacity 0.4s var(--ease-brake);
+}
+.ct-form[data-hidden] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.ct-intent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.ct-radio {
+  position: relative;
+}
+.ct-radio input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+.ct-radio label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 12px 22px;
+  border: 1px solid var(--color-line-2);
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-w70);
+  transition:
+    border-color 0.3s var(--ease-brake),
+    color 0.3s var(--ease-brake);
+}
+.ct-radio input:checked + label {
+  border-color: var(--color-green);
+  color: var(--color-green);
+}
+.ct-radio input:focus-visible + label {
+  outline: 2px solid var(--color-green);
+  outline-offset: 3px;
+}
+.ct-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media (min-width: 640px) {
+  .ct-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+}
+.ct-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.ct-field label {
+  margin-bottom: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-w40);
+  transition: color 0.25s var(--ease-brake);
+}
+.ct-field:focus-within label {
+  color: rgba(255, 255, 255, 0.85);
+}
+.ct-field input,
+.ct-field textarea,
+.ct-field select {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--color-line-2);
+  border-radius: 0;
+  color: var(--color-white);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  transition: border-color 0.25s var(--ease-brake);
+}
+.ct-field textarea {
+  resize: vertical;
+}
+.ct-field input:focus,
+.ct-field textarea:focus,
+.ct-field select:focus {
+  outline: none;
+  border-bottom-color: var(--color-green);
+}
+.ct-field input:focus-visible,
+.ct-field textarea:focus-visible,
+.ct-field select:focus-visible {
+  outline: 2px solid var(--color-green);
+  outline-offset: 4px;
+}
+.ct-select {
+  position: relative;
+}
+.ct-select select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 28px;
+  cursor: pointer;
+}
+.ct-select select option {
+  background: var(--color-panel);
+  color: var(--color-white);
+}
+.ct-select svg {
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-w70);
+  pointer-events: none;
+}
+.ct-err {
+  margin-top: 8px;
+  padding-left: 10px;
+  border-left: 2px solid var(--color-green);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-w70);
+}
+.ct-fail {
+  padding-left: 10px;
+  border-left: 2px solid var(--color-green);
+  font-size: 14px;
+  color: var(--color-w70);
+}
+.ct-hp {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.ct-submit {
+  position: relative;
+  align-self: flex-start;
+}
+.ct-submit .btn {
+  min-height: 48px;
+}
+.ct-submit .btn[disabled] {
+  opacity: 0.7;
+  cursor: default;
+}
+.ct-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 1px;
+  background: var(--color-green);
+  transform-origin: left center;
+  animation: ctProgress 1.1s var(--ease-brake) infinite;
+}
+@keyframes ctProgress {
+  0% {
+    transform: scaleX(0);
+    opacity: 1;
+  }
+  80% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+@media (max-width: 639px) {
+  .ct-submit {
+    align-self: stretch;
+  }
+  .ct-submit .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+.ct-success {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  opacity: 0;
+  visibility: hidden;
+  outline: none;
+  transition: opacity 0.4s var(--ease-brake) 0.15s;
+}
+.ct-success[data-show] {
+  opacity: 1;
+  visibility: visible;
+}
+.ct-success-pin {
+  width: 32px;
+  height: 32px;
+  color: var(--color-green);
+}
+.ct-success-pin svg {
+  width: 32px;
+  height: 32px;
+}
+.ct-success p {
+  max-width: 520px;
+  font-family: var(--font-body);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--color-white);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ct-progress {
+    animation: none;
+  }
 }
 
 /* ============================================================

@@ -1,18 +1,16 @@
 import { Nav } from "@/components/Nav";
 import { HeroFilm } from "@/components/hero/HeroFilm";
-import { Section } from "@/components/Section";
 import { AboutIntro } from "@/components/sections/AboutIntro";
 import { AboutPurpose } from "@/components/sections/AboutPurpose";
 import { Services } from "@/components/sections/Services";
 import { WhyPds } from "@/components/sections/WhyPds";
 import { Process } from "@/components/sections/Process";
 import { Faq } from "@/components/sections/Faq";
+import { Contact } from "@/components/sections/Contact";
 import { Industries } from "@/components/sections/Industries";
 import { Safety } from "@/components/sections/Safety";
-import { CONTACT_HREF, CONTACT_ID } from "@/lib/contact";
-import { ContactForm } from "@/components/ContactForm";
+import { CONTACT_HREF } from "@/lib/contact";
 import { Footer } from "@/components/Footer";
-import { Button } from "@/components/Button";
 import { CursorTrail } from "@/components/CursorTrail";
 import { RouteSpine } from "@/components/RouteSpine";
 
@@ -153,32 +151,7 @@ export default function Home() {
 
         <Faq />
 
-        <Section
-          id={CONTACT_ID}
-          spineNode="Contact"
-          eyebrow="Get Started"
-          title="Let's Move Your Business Forward"
-          wipe={false}
-          className="section-narrow"
-        >
-          <p className="text-w70" style={{ maxWidth: "62ch" }}>
-            Looking for a reliable delivery partner in the UAE? Whether you
-            need trained delivery riders, dependable last-mile delivery
-            support, or professionally managed fleet operations, Proven
-            Delivery Services is ready to support your business.
-          </p>
-          <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 28 }}>
-            <Button href={CONTACT_HREF} variant="primary">
-              Contact PDS Today
-            </Button>
-            <Button href={CONTACT_HREF} variant="ghost">
-              Request a Business Proposal
-            </Button>
-          </div>
-          <div id="contact-form" style={{ scrollMarginTop: 120 }}>
-            <ContactForm />
-          </div>
-        </Section>
+        <Contact />
         </RouteSpine>
       </main>
 

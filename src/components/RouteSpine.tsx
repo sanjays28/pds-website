@@ -36,6 +36,7 @@ export function RouteSpine({ children }: { children: ReactNode }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLDivElement>(null);
   const tipRef = useRef<HTMLDivElement>(null);
+  const spineRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [nodes, setNodes] = useState<SpineNode[]>([]);
 
@@ -52,11 +53,12 @@ export function RouteSpine({ children }: { children: ReactNode }) {
     let raf = 0;
     let first = true;
     let maxScroll = 0;
+    let endY = 0; // where the line ends: the pin, when there is one
 
     // At the very bottom of the page the line completes, even when the footer is
     // shorter than the tip's offset from the viewport bottom.
     const target = () =>
-      window.scrollY >= maxScroll - 2 ? height : Math.min(height, Math.max(0, window.scrollY + vh * TIP_AT - top));
+      window.scrollY >= maxScroll - 2 ? endY : Math.min(endY, Math.max(0, window.scrollY + vh * TIP_AT - top));
     const setOn = (el: HTMLElement | null, on: boolean) => {
       if (!el) return;
       if (on !== (el.dataset.on === "true")) {
@@ -65,10 +67,10 @@ export function RouteSpine({ children }: { children: ReactNode }) {
       }
     };
     const paint = () => {
-      if (fillRef.current) fillRef.current.style.transform = `scaleY(${height ? (current / height).toFixed(4) : 0})`;
+      if (fillRef.current) fillRef.current.style.transform = `scaleY(${endY ? (current / endY).toFixed(4) : 0})`;
       if (tipRef.current) {
         tipRef.current.style.transform = `translate3d(0,${current.toFixed(1)}px,0)`;
-        tipRef.current.style.opacity = current > 1 && current < height - 1 ? "1" : "0";
+        tipRef.current.style.opacity = current > 1 && current < endY - 1 ? "1" : "0";
       }
       ys.forEach((y, i) => setOn(nodeRefs.current[i], current >= y));
     };
@@ -95,11 +97,20 @@ export function RouteSpine({ children }: { children: ReactNode }) {
       height = r.height;
       vh = window.innerHeight;
       maxScroll = document.documentElement.scrollHeight - vh;
-      const list: SpineNode[] = Array.from(wrap.querySelectorAll<HTMLElement>("[data-spine-node]")).map((el) => ({
-        label: el.dataset.spineNode ?? "",
-        y: Math.round(el.getBoundingClientRect().top + window.scrollY - top),
-        pin: el.id === CONTACT_ID,
-      }));
+      const list: SpineNode[] = Array.from(wrap.querySelectorAll<HTMLElement>("[data-spine-node]")).map((el) => {
+        const pin = el.id === CONTACT_ID;
+        // the pin lines up with the section's eyebrow ([data-spine-y]); other nodes sit at the section top
+        const anchor = pin ? el.querySelector<HTMLElement>("[data-spine-y]") : null;
+        const r = (anchor ?? el).getBoundingClientRect();
+        return {
+          label: el.dataset.spineNode ?? "",
+          y: Math.round(r.top + window.scrollY - top + (anchor ? r.height / 2 : 0)),
+          pin,
+        };
+      });
+      const pinNode = list.find((n) => n.pin);
+      endY = pinNode ? pinNode.y : height;
+      if (spineRef.current) spineRef.current.style.height = `${endY}px`; // the line stops at the pin
       ys = list.map((n) => n.y);
       pins = list.map((n) => n.pin);
       setNodes((prev) => (JSON.stringify(prev) === JSON.stringify(list) ? prev : list));
@@ -131,6 +142,26 @@ export function RouteSpine({ children }: { children: ReactNode }) {
     };
   }, [reduced]);
 
+  // One soft pulse on the pin when the contact form has been sent (not with reduced motion).
+  useEffect(() => {
+    if (reduced) return;
+    let t = 0;
+    const onSent = () => {
+      const el = spineRef.current?.querySelector<HTMLElement>(".spine-pin");
+      if (!el) return;
+      el.removeAttribute("data-pulse");
+      void el.offsetWidth; // restart
+      el.setAttribute("data-pulse", "true");
+      window.clearTimeout(t);
+      t = window.setTimeout(() => el.removeAttribute("data-pulse"), 950);
+    };
+    window.addEventListener("pds:enquiry-sent", onSent);
+    return () => {
+      window.removeEventListener("pds:enquiry-sent", onSent);
+      window.clearTimeout(t);
+    };
+  }, [reduced]);
+
   // Node elements exist only after the first measure → light them once rendered.
   useEffect(() => {
     if (reduced) {
@@ -146,7 +177,7 @@ export function RouteSpine({ children }: { children: ReactNode }) {
   return (
     <div ref={wrapRef} className="spine-wrap">
       {children}
-      <div className="spine" aria-hidden="true">
+      <div ref={spineRef} className="spine" aria-hidden="true">
         <div className="spine-track" />
         <div ref={fillRef} className="spine-fill" />
         <div ref={tipRef} className="spine-tip">
@@ -163,12 +194,14 @@ export function RouteSpine({ children }: { children: ReactNode }) {
           >
             {n.pin ? (
               <span className="spine-pin">
+                <span className="spine-pulse" />
                 <PinIcon />
               </span>
             ) : (
               <span className="spine-dot" />
             )}
-            <span className="spine-label">{n.label}</span>
+            {/* the pin sits beside the section's own "Contact Us" eyebrow, so it needs no label of its own */}
+            {!n.pin && <span className="spine-label">{n.label}</span>}
           </div>
         ))}
       </div>
