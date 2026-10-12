@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import AnimatedBackground from "@/components/ui/animated-background";
+import { useReducedMotion } from "@/motion/useReducedMotion";
 
 /**
  * WhyPds — eight reasons as a plain ordered list. On first view (≥35% of the
@@ -8,8 +10,9 @@ import { useEffect, useRef, useState } from "react";
  * white, the item slides in, and the header counter ticks up. It plays once and
  * then everything stays still. Reduced motion: all lit, counter at 08 / 08.
  *
- * Semantics: <ol>/<li> with real headings; lamps and counter are aria-hidden.
- * No hover or click behaviour.
+ * Hover (fine pointer only): a shared wash slides between reasons. Touch does
+ * not stick a highlight. Semantics: <ol>/<li> with real headings; lamps and
+ * counter are aria-hidden.
  */
 const ITEMS = [
   { title: "Trained Delivery Riders", body: "Our riders are selected and trained to provide safe, professional, and customer-focused delivery service." },
@@ -25,9 +28,12 @@ const ITEMS = [
 const pad = (n: number) => String(n).padStart(2, "0");
 const START_DELAY = 200;
 
+const HOVER_SPRING = { type: "spring" as const, bounce: 0.2, duration: 0.6 };
+
 export function WhyPds() {
   const gridRef = useRef<HTMLOListElement>(null);
   const [lit, setLit] = useState(0);
+  const reduced = useReducedMotion();
 
   useEffect(() => {
     const grid = gridRef.current;
@@ -76,16 +82,22 @@ export function WhyPds() {
         </div>
 
         <ol ref={gridRef} className="why-grid">
-          {ITEMS.map((item, i) => (
-            <li key={item.title} className="why-item" data-lit={i < lit || undefined}>
-              <div className="why-meta" aria-hidden="true">
-                <span className="why-lamp" />
-                <span className="why-num">{pad(i + 1)}</span>
-              </div>
-              <h3 className="font-display why-name">{item.title}</h3>
-              <p className="why-body">{item.body}</p>
-            </li>
-          ))}
+          <AnimatedBackground
+            className="why-hover"
+            enableHover
+            transition={reduced ? { duration: 0 } : HOVER_SPRING}
+          >
+            {ITEMS.map((item, i) => (
+              <li key={item.title} data-id={item.title} className="why-item" data-lit={i < lit || undefined}>
+                <div className="why-meta" aria-hidden="true">
+                  <span className="why-lamp" />
+                  <span className="why-num">{pad(i + 1)}</span>
+                </div>
+                <h3 className="font-display why-name">{item.title}</h3>
+                <p className="why-body">{item.body}</p>
+              </li>
+            ))}
+          </AnimatedBackground>
         </ol>
       </div>
     </section>
